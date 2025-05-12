@@ -50,7 +50,7 @@ const closeModalFormTask = () => {
     <form @submit.prevent="submitNewTask">
       <div class="mb-2">
         <input
-          :class="`border p-1
+          :class="`border p-1 w-[100%]
           ${errorMessage ? 'border-red-500 bg-red-200' : ''}`"
           type="text"
           placeholder="Enter a task..."

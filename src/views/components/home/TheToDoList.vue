@@ -16,7 +16,7 @@ defineProps({
 })
 
 // const tasks = ref([...props.tasks])
-const emit = defineEmits(['remove'])
+const emit = defineEmits(['remove', 'update'])
 
 const removeTask = async (id: string) => {
   try {
@@ -28,13 +28,23 @@ const removeTask = async (id: string) => {
   }
 }
 
+const updateTaskHandler = (task: Task) => {
+  emit('update', task)
+}
+
 // onMounted(fetchTasks)
 </script>
 
 <template>
   <section v-if="tasks.length > 0">
     <ul>
-      <TheTask v-for="task in tasks" :key="task.id" :task="task" @remove="removeTask" />
+      <TheTask
+        v-for="task in tasks"
+        :key="task.id"
+        :task="task"
+        @remove="removeTask"
+        @update="updateTaskHandler"
+      />
     </ul>
   </section>
 
