@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:all": "concurrently \"npm run dev\" \"npm run mock:backend\"",
-    "mock:backend": "json-server public/db/db.json --port 3001",
+    "mock:backend": "json-server src/mock/db/db.json --port 3001",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
