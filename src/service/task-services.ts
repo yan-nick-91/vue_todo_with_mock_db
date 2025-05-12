@@ -1,11 +1,11 @@
-import { TASKS } from '@/const/api'
+import { TASK_ENDPOINT } from '@/const/api'
 
 /**
  * Uses the data which is given by the client to send a request to persist this data
  * @param taskData the given data by client
  */
 export const sendRequestToCreateNewTask = async (taskData: unknown) => {
-  const response = await fetch(TASKS, {
+  const response = await fetch(TASK_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(taskData),
@@ -19,7 +19,7 @@ export const sendRequestToCreateNewTask = async (taskData: unknown) => {
  * @returns All available tasks that were persisted
  */
 export const sendRequestToGetAllTasks = async () => {
-  const response = await fetch(TASKS, {
+  const response = await fetch(TASK_ENDPOINT, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   })
@@ -29,7 +29,7 @@ export const sendRequestToGetAllTasks = async () => {
 }
 
 export const sendRequestToDeleteTask = async (id: unknown) => {
-  const response = await fetch(`${TASKS}/${id}`, {
+  const response = await fetch(`${TASK_ENDPOINT}/${id}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
   })
