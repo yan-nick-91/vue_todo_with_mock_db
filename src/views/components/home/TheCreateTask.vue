@@ -2,18 +2,20 @@
 import { ref } from 'vue'
 
 import { addTask } from '@/controller/task-controller'
-import { generateTaskId } from '@/util/IDgenerator'
+import { generateCurrentDate, generateTaskId } from '@/util/valueGenerator'
 import { invalidInput } from '@/errors/task-error-handler'
 import BaseNotification from '@/UI/BaseNotification.vue'
-import { DANGER } from '@/const/base-types'
+import { DANGER, SUCCESS } from '@/const/base-types'
+import BaseButton from '@/UI/BaseButton.vue'
 
-const emit = defineEmits(['close', 'handleSubmit'])
 defineProps({
   modalIsOpen: {
     type: Boolean,
     default: false,
   },
 })
+
+const emit = defineEmits(['close', 'handleSubmit'])
 
 const taskInput = ref('')
 const errorMessage = ref('')
@@ -27,6 +29,7 @@ const submitNewTask = async () => {
     await addTask({
       id: generateTaskId(),
       task: taskInput.value,
+      createdAt: generateCurrentDate(),
     })
 
     emit('handleSubmit', taskInput.value)
@@ -63,15 +66,20 @@ const closeModalFormTask = () => {
       </div>
 
       <div class="flex gap-2">
-        <button type="submit" class="cursor-pointer p-2 bg-emerald-700 text-amber-50 rounded">
-          Add Task</button
-        ><button
-          type="button"
-          class="cursor-pointer p-2 bg-red-500 text-amber-50 rounded"
+        <BaseButton
+          type="submit"
+          :btn-type="SUCCESS"
+          class="cursor-pointer p-2 rounded transform active:scale-95"
+        >
+          Add Task
+        </BaseButton>
+        <BaseButton
+          class="cursor-pointer rounded p-2 transform active:scale-95"
+          :btn-type="DANGER"
           @click="closeModalFormTask"
         >
           Cancel
-        </button>
+        </BaseButton>
       </div>
     </form>
   </section>
