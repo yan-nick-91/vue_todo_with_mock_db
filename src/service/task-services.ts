@@ -28,6 +28,34 @@ export const sendRequestToGetAllTasks = async () => {
   return response.json()
 }
 
+export const sendRequestToGetSpecificTask = async (id: string) => {
+  const response = await fetch(`${TASK_ENDPOINT}/${id}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  })
+  if (!response.ok) {
+    let errorMessage = `HTTP ${response.status} - ${response.statusText}`
+    try {
+      // Probeer JSON eerst, als dat faalt wordt het opgevangen hieronder
+      const contentType = response.headers.get('content-type')
+
+      if (contentType && contentType.includes('application/json')) {
+        const errorData = await response.json()
+        errorMessage = errorData.message || errorMessage
+      } else {
+        const text = await response.text() // Alleen als het geen JSON is
+        errorMessage = text || errorMessage
+      }
+    } catch {
+      // Als zelfs het lezen mislukt
+      errorMessage = 'Er trad een fout op bij het verwerken van de foutmelding.'
+    }
+    console.error('Failed to fetch task:', errorMessage)
+    throw new Error(errorMessage)
+  }
+  return response.json()
+}
+
 export const sendRequestToUpdateTask = async (id: string, taskData: unknown) => {
   const response = await fetch(`${TASK_ENDPOINT}/${id}`, {
     method: 'PUT',
