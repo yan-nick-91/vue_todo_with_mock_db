@@ -32,6 +32,7 @@ const submitNewTask = async () => {
       createdAt: generateCurrentDate(),
       updatedAt: '',
       isFinished: false,
+      bulletList: [],
     })
 
     emit('handleSubmit', taskInput.value)
