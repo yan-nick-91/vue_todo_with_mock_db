@@ -1,9 +1,33 @@
-<script lang="ts"></script>
+<script lang="ts">
+import { SUCCESS, INFO, DANGER, TRANSPARENT, DEFAULT, type buttonType } from '@/const/base-types'
+import type { PropType } from 'vue'
 
-<script setup lang="ts"></script>
+const buttonTypesMap: Record<string, string> = {
+  [SUCCESS]: 'bg-emerald-700 text-amber-50 hover:bg-emerald-800',
+  [INFO]: 'bg-teal-600 text-amber-50 hover:bg-teal-500',
+  [DANGER]: 'bg-red-500 text-amber-50 hover:bg-red-600',
+  [DEFAULT]: 'bg-gray-300 text-black hover:bg-gray-400',
+  [TRANSPARENT]: 'bg-transparent text-black',
+}
+</script>
+
+<script setup lang="ts">
+defineProps({
+  btnType: {
+    default: DEFAULT,
+    type: String as PropType<buttonType>,
+  },
+})
+
+const emit = defineEmits(['click'])
+
+const handleClick = () => {
+  emit('click')
+}
+</script>
 
 <template>
-  <button>
+  <button :class="buttonTypesMap[btnType]" @click="handleClick">
     <slot></slot>
   </button>
 </template>
