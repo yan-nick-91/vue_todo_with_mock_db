@@ -4,11 +4,9 @@ import TheCreateTask from '../home/TheCreateTask.vue'
 import TheToDoList from '../home/TheToDoList.vue'
 import BaseContainer from '@/UI/BaseContainer.vue'
 import { getTasks, updateTask } from '@/controller/task-controller'
-
-interface Task {
-  id: string
-  task: string
-}
+import type { Task } from '@/interface/task'
+import BaseButton from '@/UI/BaseButton.vue'
+import { DANGER, SUCCESS } from '@/const/base-types'
 
 const createTaskModalIsOpen = ref(false)
 const updateModalIsOpen = ref(false)
@@ -51,7 +49,7 @@ const saveUpdatedTask = async () => {
     try {
       await updateTask(selectedTask.value.id, selectedTask.value)
       tasks.value = tasks.value.map((task) =>
-        task.id === selectedTask.value!.id ? selectedTask.value! : task
+        task.id === selectedTask.value!.id ? selectedTask.value! : task,
       )
       updateModalIsOpen.value = false
     } catch (error) {
@@ -74,12 +72,13 @@ onMounted(fetchTasks)
         @remove="onTaskRemoved"
         @update="updateTaskHandler"
       />
-      <button
-        class="bg-emerald-700 cursor-pointer p-2 text-amber-50 rounded"
+      <BaseButton
+        :btn-type="SUCCESS"
+        class="cursor-pointer p-2 rounded transform active:scale-95"
         @click="openCreateTaskModal"
       >
         Create task
-      </button>
+      </BaseButton>
     </BaseContainer>
     <TheCreateTask
       :modal-is-open="createTaskModalIsOpen"
@@ -88,19 +87,21 @@ onMounted(fetchTasks)
     />
     <div v-if="updateModalIsOpen" class="border w-[80%] mx-auto p-4">
       <input type="text" v-model="selectedTask!.task" class="border p-1 w-[100%]" />
-      <div class="flex gap-2 mt-">
-        <button
-          class="bg-emerald-700 cursor-pointer p-2 text-amber-50 rounded"
+      <div class="flex gap-2 mt-2">
+        <BaseButton
+          :btn-type="SUCCESS"
+          class="cursor-pointer p-2 rounded transform active:scale-95"
           @click="saveUpdatedTask"
         >
           Save
-        </button>
-        <button
-          class="bg-red-500 cursor-pointer p-2 text-amber-50 rounded"
+        </BaseButton>
+        <BaseButton
+          :btn-type="DANGER"
+          class="cursor-pointer p-2 rounded transform active:scale-95"
           @click="updateModalIsOpen = false"
         >
           Cancel
-        </button>
+        </BaseButton>
       </div>
     </div>
   </section>

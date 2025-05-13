@@ -1,11 +1,9 @@
 <script setup lang="ts">
+import { DANGER, INFO, SUCCESS } from '@/const/base-types'
+import type { Task } from '@/interface/task'
+import BaseButton from '@/UI/BaseButton.vue'
 import { ref } from 'vue'
 import type { PropType } from 'vue'
-
-interface Task {
-  id: string
-  task: string
-}
 
 const updateModalIsOpen = ref(false)
 
@@ -32,13 +30,29 @@ const updateTask = () => {
 <template>
   <li>
     <div class="flex gap-2 mb-2">
-      <span class="mr-2 w-[80%] p-2 border">
-        {{ props.task.task }}
-      </span>
-      <button class="cursor-pointer p-2 bg-teal-600 text-amber-50 rounded" @click="updateTask">Update</button>
-      <button class="cursor-pointer p-2 bg-red-500 text-amber-50 rounded" @click="removeTask">
+      <div class="flex justify-between w-[80%] p-2 border">
+        <span class="">
+          {{ props.task.task }}
+        </span>
+        <span><strong>Created at:</strong> {{ props.task.createdAt }}</span>
+      </div>
+      <BaseButton
+        :btn-type="INFO"
+        class="cursor-pointer p-2 rounded transform active:scale-95"
+        @click="updateTask"
+      >
+        Update
+      </BaseButton>
+      <BaseButton
+        :btn-type="DANGER"
+        class="cursor-pointer p-2 rounded transform active:scale-95"
+        @click="removeTask"
+      >
         Delete
-      </button>
+      </BaseButton>
+      <BaseButton :btn-type="SUCCESS" class="cursor-pointer p-2 rounded transform active:scale-95">
+        Finish
+      </BaseButton>
     </div>
   </li>
 </template>
