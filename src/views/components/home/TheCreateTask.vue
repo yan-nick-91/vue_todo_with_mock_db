@@ -30,6 +30,8 @@ const submitNewTask = async () => {
       id: generateTaskId(),
       task: taskInput.value,
       createdAt: generateCurrentDate(),
+      updatedAt: '',
+      isFinished: false,
     })
 
     emit('handleSubmit', taskInput.value)
