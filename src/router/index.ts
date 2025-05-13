@@ -17,6 +17,11 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('@/views/pages/CompletedTasksView.vue'),
     },
+    {
+      path: '/tasks/:id',
+      name: 'task',
+      component: () => import('@/views/pages/TaskView.vue'), // Ensure this file exists at the specified path
+    }
   ],
 })
 
