@@ -4,6 +4,7 @@ import type { Task } from '@/interface/task'
 import BaseButton from '@/UI/BaseButton.vue'
 import { ref } from 'vue'
 import type { PropType } from 'vue'
+import { RouterLink } from 'vue-router'
 
 const updateModalIsOpen = ref(false)
 
@@ -30,12 +31,12 @@ const updateTask = () => {
 <template>
   <li>
     <div class="flex gap-2 mb-2">
-      <div class="flex justify-between w-[80%] p-2 border">
+      <RouterLink :to="{ name: 'task', params: { id: props.task.id } }" class="flex justify-between w-[80%] p-2 border">
         <span class="">
           {{ props.task.task }}
         </span>
         <span><strong>Created at:</strong> {{ props.task.createdAt }}</span>
-      </div>
+      </RouterLink>
       <BaseButton
         :btn-type="INFO"
         class="cursor-pointer p-2 rounded transform active:scale-95"
