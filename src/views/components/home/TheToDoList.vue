@@ -2,11 +2,7 @@
 import { type PropType } from 'vue'
 import { deleteTask } from '@/controller/task-controller'
 import TheTask from './TheTask.vue'
-
-interface Task {
-  id: string
-  task: string
-}
+import type { Task } from '@/interface/task'
 
 defineProps({
   tasks: {
