@@ -1,35 +1,61 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { getTaskId } from '@/controller/task-controller'
+import { deleteTask, getTaskId, updateTask } from '@/controller/task-controller'
 import BaseContainer from '@/UI/BaseContainer.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import BaseButton from '@/UI/BaseButton.vue'
-import { DANGER, SUCCESS } from '@/const/base-types'
+import { DANGER, SUCCESS, INFO } from '@/const/base-types'
+import type { Task } from '@/interface/task'
 
 const route = useRoute()
+const router = useRouter()
 const id = route.params.id as string
 
-const task = ref({
+const task = ref<Task>({
   id: '',
   task: '',
   createdAt: '',
   updatedAt: '',
+  isFinished: false,
   bulletList: [],
 })
 const errorMessage = ref('')
+const deleteBtnSelected = ref(false)
 
 const selectedTasks = ref<Record<number, boolean>>({})
 
 const getTask = async (id: string) => {
-  task.value = await getTaskId(id)
+  const result = await getTaskId(id)
+
+  task.value = {
+    ...result,
+    bulletList: result.bulletList || [],
+  }
 
   task.value.bulletList.forEach((_, index) => {
     selectedTasks.value[index] = false
   })
 }
 
-const toggleCompletion = (index: number) => {
-  selectedTasks.value[index] = !selectedTasks.value[index]
+const toggleCompletion = async (index: number) => {
+  const updatedBulletList = [...task.value.bulletList]
+
+  updatedBulletList[index] = {
+    ...updatedBulletList[index],
+    itemIsFinished: !updatedBulletList[index].itemIsFinished,
+  }
+
+  try {
+    await updateTask(id, {
+      ...task.value,
+      bulletList: updatedBulletList,
+    })
+
+    task.value.bulletList = updatedBulletList // reflect change in UI
+  } catch (error) {
+    console.error('Error updating task:', error)
+    errorMessage.value = 'Failed to update task status.'
+  }
 }
 
 const checkIfAllTasksCompleted = () => {
@@ -40,6 +66,15 @@ const checkIfAllTasksCompleted = () => {
     errorMessage.value = ''
     // Proceed with whatever should happen when all tasks are done.
     console.log('All tasks are completed! 🎉')
+  }
+}
+
+const confirmDeletion = async () => {
+  try {
+    await deleteTask(task.value.id)
+    router.push({ name: 'home' })
+  } catch (error) {
+    console.error('Something went wrong during task deletion process', error)
   }
 }
 
@@ -64,15 +99,15 @@ onMounted(() => {
       <ul v-if="task.bulletList.length > 0" class="list-disc pl-6 space-y-2 text-gray-700">
         <li v-for="(bullet, index) in task.bulletList" :key="index">
           <div class="flex gap-2 items-start">
-            <span :class="{ 'line-through': selectedTasks[index] }" class="min-w-[15%]">
-              {{ bullet }}
+            <span :class="{ 'line-through': bullet.itemIsFinished }" class="min-w-[15%]">
+              {{ bullet.bulletItem }}
             </span>
             <span>
               <BaseButton
                 class="p-1 rounded cursor-pointer transform active:scale-95"
-                :btn-type="selectedTasks[index] ? DANGER : SUCCESS"
+                :btn-type="bullet.itemIsFinished ? DANGER : SUCCESS"
                 @click="toggleCompletion(index)"
-                >{{ selectedTasks[index] ? 'Undone' : 'Done' }}</BaseButton
+                >{{ bullet.itemIsFinished ? 'Undone' : 'Done' }}</BaseButton
               >
             </span>
           </div>
@@ -80,7 +115,20 @@ onMounted(() => {
       </ul>
       <!-- Fallback text if bullet list is empty -->
       <p v-else>No details available</p>
-
+      <BaseButton
+        :btn-type="INFO"
+        class="cursor-pointer p-2 rounded transform active:scale-95"
+        @click="updateTaskHandler"
+      >
+        Update
+      </BaseButton>
+      <BaseButton
+        :btn-type="DANGER"
+        class="cursor-pointer p-2 rounded transform active:scale-95"
+        @click="deleteBtnSelected = true"
+      >
+        Delete
+      </BaseButton>
       <BaseButton
         @click="checkIfAllTasksCompleted"
         :btn-type="SUCCESS"
@@ -92,4 +140,22 @@ onMounted(() => {
       </p>
     </BaseContainer>
   </section>
+  <div v-if="deleteBtnSelected">
+    <BaseContainer>
+      <h2>test</h2>
+      <div class="flex gap-2">
+        <BaseButton
+          @click="confirmDeletion"
+          :btn-type="DANGER"
+          class="cursor-pointer p-1 transform active:scale-95"
+          >Confirm</BaseButton
+        >
+        <BaseButton
+          @click="deleteBtnSelected = false"
+          class="cursor-pointer p-1 transform active:scale-95"
+          >Cancel</BaseButton
+        >
+      </div>
+    </BaseContainer>
+  </div>
 </template>
