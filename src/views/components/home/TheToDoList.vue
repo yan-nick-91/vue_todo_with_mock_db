@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { type PropType } from 'vue'
-import { deleteTask } from '@/controller/task-controller'
 import TheTask from './TheTask.vue'
 import type { Task } from '@/interface/task'
 
@@ -10,37 +9,12 @@ defineProps({
     required: true,
   },
 })
-
-// const tasks = ref([...props.tasks])
-const emit = defineEmits(['remove', 'update'])
-
-const removeTask = async (id: string) => {
-  try {
-    await deleteTask(id)
-    emit('remove', id)
-    // tasks.value = tasks.value.filter((task) => task.id !== id)
-  } catch (error) {
-    console.error('Failed to delete task', error)
-  }
-}
-
-const updateTaskHandler = (task: Task) => {
-  emit('update', task)
-}
-
-// onMounted(fetchTasks)
 </script>
 
 <template>
   <section v-if="tasks.length > 0">
     <ul>
-      <TheTask
-        v-for="task in tasks"
-        :key="task.id"
-        :task="task"
-        @remove="removeTask"
-        @update="updateTaskHandler"
-      />
+      <TheTask v-for="task in tasks" :key="task.id" :task="task" />
     </ul>
   </section>
 
