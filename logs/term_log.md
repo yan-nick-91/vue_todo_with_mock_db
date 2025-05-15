@@ -135,8 +135,8 @@ const items = ["item 1", "item 2", "item 3"]
 </template>
 ```
 
-**Note:**
-
+> **Note:**
+>
 > Bij het renderen van een lijst dient elk geloopte waarde een unieke key waard te bevatten. Deze kan op twee manieren worden gedaan.
 
 - Render per geloopte item een nieuwe index en gebruik deze waarde als expressie voor de key binding:
