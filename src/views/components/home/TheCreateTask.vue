@@ -2,11 +2,12 @@
 import { ref } from 'vue'
 
 import { addTask } from '@/controller/task-controller'
-import { generateCurrentDate, generateTaskId } from '@/util/valueGenerator'
+import { generateBulletItemId, generateCurrentDate, generateTaskId } from '@/util/valueGenerator'
 import { invalidInput } from '@/errors/task-error-handler'
 import BaseNotification from '@/UI/BaseNotification.vue'
-import { DANGER, SUCCESS } from '@/const/base-types'
+import { DANGER, SUCCESS, TRANSPARENT } from '@/const/base-types'
 import BaseButton from '@/UI/BaseButton.vue'
+import BaseContainer from '@/UI/BaseContainer.vue'
 
 defineProps({
   modalIsOpen: {
@@ -18,13 +19,18 @@ defineProps({
 const emit = defineEmits(['close', 'handleSubmit'])
 
 const taskInput = ref('')
-const errorMessage = ref('')
+const itemForBulletListInput = ref('')
+
+const bulletList = ref<{ id: string; bulletItem: string; itemIsFinished: boolean }[]>([])
+const taskInputError = ref('')
+const bulletInputError = ref('')
 
 const submitNewTask = async () => {
   if (taskInput.value.trim() === '') {
-    errorMessage.value = invalidInput('Input field should not be empty').message
+    taskInputError.value = invalidInput('Input field for task should not be empty').message
     return
   }
+
   try {
     await addTask({
       id: generateTaskId(),
@@ -32,7 +38,7 @@ const submitNewTask = async () => {
       createdAt: generateCurrentDate(),
       updatedAt: '',
       isFinished: false,
-      bulletList: [],
+      bulletList: bulletList.value,
     })
 
     emit('handleSubmit', taskInput.value)
@@ -44,31 +50,103 @@ const submitNewTask = async () => {
   }
 }
 
+const addItemToBulletList = () => {
+  if (itemForBulletListInput.value.trim() === '') {
+    bulletInputError.value = invalidInput('Input field to add a bullet should not be empty').message
+    return
+  }
+
+  bulletList.value.push({
+    id: generateBulletItemId(),
+    bulletItem: itemForBulletListInput.value.trim(),
+    itemIsFinished: false,
+  })
+
+  itemForBulletListInput.value = ''
+}
+
 const closeModalFormTask = () => {
   taskInput.value = ''
-  errorMessage.value = ''
+  taskInputError.value = ''
+  bulletInputError.value = ''
   emit('close')
+}
+
+const removeBulletItem = (id: string) => {
+  bulletList.value = bulletList.value.filter((item) => item.id !== id)
 }
 </script>
 
 <template>
   <section v-if="modalIsOpen" class="border w-[80%] mx-auto p-4">
     <form @submit.prevent="submitNewTask">
-      <div class="mb-2">
-        <input
-          :class="`border p-1 w-[100%]
-          ${errorMessage ? 'border-red-500 bg-red-200' : ''}`"
-          type="text"
-          placeholder="Enter a task..."
-          v-model="taskInput"
-          @input="errorMessage = ''"
-        />
-      </div>
-      <div class="mb-2 min-h-[1.5rem]">
-        <BaseNotification v-if="errorMessage" :type="DANGER" :message="errorMessage" />
-      </div>
-
-      <div class="flex gap-2">
+      <BaseContainer class="w-[100%] mb-2">
+        <div>
+          <input
+            :class="`border p-1 w-[100%]
+          ${taskInputError ? 'border-red-500 bg-red-200' : ''}`"
+            type="text"
+            placeholder="Enter a task..."
+            v-model="taskInput"
+            @input="taskInputError = ''"
+          />
+        </div>
+        <div class="mb-2 min-h-[1.5rem]">
+          <BaseNotification v-if="taskInputError" :type="DANGER" :message="taskInputError" />
+        </div>
+      </BaseContainer>
+      <hr />
+      <BaseContainer class="w-[100%] my-2">
+        <BaseContainer class="w-[100%] mb-2 p-1 min-h-[10%] max-h-[10%] bg-gray-100" is-bordered>
+          <div v-if="bulletList.length > 0">
+            <ul>
+              <li
+                v-for="item in bulletList"
+                :key="item.id"
+                class="flex items-center gap-2 py-1 px-2"
+              >
+                <span class="flex-grow">
+                  {{ item.bulletItem }}
+                </span>
+                <span>
+                  <BaseButton
+                    :btn-type="TRANSPARENT"
+                    class="cursor-pointer text-red-500 hover:text-red-600 transform active:scale-95"
+                    type="button"
+                    @click="removeBulletItem(item.id)"
+                    >X</BaseButton
+                  >
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div v-else>
+            <p class="p-2 text-gray-500">Nothing added yet.</p>
+          </div>
+        </BaseContainer>
+        <!-- input for list -->
+        <div>
+          <input
+            :class="`border p-1 mb-2 w-[100%] ${bulletInputError ? 'border-red-500 bg-red-200' : ''}`"
+            type="text"
+            placeholder="Add Item to list (Optional)..."
+            v-model="itemForBulletListInput"
+            @input="bulletInputError = ''"
+          />
+        </div>
+        <div class="mb-1 min-h-[1.5rem]">
+          <BaseNotification v-if="bulletInputError" :type="DANGER" :message="bulletInputError" />
+        </div>
+        <BaseButton
+          :btn-type="SUCCESS"
+          class="cursor-pointer p-2 rounded transform active:scale-95"
+          @click="addItemToBulletList"
+          type="button"
+          >Add item</BaseButton
+        >
+      </BaseContainer>
+      <hr />
+      <div class="flex gap-2 mt-8">
         <BaseButton
           type="submit"
           :btn-type="SUCCESS"
