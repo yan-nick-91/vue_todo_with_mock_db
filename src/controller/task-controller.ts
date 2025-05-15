@@ -6,7 +6,6 @@ import {
   sendRequestToGetSpecificTask,
 } from '@/service/task-services'
 
-
 export const addTask = (taskData: unknown) => sendRequestToCreateNewTask(taskData)
 
 export const getTasks = () => sendRequestToGetAllTasks()
