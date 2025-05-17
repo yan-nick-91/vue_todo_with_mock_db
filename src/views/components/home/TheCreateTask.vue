@@ -8,6 +8,7 @@ import BaseNotification from '@/UI/BaseNotification.vue'
 import { DANGER, SUCCESS, TRANSPARENT } from '@/const/base-types'
 import BaseButton from '@/UI/BaseButton.vue'
 import BaseContainer from '@/UI/BaseContainer.vue'
+import { XMarkIcon } from '@heroicons/vue/16/solid'
 
 defineProps({
   modalIsOpen: {
@@ -20,7 +21,6 @@ const emit = defineEmits(['close', 'handleSubmit'])
 
 const taskInput = ref('')
 const itemForBulletListInput = ref('')
-
 const bulletList = ref<{ id: string; bulletItem: string; itemIsFinished: boolean }[]>([])
 const taskInputError = ref('')
 const bulletInputError = ref('')
@@ -97,7 +97,7 @@ const removeBulletItem = (id: string) => {
       </BaseContainer>
       <hr />
       <BaseContainer class="w-[100%] my-2">
-        <BaseContainer class="w-[100%] mb-2 p-1 min-h-[10%] max-h-[10%] bg-gray-100" is-bordered>
+        <BaseContainer class="w-[100%] mb-2 min-h-[10%] max-h-[10%] bg-gray-100" is-bordered>
           <div v-if="bulletList.length > 0">
             <ul>
               <li
@@ -114,8 +114,8 @@ const removeBulletItem = (id: string) => {
                     class="cursor-pointer text-red-500 hover:text-red-600 transform active:scale-95"
                     type="button"
                     @click="removeBulletItem(item.id)"
-                    >X</BaseButton
-                  >
+                    ><XMarkIcon class="h-7 w-7 mt-2"
+                  /></BaseButton>
                 </span>
               </li>
             </ul>
