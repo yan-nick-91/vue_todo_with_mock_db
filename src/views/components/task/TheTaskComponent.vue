@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+// import UpdateModal from './UpdateTaskModal.vue'
 import { deleteTask, getTaskId, updateTask } from '@/controller/task-controller'
 import BaseContainer from '@/UI/BaseContainer.vue'
-import { useRoute, useRouter } from 'vue-router'
 import BaseButton from '@/UI/BaseButton.vue'
 import { DANGER, SUCCESS, INFO } from '@/const/base-types'
 import type { Task } from '@/interface/task'
+import DeleteTaskModal from './DeleteTaskModal.vue'
+import UpdateTaskModal from './UpdateTaskModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -21,8 +24,8 @@ const task = ref<Task>({
 })
 const errorMessage = ref('')
 const deleteBtnSelected = ref(false)
-
 const selectedTasks = ref<Record<number, boolean>>({})
+const updateBtnIsSelected = ref(false)
 
 const getTask = async (id: string) => {
   const result = await getTaskId(id)
@@ -81,6 +84,38 @@ const confirmDeletion = async () => {
 onMounted(() => {
   getTask(id)
 })
+
+const openUpdateModal = () => {
+  if (deleteBtnSelected.value) {
+    deleteBtnSelected.value = false
+  }
+
+  if (!updateBtnIsSelected.value && !deleteBtnSelected.value) {
+    updateBtnIsSelected.value = true
+  }
+}
+
+const closeUpdateModal = () => {
+  if (updateBtnIsSelected.value) {
+    updateBtnIsSelected.value = false
+  }
+}
+
+const openDeleteModal = () => {
+  if (updateBtnIsSelected.value) {
+    updateBtnIsSelected.value = false
+  }
+
+  if (!updateBtnIsSelected.value && !deleteBtnSelected.value) {
+    deleteBtnSelected.value = true
+  }
+}
+
+const closeDeleteModal = () => {
+  if (deleteBtnSelected.value) {
+    deleteBtnSelected.value = false
+  }
+}
 </script>
 
 <template>
@@ -96,66 +131,70 @@ onMounted(() => {
       </p>
 
       <!-- Bullet List -->
-      <ul v-if="task.bulletList.length > 0" class="list-disc pl-6 space-y-2 text-gray-700">
-        <li v-for="(bullet, index) in task.bulletList" :key="index">
-          <div class="flex gap-2 items-start">
-            <span :class="{ 'line-through': bullet.itemIsFinished }" class="min-w-[15%]">
-              {{ bullet.bulletItem }}
-            </span>
-            <span>
-              <BaseButton
-                class="p-1 rounded cursor-pointer transform active:scale-95"
-                :btn-type="bullet.itemIsFinished ? DANGER : SUCCESS"
-                @click="toggleCompletion(index)"
-                >{{ bullet.itemIsFinished ? 'Undone' : 'Done' }}</BaseButton
-              >
-            </span>
-          </div>
-        </li>
-      </ul>
-      <!-- Fallback text if bullet list is empty -->
-      <p v-else>No details available</p>
-      <BaseButton
-        :btn-type="INFO"
-        class="cursor-pointer p-2 rounded transform active:scale-95"
-        @click="updateTaskHandler"
-      >
-        Update
-      </BaseButton>
-      <BaseButton
-        :btn-type="DANGER"
-        class="cursor-pointer p-2 rounded transform active:scale-95"
-        @click="deleteBtnSelected = true"
-      >
-        Delete
-      </BaseButton>
-      <BaseButton
-        @click="checkIfAllTasksCompleted"
-        :btn-type="SUCCESS"
-        class="mt-2 p-2 rounded cursor-pointer transform active:scale-95"
-        >Finish</BaseButton
-      >
+      <div class="mb-2">
+        <ul v-if="task.bulletList.length > 0" class="list-disc pl-6 space-y-2 text-gray-700">
+          <li v-for="(bullet, index) in task.bulletList" :key="index">
+            <div class="flex gap-2 items-start">
+              <span :class="{ 'line-through': bullet.itemIsFinished }" class="min-w-[15%]">
+                {{ bullet.bulletItem }}
+              </span>
+              <span>
+                <BaseButton
+                  class="p-1 rounded cursor-pointer transform active:scale-95"
+                  :btn-type="bullet.itemIsFinished ? DANGER : SUCCESS"
+                  @click="toggleCompletion(index)"
+                  >{{ bullet.itemIsFinished ? 'Undone' : 'Done' }}</BaseButton
+                >
+              </span>
+            </div>
+          </li>
+        </ul>
+        <!-- Fallback text if bullet list is empty -->
+        <p v-else>No details available</p>
+      </div>
+
+      <hr />
+      <div class="flex gap-2 mt-2">
+        <BaseButton
+          :btn-type="INFO"
+          class="cursor-pointer p-2 rounded transform active:scale-95"
+          @click="openUpdateModal"
+        >
+          Update
+        </BaseButton>
+        <BaseButton
+          :btn-type="DANGER"
+          class="cursor-pointer p-2 rounded transform active:scale-95"
+          @click="openDeleteModal"
+        >
+          Delete
+        </BaseButton>
+        <BaseButton
+          @click="checkIfAllTasksCompleted"
+          :btn-type="SUCCESS"
+          class="p-2 rounded cursor-pointer transform active:scale-95"
+          >Finish</BaseButton
+        >
+      </div>
       <p v-if="errorMessage" class="text-red-500 mt-2">
         {{ errorMessage }}
       </p>
     </BaseContainer>
   </section>
-  <div v-if="deleteBtnSelected">
-    <BaseContainer>
-      <h2>test</h2>
-      <div class="flex gap-2">
-        <BaseButton
-          @click="confirmDeletion"
-          :btn-type="DANGER"
-          class="cursor-pointer p-1 transform active:scale-95"
-          >Confirm</BaseButton
-        >
-        <BaseButton
-          @click="deleteBtnSelected = false"
-          class="cursor-pointer p-1 transform active:scale-95"
-          >Cancel</BaseButton
-        >
-      </div>
-    </BaseContainer>
-  </div>
+  <!-- delete -->
+  <DeleteTaskModal
+    v-if="deleteBtnSelected"
+    class="mx-auto"
+    :delete-btn-selected="deleteBtnSelected"
+    :task-label="task.task"
+    @delete="confirmDeletion"
+    @cancel="closeDeleteModal"
+  />
+  <!-- update -->
+  <UpdateTaskModal
+    v-if="updateBtnIsSelected"
+    class="mx-auto"
+    :update-btn-is-selected="updateBtnIsSelected"
+    @close="closeUpdateModal"
+  />
 </template>
