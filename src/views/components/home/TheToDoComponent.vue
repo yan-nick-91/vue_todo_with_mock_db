@@ -29,7 +29,7 @@ const closeCreateTaskModal = () => {
   createTaskModalIsOpen.value = false
 }
 
-const onTaskCreated = async (newTask: never) => {
+const onTaskCreated = (newTask: never) => {
   tasks.value.push(newTask)
 }
 
@@ -68,7 +68,7 @@ onMounted(fetchTasks)
     <TheCreateTask
       :modal-is-open="createTaskModalIsOpen"
       @close="closeCreateTaskModal"
-      @handelSubmit="onTaskCreated"
+      @handleSubmit="onTaskCreated"
     />
     <div v-if="updateModalIsOpen" class="border w-[80%] mx-auto p-4">
       <input type="text" v-model="selectedTask!.task" class="border p-1 w-[100%]" />
