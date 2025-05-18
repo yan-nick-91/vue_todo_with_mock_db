@@ -124,7 +124,6 @@ const removeBulletItem = (id: string) => {
             <p class="p-2 text-gray-500">Nothing added yet.</p>
           </div>
         </BaseContainer>
-        <!-- input for list -->
         <div>
           <input
             :class="`border p-1 mb-2 w-[100%] ${bulletInputError ? 'border-red-500 bg-red-200' : ''}`"

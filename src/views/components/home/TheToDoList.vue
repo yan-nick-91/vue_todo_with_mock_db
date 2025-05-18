@@ -2,6 +2,7 @@
 import { type PropType } from 'vue'
 import TheTask from './TheTask.vue'
 import type { Task } from '@/interface/task'
+import BaseNotification from '@/views/UI/BaseNotification.vue'
 
 defineProps({
   tasks: {
@@ -17,6 +18,7 @@ defineProps({
       <TheTask v-for="task in tasks" :key="task.id" :task="task" />
     </ul>
   </section>
-
-  <section v-else>Nothing found.</section>
+  <section v-else>
+    <BaseNotification :message="'Nothing found.'" />
+  </section>
 </template>

@@ -35,7 +35,6 @@ const onTaskCreated = async (newTask: never) => {
 
 const saveUpdatedTask = async () => {
   console.log('Selected Task:', selectedTask.value)
-  // Logic to save the updated task
   if (selectedTask.value) {
     try {
       await updateTask(selectedTask.value.id, selectedTask.value)

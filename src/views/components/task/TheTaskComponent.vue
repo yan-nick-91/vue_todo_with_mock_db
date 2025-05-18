@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-// import UpdateModal from './UpdateTaskModal.vue'
 import { deleteTask, getTaskId, updateTask } from '@/controller/task-controller'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseButton from '@/views/UI/BaseButton.vue'
+import BaseNotification from '@/views/UI/BaseNotification.vue'
 import { DANGER, SUCCESS, INFO } from '@/const/base-types'
 import type { Task } from '@/interface/task'
 import DeleteTaskModal from './DeleteTaskModal.vue'
@@ -125,7 +125,6 @@ const closeDeleteModal = () => {
       <em><strong>Created at:</strong> {{ task.createdAt }}</em>
       <em v-if="task.updatedAt"><strong>Updated at:</strong> {{ task.updatedAt }}</em>
 
-      <!-- Task Details Section -->
       <p class="my-4">
         <strong>Task Details:</strong>
       </p>
@@ -149,8 +148,7 @@ const closeDeleteModal = () => {
             </div>
           </li>
         </ul>
-        <!-- Fallback text if bullet list is empty -->
-        <p v-else>No details available</p>
+        <BaseNotification v-else :message="'No details available'" />
       </div>
 
       <hr />
@@ -181,7 +179,6 @@ const closeDeleteModal = () => {
       </p>
     </BaseContainer>
   </section>
-  <!-- delete -->
   <DeleteTaskModal
     v-if="deleteBtnSelected"
     class="mx-auto"
@@ -190,7 +187,6 @@ const closeDeleteModal = () => {
     @delete="confirmDeletion"
     @cancel="closeDeleteModal"
   />
-  <!-- update -->
   <UpdateTaskModal
     v-if="updateBtnIsSelected"
     class="mx-auto"
