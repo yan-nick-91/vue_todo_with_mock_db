@@ -119,10 +119,6 @@ Binnen de component [TheCreateTask.vue](https://github.com/yan-nick-91/vue_todo_
 
 Als deze de conditie niet heeft behaald, wordt de element`<div v-else>` gerenerd waarbij met tekst **'Nothing added yet'**.
 
-### Toepassen bij eigen componenten
-
-Binnen vue is het ook mogelijk om deze directives aan de eigen gemaakte componenten toe te voegen, om bijvoorbeeld deze wel of niet te renderen. zie voor in de [TheTaskComponent](https://github.com/yan-nick-91/vue_todo_with_mock_db/blob/main/src/views/components/task/TheTaskComponent.vue), waarbij er bij `<UpdateTaskModal />` en `<DeleteTaskModal />` deze directives zijn toegepast.
-
 ---
 
 ## Lijst directive
