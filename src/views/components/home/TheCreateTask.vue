@@ -32,19 +32,22 @@ const submitNewTask = async () => {
   }
 
   try {
-    await addTask({
+    const createdTask = {
       id: generateTaskId(),
       task: taskInput.value,
       createdAt: generateCurrentDate(),
       updatedAt: '',
       isFinished: false,
       bulletList: bulletList.value,
-    })
+    }
 
-    emit('handleSubmit', taskInput.value)
+    await addTask(createdTask)
+
+    emit('handleSubmit', createdTask)
     emit('close')
 
     taskInput.value = ''
+    bulletList.value = []
   } catch (err) {
     console.error('Failed to add task:', err)
   }
@@ -67,6 +70,7 @@ const addItemToBulletList = () => {
 
 const closeModalFormTask = () => {
   taskInput.value = ''
+  bulletList.value = []
   taskInputError.value = ''
   bulletInputError.value = ''
   emit('close')
