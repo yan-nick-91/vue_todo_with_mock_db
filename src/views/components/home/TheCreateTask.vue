@@ -4,10 +4,10 @@ import { ref } from 'vue'
 import { addTask } from '@/controller/task-controller'
 import { generateBulletItemId, generateCurrentDate, generateTaskId } from '@/util/valueGenerator'
 import { invalidInput } from '@/errors/task-error-handler'
-import BaseNotification from '@/UI/BaseNotification.vue'
+import BaseNotification from '@/views/UI/BaseNotification.vue'
 import { DANGER, SUCCESS, TRANSPARENT } from '@/const/base-types'
-import BaseButton from '@/UI/BaseButton.vue'
-import BaseContainer from '@/UI/BaseContainer.vue'
+import BaseButton from '@/views/UI/BaseButton.vue'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
 import { XMarkIcon } from '@heroicons/vue/16/solid'
 
 defineProps({

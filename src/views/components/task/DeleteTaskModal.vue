@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { DANGER } from '@/const/base-types'
-import BaseButton from '@/UI/BaseButton.vue'
-import BaseContainer from '@/UI/BaseContainer.vue'
+import BaseButton from '@/views/UI/BaseButton.vue'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
 import { ExclamationCircleIcon } from '@heroicons/vue/16/solid'
 
 defineProps({

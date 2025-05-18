@@ -2,10 +2,10 @@
 import { onMounted, ref } from 'vue'
 import TheCreateTask from '../home/TheCreateTask.vue'
 import TheToDoList from '../home/TheToDoList.vue'
-import BaseContainer from '@/UI/BaseContainer.vue'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
 import { getTasks, updateTask } from '@/controller/task-controller'
 import type { Task } from '@/interface/task'
-import BaseButton from '@/UI/BaseButton.vue'
+import BaseButton from '@/views/UI/BaseButton.vue'
 import { DANGER, SUCCESS } from '@/const/base-types'
 
 const createTaskModalIsOpen = ref(false)

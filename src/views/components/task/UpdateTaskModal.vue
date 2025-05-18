@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type PropType } from 'vue'
-import BaseContainer from '@/UI/BaseContainer.vue'
-import BaseButton from '@/UI/BaseButton.vue'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
+import BaseButton from '@/views/UI/BaseButton.vue'
 import type { Task } from '@/interface/task'
 import { updateTask } from '@/controller/task-controller'
 import { SUCCESS } from '@/const/base-types'
