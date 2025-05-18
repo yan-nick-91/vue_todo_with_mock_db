@@ -2,10 +2,10 @@
 import { onMounted, ref } from 'vue'
 import TheCreateTask from '../home/TheCreateTask.vue'
 import TheToDoList from '../home/TheToDoList.vue'
-import BaseContainer from '@/UI/BaseContainer.vue'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
 import { getTasks, updateTask } from '@/controller/task-controller'
 import type { Task } from '@/interface/task'
-import BaseButton from '@/UI/BaseButton.vue'
+import BaseButton from '@/views/UI/BaseButton.vue'
 import { DANGER, SUCCESS } from '@/const/base-types'
 
 const createTaskModalIsOpen = ref(false)
@@ -33,18 +33,8 @@ const onTaskCreated = async (newTask: never) => {
   tasks.value.push(newTask)
 }
 
-const onTaskRemoved = (id: string) => {
-  tasks.value = tasks.value.filter((task) => task.id !== id)
-}
-
-const updateTaskHandler = (taskToUpdate: Task) => {
-  selectedTask.value = { ...taskToUpdate }
-  updateModalIsOpen.value = true
-}
-
 const saveUpdatedTask = async () => {
   console.log('Selected Task:', selectedTask.value)
-  // Logic to save the updated task
   if (selectedTask.value) {
     try {
       await updateTask(selectedTask.value.id, selectedTask.value)
@@ -66,12 +56,7 @@ onMounted(fetchTasks)
     <BaseContainer class="mx-auto my-5 p-4" is-bordered>
       <h1>To Do's</h1>
       <hr />
-      <TheToDoList
-        class="mt-2 mb-2"
-        :tasks="tasks"
-        @remove="onTaskRemoved"
-        @update="updateTaskHandler"
-      />
+      <TheToDoList class="mt-2 mb-2" :tasks="tasks" />
       <BaseButton
         :btn-type="SUCCESS"
         class="cursor-pointer p-2 rounded transform active:scale-95"
