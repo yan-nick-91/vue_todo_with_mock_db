@@ -13,6 +13,9 @@ export const generateCurrentDate = () => {
   const { day, month, year } = dateGenerator()
   return `${day}-${month}-${year}, ${generateCurrentTimeValue()}`
 }
+
+export const generateBulletItemId = () => `bid-${Math.random().toString(36).substring(2, 10)}`
+
 const generateDateStringValue = () => {
   const { day, month, year } = dateGenerator()
   return `${day}${month}${year}`

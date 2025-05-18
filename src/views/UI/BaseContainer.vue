@@ -9,6 +9,6 @@ defineProps({
 
 <template>
   <section :class="`w-[80%] ${isBordered ? 'border' : ''}`">
-    <slot> </slot>
+    <slot></slot>
   </section>
 </template>
