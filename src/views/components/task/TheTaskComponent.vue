@@ -62,22 +62,35 @@ const toggleCompletion = async (index: number) => {
 }
 
 const finishTask = async () => {
-  const allDone = task.value.bulletList.every((_, index) => selectedTasks.value[index])
+  const allDone = task.value.bulletList.every((bullet) => bullet.itemIsFinished)
 
-  if (allDone) {
+  if (!task.value.isFinished) {
+    if (allDone) {
+      try {
+        errorMessage.value = ''
+        await updateTask(id, {
+          ...task.value,
+          isFinished: true,
+        })
+        router.push({ name: 'home' })
+      } catch (error) {
+        console.error('Error finishing task:', error)
+        errorMessage.value = 'Failed to finish task.'
+      }
+    } else {
+      errorMessage.value = 'Please complete all tasks before finishing.'
+    }
+  } else {
     try {
-      errorMessage.value = ''
       await updateTask(id, {
         ...task.value,
-        isFinished: true,
+        isFinished: false,
       })
       router.push({ name: 'home' })
     } catch (error) {
-      console.error('Error finishing task:', error)
-      errorMessage.value = 'Failed to finish task.'
+      console.error('Error resetting task:', error)
+      errorMessage.value = 'Failed to reset task.'
     }
-  } else {
-    errorMessage.value = 'Please complete all tasks before finishing.'
   }
 }
 
@@ -130,7 +143,9 @@ const closeDeleteModal = () => {
 <template>
   <section>
     <BaseContainer class="mx-auto my-5 p-4" is-bordered>
-      <h2 class="text-2xl font-bold mb-4">Task: {{ task.task }}</h2>
+      <h2 class="text-2xl font-bold mb-4">
+        Task: {{ task.task }} {{ task.isFinished ? '(Finished)' : '' }}
+      </h2>
       <em><strong>Created at:</strong> {{ task.createdAt }}</em>
       <em v-if="task.updatedAt"><strong>Updated at:</strong> {{ task.updatedAt }}</em>
 
@@ -148,6 +163,7 @@ const closeDeleteModal = () => {
               </span>
               <span>
                 <BaseButton
+                  v-show="!task.isFinished"
                   class="p-1 rounded cursor-pointer transform active:scale-95"
                   :btn-type="bullet.itemIsFinished ? DANGER : SUCCESS"
                   @click="toggleCompletion(index)"
@@ -163,6 +179,7 @@ const closeDeleteModal = () => {
       <hr />
       <div class="flex gap-2 mt-2">
         <BaseButton
+          v-show="!task.isFinished"
           :btn-type="INFO"
           class="cursor-pointer p-2 rounded transform active:scale-95"
           @click="openUpdateModal"
@@ -180,7 +197,7 @@ const closeDeleteModal = () => {
           @click="finishTask"
           :btn-type="SUCCESS"
           class="p-2 rounded cursor-pointer transform active:scale-95"
-          >Finish</BaseButton
+          >{{ task.isFinished ? 'Mark as Unfinished' : 'Finish Task' }}</BaseButton
         >
       </div>
       <p v-if="errorMessage" class="text-red-500 mt-2">
