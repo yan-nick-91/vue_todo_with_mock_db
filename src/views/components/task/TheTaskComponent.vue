@@ -61,14 +61,23 @@ const toggleCompletion = async (index: number) => {
   }
 }
 
-const checkIfAllTasksCompleted = () => {
+const finishTask = async () => {
   const allDone = task.value.bulletList.every((_, index) => selectedTasks.value[index])
-  if (!allDone) {
-    errorMessage.value = 'Please complete all tasks before finishing.'
+
+  if (allDone) {
+    try {
+      errorMessage.value = ''
+      await updateTask(id, {
+        ...task.value,
+        isFinished: true,
+      })
+      router.push({ name: 'home' })
+    } catch (error) {
+      console.error('Error finishing task:', error)
+      errorMessage.value = 'Failed to finish task.'
+    }
   } else {
-    errorMessage.value = ''
-    // Proceed with whatever should happen when all tasks are done.
-    console.log('All tasks are completed! 🎉')
+    errorMessage.value = 'Please complete all tasks before finishing.'
   }
 }
 
@@ -168,7 +177,7 @@ const closeDeleteModal = () => {
           Delete
         </BaseButton>
         <BaseButton
-          @click="checkIfAllTasksCompleted"
+          @click="finishTask"
           :btn-type="SUCCESS"
           class="p-2 rounded cursor-pointer transform active:scale-95"
           >Finish</BaseButton
