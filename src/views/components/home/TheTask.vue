@@ -9,12 +9,25 @@ const props = defineProps({
     type: Object as PropType<Task>,
     required: true,
   },
+  isSelected: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 })
+
+const emit = defineEmits(['selected'])
 </script>
 
 <template>
   <li>
     <div class="flex gap-2 mb-2">
+      <input
+        type="checkbox"
+        class="border"
+        :checked="isSelected"
+        @change="emit('selected', task)"
+      />
       <RouterLink
         :to="{ name: 'task', params: { id: props.task.id } }"
         class="flex justify-between w-full p-2 border transform active:scale-99"
