@@ -111,6 +111,43 @@ Deze speciale attributen kan in combinatie met **v-if** als attribuut worden geb
 
 **Note:** In tegenstelling tot de v-if bevat de v-else geen expressie; net zoals dit normaal met if else statement gaat.
 
+### v-else-if
+
+Zoals gebruikelijk is bij conditionele waarden – waarbij een else if kan worden gebruikt als een andere voorwaarde – biedt Vue hiervoor ook een directive: `v-else-if` (zie voorbeeld 3).
+
+```javascript
+<div v-if="value.length > 5 && value.length < 8">
+    Deze element tag wordt gerenderd
+</div>
+<div v-else-if="value.length >= 8 && value.length <= 10">
+    Deze element tag wordt gerendered en omdat gelijk en hoger 8 wordt de if niet gerenderd
+</div>
+...
+
+```
+
+**Voorbeeld 3**
+
+> **Let op:**
+>
+> Bij `v-if` moet expliciet worden aangegeven dat een grens is bereikt zoals in **voorbeeld 3**.
+> Net als bij een normale conditionele waarden wordt de `else if` **<ins>alleen</ins>** getriggerd wanneer de **if** waarde **false** is.
+>
+>Als in de `v-if` niet was vermeld dat de `value.length` niet hoger dan waarden 8 mag zijn, dan zou `v-else-if` worden genegeerd — omdat alle waarden boven de 8 ook zouden voldoen aan de **if-voorwaarden** (zie voorbeeld 4).
+
+```javascript
+<div v-if="value.length > 5">
+    Deze element tag wordt gerenderd
+</div>
+<div v-else-if="value.length >= 8 && value.length <= 10">
+    Wordt nooit getriggerd, want de 'v-if' is nog steeds true. 
+    Om deze reden valt deze deel nu onder dead code.
+</div>
+...
+
+```
+**Voorbeeld 4.**
+
 ---
 
 ### Toegepast aan eigen project
@@ -118,6 +155,21 @@ Deze speciale attributen kan in combinatie met **v-if** als attribuut worden geb
 Binnen de component [TheCreateTask.vue](https://github.com/yan-nick-91/vue_todo_with_mock_db/blob/main/src/views/components/home/TheCreateTask.vue) heb deze logic toegepast, waarbij er een check wordt gedaan of er bullet points aan de lijst is toegevoegd. Deze kijkt of de lengte meer dan 0 is, voor dat de `<div>` element wordt gerenderd. `<div v-if="bulletList.length > 0">`.
 
 Als deze de conditie niet heeft behaald, wordt de element`<div v-else>` gerenerd waarbij met tekst **'Nothing added yet'**.
+
+
+### v-show
+
+Deze directive kan worden gebruikt als een alternatief voor v-if en wordt pas zichtbaar de expressie **true** is.
+
+In tegenstelling tot `v-if` is het element bij `v-show` al aangemaakt in de DOM, ongeacht de voorwaarde. De zichtbaarheid van dit element staat op verborgen waardoor de gebruiker deze niet ziet waarneer die expressie op false staat. Deze wordt pas zichtbaar wanneer de expressie van `v-show` **true** is. Dit betekent dat de element niet hoeft worden gerenderd, waarvan de v-if dit wel doet op basis van de conditionele waarden.
+
+**v-show vs v-if**
+
+Afhankelijk hoe de applicatie is opgebouwd, heeft beide van deze aanpak zijn voordelen hoe deze per situatie het beste kunnen worden toegepast.
+
+Bij gebruik van `v-show` – zoals net kort toegelicht – is het element al aanwezig in de DOM en wordt deze pas zichtbaar wanneer de expressie op **true** staat.
+
+Echter wil dit niet zeggen dat `v-show` `v-if` volledig zou kunnen vervangen. Omdat `v-if` samen met `v-else-if` of `v-else` elementen alleen in de DOM rendert - op basis van welk voorwaarde kloppend is - worden onnodige elementen niet gerenderd.  
 
 ---
 
