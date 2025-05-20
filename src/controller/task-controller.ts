@@ -4,6 +4,7 @@ import {
   sendRequestToUpdateTask,
   sendRequestToDeleteTask,
   sendRequestToGetSpecificTask,
+  sendRequestToGetAllFinishedTasks
 } from '@/service/task-services'
 
 export const addTask = (taskData: unknown) => sendRequestToCreateNewTask(taskData)
@@ -11,6 +12,8 @@ export const addTask = (taskData: unknown) => sendRequestToCreateNewTask(taskDat
 export const getTasks = () => sendRequestToGetAllTasks()
 
 export const getTaskId = (id: string) => sendRequestToGetSpecificTask(id)
+
+export const getAllFinishedTasks = () => sendRequestToGetAllFinishedTasks()
 
 export const updateTask = (id: string, taskData: unknown) => sendRequestToUpdateTask(id, taskData)
 

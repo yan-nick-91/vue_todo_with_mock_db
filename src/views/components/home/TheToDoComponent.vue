@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import TheCreateTask from '../home/TheCreateTask.vue'
 import TheToDoList from '../home/TheToDoList.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
-import { getTasks, updateTask } from '@/controller/task-controller'
+import { deleteTask, getTasks, updateTask } from '@/controller/task-controller'
 import type { Task } from '@/interface/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import { DANGER, SUCCESS } from '@/const/base-types'
@@ -12,6 +12,8 @@ const createTaskModalIsOpen = ref(false)
 const updateModalIsOpen = ref(false)
 const tasks = ref<Task[]>([])
 const selectedTask = ref<Task | null>(null)
+const selectedTaskItem = ref<Task[]>([])
+const showConfirmDialog = ref(false)
 
 const fetchTasks = async () => {
   try {
@@ -29,7 +31,7 @@ const closeCreateTaskModal = () => {
   createTaskModalIsOpen.value = false
 }
 
-const onTaskCreated = async (newTask: never) => {
+const onTaskCreated = (newTask: never) => {
   tasks.value.push(newTask)
 }
 
@@ -48,6 +50,35 @@ const saveUpdatedTask = async () => {
   }
 }
 
+const taskItemSelected = (task: Task) => {
+  const exists = selectedTaskItem.value.find((t) => t.id === task.id)
+  if (exists) {
+    selectedTaskItem.value = selectedTaskItem.value.filter((t) => t.id !== task.id)
+  } else {
+    selectedTaskItem.value.push(task)
+  }
+}
+
+const removeSelectedTasks = () => {
+  showConfirmDialog.value = true
+}
+
+const confirmRemoval = async () => {
+  try {
+    selectedTaskItem.value.map(async (task) => await deleteTask(task.id))
+
+    const selectedIds = new Set(selectedTaskItem.value.map((task) => task.id))
+    tasks.value = tasks.value.filter((task) => !selectedIds.has(task.id))
+    selectedTaskItem.value = []
+    showConfirmDialog.value = false
+  } catch (error) {
+    console.error('Error deleting tasks:', error)
+  }
+}
+
+const cancelRemoval = () => {
+  showConfirmDialog.value = false
+}
 onMounted(fetchTasks)
 </script>
 
@@ -56,19 +87,29 @@ onMounted(fetchTasks)
     <BaseContainer class="mx-auto my-5 p-4" is-bordered>
       <h1>To Do's</h1>
       <hr />
-      <TheToDoList class="mt-2 mb-2" :tasks="tasks" />
-      <BaseButton
-        :btn-type="SUCCESS"
-        class="cursor-pointer p-2 rounded transform active:scale-95"
-        @click="openCreateTaskModal"
-      >
-        Create task
-      </BaseButton>
+      <TheToDoList class="mt-2 mb-2" :tasks="tasks" @selected="taskItemSelected" />
+      <div class="flex gap-2">
+        <BaseButton
+          v-show="selectedTaskItem.length > 0"
+          :btn-type="DANGER"
+          class="cursor-pointer p-2 rounded transform active:scale-95"
+          @click="removeSelectedTasks"
+          >Remove selected items</BaseButton
+        >
+        <BaseButton
+          v-show="selectedTaskItem.length === 0"
+          :btn-type="SUCCESS"
+          class="cursor-pointer p-2 rounded transform active:scale-95"
+          @click="openCreateTaskModal"
+        >
+          Create task
+        </BaseButton>
+      </div>
     </BaseContainer>
     <TheCreateTask
       :modal-is-open="createTaskModalIsOpen"
       @close="closeCreateTaskModal"
-      @handelSubmit="onTaskCreated"
+      @handleSubmit="onTaskCreated"
     />
     <div v-if="updateModalIsOpen" class="border w-[80%] mx-auto p-4">
       <input type="text" v-model="selectedTask!.task" class="border p-1 w-[100%]" />
@@ -87,6 +128,18 @@ onMounted(fetchTasks)
         >
           Cancel
         </BaseButton>
+      </div>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div v-show="showConfirmDialog" class="flex justify-center items-center z-50">
+      <div class="bg-white p-6 rounded shadow-lg w-[90%] max-w-md">
+        <h2 class="text-xl font-bold mb-4">Are you sure?</h2>
+        <p class="mb-4">This will permanently remove the selected tasks.</p>
+        <div class="flex gap-4 justify-end">
+          <BaseButton :btn-type="DANGER" @click="confirmRemoval">Yes, remove</BaseButton>
+          <BaseButton :btn-type="SUCCESS" @click="cancelRemoval">Cancel</BaseButton>
+        </div>
       </div>
     </div>
   </section>
