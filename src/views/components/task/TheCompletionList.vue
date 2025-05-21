@@ -15,7 +15,13 @@ defineProps({
 <template>
   <section v-if="finishedTasks.length > 0">
     <ul>
-      <TheTask v-for="task in finishedTasks" :key="task.id" :task="task" />
+      <TheTask
+        v-for="task in finishedTasks"
+        :key="task.id"
+        :task="task"
+        v-show="task.isFinished"
+        @selected="$emit('selected', $event)"
+      />
     </ul>
   </section>
   <section v-else>
