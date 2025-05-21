@@ -9,11 +9,6 @@ defineProps({
     type: Array as PropType<Task[]>,
     required: true,
   },
-  selectedTaskItem: {
-    type: Array as PropType<Task[]>,
-    required: false,
-    default: () => [],
-  },
 })
 </script>
 
@@ -25,7 +20,6 @@ defineProps({
         :key="task.id"
         :task="task"
         v-show="!task.isFinished"
-        :is-selected="selectedTaskItem?.some((t) => t.id === task.id)"
         @selected="$emit('selected', $event)"
       />
     </ul>
