@@ -7,6 +7,7 @@ import { deleteTask, getTasks, updateTask } from '@/controller/task-controller'
 import type { Task } from '@/interface/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import { DANGER, SUCCESS } from '@/const/base-types'
+import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 
 const createTaskModalIsOpen = ref(false)
 const updateModalIsOpen = ref(false)
@@ -132,15 +133,10 @@ onMounted(fetchTasks)
     </div>
 
     <!-- Confirmation Dialog -->
-    <div v-show="showConfirmDialog" class="flex justify-center items-center z-50">
-      <div class="bg-white p-6 rounded shadow-lg w-[90%] max-w-md">
-        <h2 class="text-xl font-bold mb-4">Are you sure?</h2>
-        <p class="mb-4">This will permanently remove the selected tasks.</p>
-        <div class="flex gap-4 justify-end">
-          <BaseButton :btn-type="DANGER" @click="confirmRemoval">Yes, remove</BaseButton>
-          <BaseButton :btn-type="SUCCESS" @click="cancelRemoval">Cancel</BaseButton>
-        </div>
-      </div>
-    </div>
+    <ConfirmDeletionDialog
+      :show-confirm-dialog="showConfirmDialog"
+      @confirm="confirmRemoval"
+      @cancel="cancelRemoval"
+    />
   </section>
 </template>
