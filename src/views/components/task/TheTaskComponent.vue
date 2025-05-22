@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { deleteTask, getTaskId, updateTask } from '@/controller/task-controller'
-import BaseContainer from '@/views/UI/BaseContainer.vue'
-import BaseButton from '@/views/UI/BaseButton.vue'
-import BaseNotification from '@/views/UI/BaseNotification.vue'
-import { DANGER, SUCCESS, INFO } from '@/const/base-types'
 import type { Task } from '@/interface/task'
+import BaseButton from '@/views/UI/BaseButton.vue'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
+import BaseNotification from '@/views/UI/BaseNotification.vue'
+import { deleteTask, getTaskId, updateTask } from '@/controller/task-controller'
+import { DANGER, SUCCESS, INFO } from '@/const/base-types'
 import DeleteTaskModal from './DeleteTaskModal.vue'
 import UpdateTaskModal from './UpdateTaskModal.vue'
 
@@ -55,6 +55,7 @@ const toggleCompletion = async (index: number) => {
     })
 
     task.value.bulletList = updatedBulletList // reflect change in UI
+    updateBtnIsSelected.value = false
   } catch (error) {
     console.error('Error updating task:', error)
     errorMessage.value = 'Failed to update task status.'
@@ -138,6 +139,11 @@ const closeDeleteModal = () => {
     deleteBtnSelected.value = false
   }
 }
+
+const onTaskUpdated = (updatedTask: Task) => {
+  task.value = { ...updatedTask }
+  updateBtnIsSelected.value = false
+}
 </script>
 
 <template>
@@ -147,6 +153,7 @@ const closeDeleteModal = () => {
         Task: {{ task.task }} {{ task.isFinished ? '(Finished)' : '' }}
       </h2>
       <em><strong>Created at:</strong> {{ task.createdAt }}</em>
+      <br />
       <em v-if="task.updatedAt"><strong>Updated at:</strong> {{ task.updatedAt }}</em>
 
       <p class="my-4">
@@ -216,7 +223,10 @@ const closeDeleteModal = () => {
   <UpdateTaskModal
     v-if="updateBtnIsSelected"
     class="mx-auto"
+    :modal-is-open="updateBtnIsSelected"
     :update-btn-is-selected="updateBtnIsSelected"
+    :task-to-edit="task"
     @close="closeUpdateModal"
+    @updated="onTaskUpdated"
   />
 </template>
