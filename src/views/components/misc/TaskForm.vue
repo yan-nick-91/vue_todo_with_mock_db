@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
-import { addTask } from '@/controller/task-controller'
-import { generateBulletItemId, generateCurrentDate, generateTaskId } from '@/util/valueGenerator'
-import { invalidInput } from '@/errors/task-error-handler'
-import BaseNotification from '@/views/UI/BaseNotification.vue'
-import { DANGER, SUCCESS, TRANSPARENT } from '@/const/base-types'
+import { ref, watch, type PropType } from 'vue'
+import type { Task } from '@/interface/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
+import BaseNotification from '@/views/UI/BaseNotification.vue'
+import { addTask, updateTask } from '@/controller/task-controller'
+import { DANGER, SUCCESS, TRANSPARENT } from '@/const/base-types'
+import { invalidInput } from '@/errors/task-error-handler'
+import { generateBulletItemId, generateCurrentDate, generateTaskId } from '@/util/valueGenerator'
 import { XMarkIcon } from '@heroicons/vue/16/solid'
 
-defineProps({
+const props = defineProps({
   modalIsOpen: {
     type: Boolean,
     default: false,
+  },
+  mode: {
+    type: String as PropType<'create' | 'edit'>,
+    required: true,
+  },
+  taskToEdit: {
+    type: Object as PropType<Task>,
   },
 })
 
@@ -25,31 +32,47 @@ const bulletList = ref<{ id: string; bulletItem: string; itemIsFinished: boolean
 const taskInputError = ref('')
 const bulletInputError = ref('')
 
-const submitNewTask = async () => {
+watch(
+  () => props.taskToEdit,
+  (newTask) => {
+    if (props.mode === 'edit' && newTask) {
+      taskInput.value = newTask.task
+      bulletList.value = JSON.parse(JSON.stringify(newTask.bulletList))
+    }
+  },
+  { immediate: true },
+)
+
+const submitHandler = async () => {
   if (taskInput.value.trim() === '') {
     taskInputError.value = invalidInput('Input field for task should not be empty').message
     return
   }
 
+  const payload = generatePayload()
+
   try {
-    const createdTask = {
-      id: generateTaskId(),
-      task: taskInput.value,
-      createdAt: generateCurrentDate(),
-      updatedAt: '',
-      isFinished: false,
-      bulletList: bulletList.value,
+    if (props.mode === 'edit') {
+      await updateTask(payload.id, payload)
+    } else {
+      await addTask(payload)
     }
 
-    await addTask(createdTask)
-
-    emit('handleSubmit', createdTask)
-    emit('close')
-
-    taskInput.value = ''
-    bulletList.value = []
+    emit('handleSubmit', payload)
+    closeModalFormTask()
   } catch (err) {
     console.error('Failed to add task:', err)
+  }
+}
+
+const generatePayload = () => {
+  return {
+    id: props.taskToEdit?.id ?? generateTaskId(),
+    task: taskInput.value.trim(),
+    createdAt: props.taskToEdit?.createdAt ?? generateCurrentDate(),
+    updatedAt: props.mode === 'edit' ? generateCurrentDate() : '',
+    isFinished: props.taskToEdit?.isFinished ?? false,
+    bulletList: bulletList.value,
   }
 }
 
@@ -83,7 +106,7 @@ const removeBulletItem = (id: string) => {
 
 <template>
   <section v-if="modalIsOpen" class="border w-[80%] mx-auto p-4">
-    <form @submit.prevent="submitNewTask">
+    <form @submit.prevent="submitHandler">
       <BaseContainer class="w-[100%] mb-2">
         <div>
           <input
@@ -155,7 +178,7 @@ const removeBulletItem = (id: string) => {
           :btn-type="SUCCESS"
           class="cursor-pointer p-2 rounded transform active:scale-95"
         >
-          Add Task
+          {{ props.mode === 'create' ? 'Add Task' : 'Save' }}
         </BaseButton>
         <BaseButton
           class="cursor-pointer rounded p-2 transform active:scale-95"

@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import TheCreateTask from '../home/TheCreateTask.vue'
-import TheToDoList from '../home/TheToDoList.vue'
-import BaseContainer from '@/views/UI/BaseContainer.vue'
-import { deleteTask, getTasks, updateTask } from '@/controller/task-controller'
 import type { Task } from '@/interface/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
 import { DANGER, SUCCESS } from '@/const/base-types'
+import { deleteTask, getTasks, updateTask } from '@/controller/task-controller'
+import TheToDoList from '../home/TheToDoList.vue'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
+import TaskForm from '../misc/TaskForm.vue'
 
 const createTaskModalIsOpen = ref(false)
-const updateModalIsOpen = ref(false)
+const createModalIsOpen = ref(false)
 const tasks = ref<Task[]>([])
 const selectedTask = ref<Task | null>(null)
 const selectedTaskItem = ref<Task[]>([])
@@ -44,7 +44,7 @@ const saveUpdatedTask = async () => {
       tasks.value = tasks.value.map((task) =>
         task.id === selectedTask.value!.id ? selectedTask.value! : task,
       )
-      updateModalIsOpen.value = false
+      createModalIsOpen.value = false
     } catch (error) {
       console.error('Error updating task:', error)
     }
@@ -107,12 +107,14 @@ onMounted(fetchTasks)
         </BaseButton>
       </div>
     </BaseContainer>
-    <TheCreateTask
+    <TaskForm
+      :mode="'create'"
       :modal-is-open="createTaskModalIsOpen"
       @close="closeCreateTaskModal"
-      @handleSubmit="onTaskCreated"
+      @handle-submit="onTaskCreated"
     />
-    <div v-if="updateModalIsOpen" class="border w-[80%] mx-auto p-4">
+
+    <div v-if="createModalIsOpen" class="border w-[80%] mx-auto p-4">
       <input type="text" v-model="selectedTask!.task" class="border p-1 w-[100%]" />
       <div class="flex gap-2 mt-2">
         <BaseButton
@@ -125,7 +127,7 @@ onMounted(fetchTasks)
         <BaseButton
           :btn-type="DANGER"
           class="cursor-pointer p-2 rounded transform active:scale-95"
-          @click="updateModalIsOpen = false"
+          @click="createModalIsOpen = false"
         >
           Cancel
         </BaseButton>
