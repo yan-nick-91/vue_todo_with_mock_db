@@ -19,6 +19,7 @@ const task = ref<Task>({
   task: '',
   createdAt: '',
   updatedAt: '',
+  priority: '',
   isFinished: false,
   bulletList: [],
 })
@@ -159,6 +160,8 @@ const onTaskUpdated = (updatedTask: Task) => {
       <p class="my-4">
         <strong>Task Details:</strong>
       </p>
+
+      <p class="my-4"><strong>Priority:</strong> {{ task.priority }}</p>
 
       <!-- Bullet List -->
       <div class="mb-2">
