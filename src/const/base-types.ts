@@ -10,3 +10,9 @@ export const NOTIFICATION_TYPES = [SUCCESS, INFO, WARNING, DANGER, DEFAULT] as c
 
 export type buttonType = (typeof BUTTON_TYPES)[number]
 export type notificationType = (typeof NOTIFICATION_TYPES)[number]
+
+export const HIGH = 'High'
+export const MEDIUM = 'Medium'
+export const LOW = 'Low'
+
+export const PRIORITIES = [HIGH, MEDIUM, LOW] as const
