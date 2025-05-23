@@ -4,8 +4,9 @@ import type { Task } from '@/interface/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseNotification from '@/views/UI/BaseNotification.vue'
+import BaseSelection from '@/views/UI/BaseSelection.vue'
 import { addTask, updateTask } from '@/controller/task-controller'
-import { DANGER, SUCCESS, TRANSPARENT } from '@/const/base-types'
+import { DANGER, SUCCESS, TRANSPARENT, PRIORITIES } from '@/const/base-types'
 import { invalidInput } from '@/errors/task-error-handler'
 import { generateBulletItemId, generateCurrentDate, generateTaskId } from '@/util/valueGenerator'
 import { XMarkIcon } from '@heroicons/vue/16/solid'
@@ -31,12 +32,14 @@ const itemForBulletListInput = ref('')
 const bulletList = ref<{ id: string; bulletItem: string; itemIsFinished: boolean }[]>([])
 const taskInputError = ref('')
 const bulletInputError = ref('')
+const selectedPriority = ref<(typeof PRIORITIES)[number]>(PRIORITIES[0])
 
 watch(
   () => props.taskToEdit,
   (newTask) => {
     if (props.mode === 'edit' && newTask) {
       taskInput.value = newTask.task
+      selectedPriority.value = newTask.priority as (typeof PRIORITIES)[number]
       bulletList.value = JSON.parse(JSON.stringify(newTask.bulletList))
     }
   },
@@ -71,6 +74,7 @@ const generatePayload = () => {
     task: taskInput.value.trim(),
     createdAt: props.taskToEdit?.createdAt ?? generateCurrentDate(),
     updatedAt: props.mode === 'edit' ? generateCurrentDate() : '',
+    priority: selectedPriority.value,
     isFinished: props.taskToEdit?.isFinished ?? false,
     bulletList: bulletList.value,
   }
@@ -120,6 +124,12 @@ const removeBulletItem = (id: string) => {
         </div>
         <div class="mb-2 min-h-[1.5rem]">
           <BaseNotification v-if="taskInputError" :type="DANGER" :message="taskInputError" />
+        </div>
+      </BaseContainer>
+      <hr />
+      <BaseContainer class="w-[100%] mb-2">
+        <div>
+          <BaseSelection v-model="selectedPriority" :items="PRIORITIES" is-bordered />
         </div>
       </BaseContainer>
       <hr />
