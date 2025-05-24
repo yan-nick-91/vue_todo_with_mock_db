@@ -2,7 +2,7 @@
 import { type PropType } from 'vue'
 import type { Task } from '@/interface/task'
 
-import TaskForm from '../misc/TaskForm.vue'
+import TaskForm from './TaskForm.vue'
 
 defineProps({
   modalIsOpen: {

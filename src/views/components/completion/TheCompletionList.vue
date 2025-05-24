@@ -2,7 +2,7 @@
 import type { PropType } from 'vue'
 import { type Task } from '@/interface/task'
 import BaseNotification from '@/views/UI/BaseNotification.vue'
-import TheTask from '../home/TheTask.vue'
+import TheTask from '../task/TheTask.vue'
 
 defineProps({
   finishedTasks: {

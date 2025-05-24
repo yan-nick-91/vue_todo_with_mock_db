@@ -8,7 +8,7 @@ import BaseSelection from '@/views/UI/BaseSelection.vue'
 import { addTask, updateTask } from '@/controller/task-controller'
 import { DANGER, SUCCESS, TRANSPARENT, PRIORITIES } from '@/const/base-types'
 import { invalidInput } from '@/errors/task-error-handler'
-import { generateBulletItemId, generateCurrentDate, generateTaskId } from '@/util/valueGenerator'
+import { generateBulletItemId, generateCurrentDate, generateTaskId } from '@/util/value-generator'
 import { XMarkIcon } from '@heroicons/vue/16/solid'
 
 const props = defineProps({
