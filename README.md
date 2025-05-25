@@ -1,4 +1,4 @@
-# .
+#
 
 This template should help get you started developing with Vue 3 in Vite.
 
@@ -24,6 +24,12 @@ npm install
 
 ```sh
 npm run dev
+```
+
+### Run Application along with JSON-Server
+
+```sh
+npm run dev:all
 ```
 
 ### Type-Check, Compile and Minify for Production
