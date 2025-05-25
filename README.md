@@ -26,7 +26,9 @@ npm install
 npm run dev
 ```
 
-### Run Application along with JSON-Server
+### Run Application along with JSON-Server (mock-db)
+
+**Note: required to make the application ToDo List working**
 
 ```sh
 npm run dev:all
