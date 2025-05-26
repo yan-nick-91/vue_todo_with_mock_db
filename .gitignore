@@ -34,3 +34,4 @@ src/mock/db
 
 test-results/
 playwright-report/
+.env
