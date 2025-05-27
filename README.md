@@ -41,7 +41,7 @@ npm run dev:all
 >
 > This app is not built for deployment purposes. Therefore, it must be run locally using the command described above this information section.
 > 
-> This can usually be done with every IDE
+> This can usually be done with every IDE.
 
 
 ### Type-Check, Compile and Minify for Production
