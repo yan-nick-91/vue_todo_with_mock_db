@@ -40,6 +40,7 @@ npm run dev:all
 > These values are required to connect with the mock-db and run the application correctly
 >
 > This app is not built for deployment purposes. Therefore, it must be run locally using the command described above this information section.
+> 
 > This can usually be done with every IDE
 
 
