@@ -38,6 +38,9 @@ npm run dev:all
 >
 > Ensure that a `.env` file exists on the **project root** with the following declarations: -`VITE_PORT=3001` -`VITE_HOST=http://localhost`
 > These values are required to connect with the mock-db and run the application correctly
+>
+> This app is not built for deployment purposes. Therefore, it must be run locally using the command described above this information section.
+
 
 ### Type-Check, Compile and Minify for Production
 
