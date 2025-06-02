@@ -1,12 +1,14 @@
 {
   "default": {
-    "paths": ["features/descriptions/*.feature"],
-    "require": ["features/steps/*.js"],
+    "paths": ["features/descriptions/"],
+    "dryRun": true,
+    "formatOptions": {
+      "snippetInterface": "async-await"
+    },
     "format": [
-      ["json:reports/cucumber.json", "html:reports/cucumber.html"],
-      "summary",
-      "progress-bar",
-      "json:reports/cucumber.json"
+      "html:./reports/cucumber-report.html",
+      "json:./reports/cucumber-report.json",
+      "summary"
     ]
   }
 }
