@@ -28,11 +28,21 @@ npm run dev
 
 ### Run Application along with JSON-Server (mock-db)
 
-**Note: required to make the application ToDo List working**
-
 ```sh
 npm run dev:all
 ```
+
+> **:rotating_light:IMPORTANT**
+>
+> **To make the ToDo List application fully functional, follow the steps below:**
+>
+> Ensure that a `.env` file exists on the **project root** with the following declarations: -`VITE_PORT=3001` -`VITE_HOST=http://localhost`
+> These values are required to connect with the mock-db and run the application correctly
+>
+> This app is not built for deployment purposes. Therefore, it must be run locally using the command described above this information section.
+> 
+> This can usually be done with every IDE.
+
 
 ### Type-Check, Compile and Minify for Production
 
