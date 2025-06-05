@@ -16,7 +16,6 @@ dist-ssr
 coverage
 *.local
 src/mock/db
-reports
 
 /cypress/videos/
 /cypress/screenshots/
@@ -36,3 +35,4 @@ reports
 test-results/
 playwright-report/
 .env
+reports
