@@ -29,9 +29,15 @@ When(
     const placeholderValue = await pageFixture.page.locator(
       `#taskInput[placeholder^="${placeholder}"]`,
     )
-    await placeholderValue.fill(`task 1}`)
+    await placeholderValue.fill(`task 1`)
   },
 )
+
+When('I leave the task input field with the placeholder {string} empty', async (placeholder) => {
+  const taskInputField = await pageFixture.page.locator(`
+  #taskInput[placeholder^="${placeholder}"]`)
+  await taskInputField.fill('')
+})
 
 When('I click on the {string} button in order to add the task to the list', async (buttonText) => {
   const button = await pageFixture.page.locator(`button:has-text("${buttonText}")`)
@@ -42,4 +48,9 @@ When('I click on the {string} button in order to add the task to the list', asyn
 Then('I should see the {string} added to the todo list', async (task) => {
   const addedTask = await pageFixture.page.locator(`a > div:has-text("${task}")`)
   await expect(addedTask).toBeVisible()
+})
+
+Then('I should see a error message {string}', async (errorMessage) => {
+  const errorText = await pageFixture.page.locator(`p:has-text("${errorMessage}")`)
+  expect(errorText).toBeVisible()
 })
