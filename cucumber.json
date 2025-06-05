@@ -1,7 +1,8 @@
 {
   "default": {
     "paths": ["features/descriptions/"],
-    "dryRun": true,
+    "import": ["features/support/*.js", "features/steps/*.js"],
+    "dryRun": false,
     "formatOptions": {
       "snippetInterface": "async-await"
     },
