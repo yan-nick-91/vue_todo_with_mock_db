@@ -12,6 +12,7 @@
     "test:unit": "vitest",
     "test:e2e": "playwright test",
     "test:cucumber": "dotenv -- start-server-and-test dev:all npx cucumber-js --profile default",
+    "cucumber:smoke": "npx cucumber-js --tags \"@smoke\"",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
