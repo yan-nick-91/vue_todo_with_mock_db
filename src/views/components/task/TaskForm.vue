@@ -109,13 +109,18 @@ const removeBulletItem = (id: string) => {
 </script>
 
 <template>
-  <section v-if="modalIsOpen" class="border w-[80%] mx-auto p-4">
+  <section
+    v-if="modalIsOpen"
+    :data-id="props.mode === 'create' ? 'createFormModal' : 'editFormModal'"
+    class="border w-[80%] mx-auto p-4"
+  >
     <form @submit.prevent="submitHandler">
       <BaseContainer class="w-[100%] mb-2">
         <div>
           <input
             :class="`border p-1 w-[100%]
           ${taskInputError ? 'border-red-500 bg-red-200' : ''}`"
+            id="taskInput"
             type="text"
             placeholder="Enter a task..."
             v-model="taskInput"
