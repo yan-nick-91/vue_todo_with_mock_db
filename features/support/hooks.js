@@ -7,8 +7,8 @@ console.log('Hooks file is loaded')
 const config = {
   headless: false,
   browser: 'chromium',
-  width: '1920',
-  height: '1080',
+  width: 1920,
+  height: 1080,
 }
 
 console.log(config)
@@ -41,7 +41,7 @@ Before(async function () {
     console.log(`Browser setup initialized for: ${config.browser}`)
 
     const context = await browserInstance.newContext({
-      viewport: {width: parseInt(config.width), height: parseInt(config.height)}
+      viewport: { width: parseInt(config.width), height: parseInt(config.height) },
     })
 
     const page = await context.newPage()
@@ -61,7 +61,7 @@ After(async function ({ pickle, result }) {
       })
       await this.attach(image, 'image/png')
     } else {
-      console.error("pageFixture.page is undefined")
+      console.error('pageFixture.page is undefined')
     }
   }
 
