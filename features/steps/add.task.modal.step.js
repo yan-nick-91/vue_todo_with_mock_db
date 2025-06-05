@@ -14,5 +14,5 @@ Given('I am on the Home page', async () => {
 
 When('I click on the {string} button', async (createTaskButton) => {
   const button = await pageFixture.page.getByRole('button', { name: createTaskButton })
-  button.click()
+  await button.click()
 })
