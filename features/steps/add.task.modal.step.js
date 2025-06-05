@@ -1,6 +1,7 @@
-import { Given, When } from '@cucumber/cucumber'
+import { Given, When, Then } from '@cucumber/cucumber'
 import { pageFixture } from '../support/pageFixture.js'
 import dotenv from 'dotenv'
+import { expect } from 'playwright/test'
 
 dotenv.config()
 
@@ -15,4 +16,30 @@ Given('I am on the Home page', async () => {
 When('I click on the {string} button', async (createTaskButton) => {
   const button = await pageFixture.page.getByRole('button', { name: createTaskButton })
   await button.click()
+})
+
+When('I should see a modal appearing with a form', async () => {
+  const formModal = await pageFixture.page.locator('section[data-id="createFormModal"]')
+  expect(formModal).toBeVisible()
+})
+
+When(
+  'I fill in a task within the task input field with the placeholder {string}',
+  async (placeholder) => {
+    const placeholderValue = await pageFixture.page.locator(
+      `#taskInput[placeholder^="${placeholder}"]`,
+    )
+    await placeholderValue.fill(`task 1}`)
+  },
+)
+
+When('I click on the {string} button in order to add the task to the list', async (buttonText) => {
+  const button = await pageFixture.page.locator(`button:has-text("${buttonText}")`)
+  await expect(button).toBeVisible()
+  await button.click()
+})
+
+Then('I should see the {string} added to the todo list', async (task) => {
+  const addedTask = await pageFixture.page.locator(`a > div:has-text("${task}")`)
+  await expect(addedTask).toBeVisible()
 })
