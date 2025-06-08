@@ -1,4 +1,4 @@
-import { After, Before, setDefaultTimeout, Status } from '@cucumber/cucumber'
+import { After, AfterAll, Before, BeforeAll, setDefaultTimeout, Status } from '@cucumber/cucumber'
 import { chromium, firefox, webkit } from '@playwright/test'
 import { pageFixture } from './pageFixture.js'
 
@@ -7,7 +7,7 @@ console.log('Hooks file is loaded')
 const config = {
   headless: false,
   browser: 'chromium',
-  width: 1920,
+  width: 1440,
   height: 1080,
 }
 
@@ -22,6 +22,11 @@ const browsers = {
 let browserInstance = null
 
 setDefaultTimeout(60 * 1000) // 1 min
+
+BeforeAll(async function () {
+  console.info('Starting the hook process')
+  // createMockDBForTesting()
+})
 
 const initializeBrowserSetup = async (selectedBrowser) => {
   const launchBrowser = browsers[selectedBrowser]
@@ -69,4 +74,10 @@ After(async function ({ pickle, result }) {
     await pageFixture.page?.close()
     await browserInstance.close()
   }
+})
+
+AfterAll(async function () {
+  console.info('Completing hook process for testing')
+  // removeMockDBIfExists()
+  console.info('Hook process completed')
 })

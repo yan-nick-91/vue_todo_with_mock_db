@@ -31,13 +31,3 @@ Feature: adding a task
     Examples:
       | item-one | item-two | item-three |
       | item one | item two | item three |
-
-# Scenario: As a user, I want to add a bullet item with an empty input
-#      When I leave the bullet input field with the placeholder "Add item to list..." empty
-#      And I click on the "Add Item" button
-#      Then I should see that the input field has a red background
-#      And I should see a error message "Input field to add a bullet should not be empty"
-
-# Scenario: As a user, I want to remove an added task from the bullet item list
-#      When
-
