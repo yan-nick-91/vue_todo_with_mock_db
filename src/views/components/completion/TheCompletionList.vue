@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { type Task } from '@/interface/task'
+import { type Task } from '@/interface/Task'
 import BaseNotification from '@/views/UI/BaseNotification.vue'
 import TheTask from '../task/TheTask.vue'
 

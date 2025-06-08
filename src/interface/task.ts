@@ -1,8 +1,4 @@
-interface BulletItem {
-  id: string
-  bulletItem: string
-  itemIsFinished: boolean
-}
+import type { BulletItem } from './BulletItem'
 
 export interface Task {
   id: string

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import type { Task } from '@/interface/task'
+import type { Task } from '@/interface/Task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import { DANGER, SUCCESS } from '@/const/base-types'

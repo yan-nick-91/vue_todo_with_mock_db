@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, type PropType } from 'vue'
-import type { Task } from '@/interface/task'
+import type { Task } from '@/interface/Task'
+import type { BulletItem } from '@/interface/BulletItem'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseNotification from '@/views/UI/BaseNotification.vue'
@@ -29,7 +30,7 @@ const emit = defineEmits(['close', 'handleSubmit'])
 
 const taskInput = ref('')
 const itemForBulletListInput = ref('')
-const bulletList = ref<{ id: string; bulletItem: string; itemIsFinished: boolean }[]>([])
+const bulletList = ref<BulletItem[]>([])
 const taskInputError = ref('')
 const bulletInputError = ref('')
 const selectedPriority = ref<(typeof PRIORITIES)[number]>(PRIORITIES[0])

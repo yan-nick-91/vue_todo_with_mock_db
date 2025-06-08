@@ -13,16 +13,6 @@ defineProps({
     required: true,
   },
 })
-
-const emit = defineEmits(['delete', 'cancel'])
-
-const confirmDeletion = () => {
-  emit('delete')
-}
-
-const cancelDeletion = () => {
-  emit('cancel')
-}
 </script>
 
 <template>
@@ -41,13 +31,13 @@ const cancelDeletion = () => {
     </div>
     <div class="flex gap-2 mt-4">
       <BaseButton
-        @click="confirmDeletion"
+        @click="$emit('delete')"
         :btn-type="DANGER"
         class="cursor-pointer p-1 rounded transform active:scale-95"
         >Confirm</BaseButton
       >
       <BaseButton
-        @click="cancelDeletion"
+        @click="$emit('cancel')"
         class="cursor-pointer p-1 rounded transform active:scale-95"
         >Cancel</BaseButton
       >
