@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { deleteTask, getAllFinishedTasks } from '@/controller/task-controller'
-import type { Task } from '@/interface/task'
+import type { Task } from '@/interface/Task'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import TheCompletionList from '../completion/TheCompletionList.vue'
 import BaseButton from '@/views/UI/BaseButton.vue'
