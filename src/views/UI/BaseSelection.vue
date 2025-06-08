@@ -15,13 +15,6 @@ defineProps({
     default: '',
   },
 })
-
-const emit = defineEmits(['update:modelValue'])
-
-const onChange = (event: Event) => {
-  const target = event.target as HTMLSelectElement
-  emit('update:modelValue', target.value)
-}
 </script>
 
 <template>
@@ -29,7 +22,7 @@ const onChange = (event: Event) => {
     <select
       :class="`cursor-pointer ${isBordered ? 'border' : ''}`"
       :value="modelValue"
-      @change="onChange"
+      @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
     >
       <option v-for="item in items" :key="item" :value="item">
         {{ item }}
