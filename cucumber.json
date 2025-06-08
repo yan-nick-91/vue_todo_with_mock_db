@@ -1,0 +1,15 @@
+{
+  "default": {
+    "paths": ["features/descriptions/"],
+    "import": ["features/support/*.js", "features/steps/*.js"],
+    "dryRun": false,
+    "formatOptions": {
+      "snippetInterface": "async-await"
+    },
+    "format": [
+      "html:./reports/cucumber-report.html",
+      "json:./reports/cucumber-report.json",
+      "summary"
+    ]
+  }
+}

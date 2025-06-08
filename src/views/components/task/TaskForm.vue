@@ -110,13 +110,18 @@ const removeBulletItem = (id: string) => {
 </script>
 
 <template>
-  <section v-if="modalIsOpen" class="border w-[80%] mx-auto p-4">
+  <section
+    v-if="modalIsOpen"
+    :data-id="props.mode === 'create' ? 'createFormModal' : 'editFormModal'"
+    class="border w-[80%] mx-auto p-4"
+  >
     <form @submit.prevent="submitHandler">
       <BaseContainer class="w-[100%] mb-2">
         <div>
           <input
             :class="`border p-1 w-[100%]
           ${taskInputError ? 'border-red-500 bg-red-200' : ''}`"
+            id="taskInput"
             type="text"
             placeholder="Enter a task..."
             v-model="taskInput"
@@ -135,7 +140,11 @@ const removeBulletItem = (id: string) => {
       </BaseContainer>
       <hr />
       <BaseContainer class="w-[100%] my-2">
-        <BaseContainer class="w-[100%] mb-2 min-h-[10%] max-h-[10%] bg-gray-100" is-bordered>
+        <BaseContainer
+          data-id="bulletList"
+          class="w-[100%] mb-2 min-h-[10%] max-h-[10%] bg-gray-100"
+          is-bordered
+        >
           <div v-if="bulletList.length > 0">
             <ul>
               <li
@@ -166,6 +175,7 @@ const removeBulletItem = (id: string) => {
           <input
             :class="`border p-1 mb-2 w-[100%] ${bulletInputError ? 'border-red-500 bg-red-200' : ''}`"
             type="text"
+            id="bulletItemInput"
             placeholder="Add Item to list (Optional)..."
             v-model="itemForBulletListInput"
             @input="bulletInputError = ''"
