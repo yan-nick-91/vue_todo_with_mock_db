@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type PropType } from 'vue'
-import type { Task } from '@/interface/task'
+import type { Task } from '@/interface/Task'
 
 import TaskForm from './TaskForm.vue'
 

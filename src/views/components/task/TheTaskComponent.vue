@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { Task } from '@/interface/task'
+import type { Task } from '@/interface/Task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseNotification from '@/views/UI/BaseNotification.vue'
