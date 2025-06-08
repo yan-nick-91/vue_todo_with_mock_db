@@ -55,6 +55,13 @@ When(
   },
 )
 
+When('I leave the bullet input field with the placeholder {string} empty', async (placeholder) => {
+  const bulletItemInputField = await pageFixture.page.locator(
+    `#bulletItemInput[placeholder^="${placeholder}"]`,
+  )
+  await bulletItemInputField.fill('')
+})
+
 When(
   'I click on the {string} button to add {string} to the bullet list',
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -66,8 +73,12 @@ When(
 )
 
 Then('I should see the {string} added to the todo list', async (task) => {
-  const addedTask = await pageFixture.page.locator(`a > div:has-text("${task}")`)
-  await expect(addedTask).toBeVisible()
+  const taskItems = await pageFixture.page.locator('a > div')
+  const count = await taskItems.count()
+  expect(count).toBeGreaterThan(0)
+
+  const lastAddedTaskItem = taskItems.nth(count - 1)
+  await expect(lastAddedTaskItem).toContainText(task)
 })
 
 Then('I should see a error message {string}', async (errorMessage) => {
@@ -80,4 +91,11 @@ Then('I should see {string} added in the bullet items list', async (item) => {
     `section[data-id="bulletList"] > div > ul > li:has-text("${item}")`,
   )
   await expect(bulletItem).toBeVisible()
+})
+
+Then('I should see a error message {string} under the bullet input field', async (errorText) => {
+  const errorMessage = await pageFixture.page.locator(
+    `div[data-id="bulletInputError"] > p:has-text("${errorText}") `,
+  )
+  await expect(errorMessage).toBeVisible()
 })
