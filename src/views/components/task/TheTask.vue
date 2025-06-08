@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Task } from '@/interface/task'
+import type { Task } from '@/interface/Task'
 import type { PropType } from 'vue'
 import { RouterLink } from 'vue-router'
 import { ChevronRightIcon } from '@heroicons/vue/16/solid'
@@ -15,8 +15,6 @@ const props = defineProps({
     default: false,
   },
 })
-
-const emit = defineEmits(['selected'])
 </script>
 
 <template>
@@ -26,7 +24,7 @@ const emit = defineEmits(['selected'])
         type="checkbox"
         class="border"
         :checked="isSelected"
-        @change="emit('selected', task)"
+        @change="$emit('selected', task)"
       />
       <RouterLink
         :to="{ name: 'task', params: { id: props.task.id } }"
