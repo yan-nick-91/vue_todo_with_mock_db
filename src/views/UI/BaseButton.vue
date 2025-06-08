@@ -18,16 +18,10 @@ defineProps({
     type: String as PropType<buttonType>,
   },
 })
-
-const emit = defineEmits(['click'])
-
-const handleClick = () => {
-  emit('click')
-}
 </script>
 
 <template>
-  <button :class="buttonTypesMap[btnType]" @click="handleClick">
+  <button :class="buttonTypesMap[btnType]" @click="$emit('click')">
     <slot></slot>
   </button>
 </template>
