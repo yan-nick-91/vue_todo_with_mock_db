@@ -4,16 +4,14 @@ import type { Task } from '@/interface/Task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import { DANGER, SUCCESS } from '@/const/base-types'
-import { deleteTask, getTasks, updateTask } from '@/controller/task-controller'
+import { deleteTask, getTasks } from '@/controller/task-controller'
 import TheToDoList from '../home/TheToDoList.vue'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TaskForm from '../task/TaskForm.vue'
 import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
 
 const createTaskModalIsOpen = ref(false)
-const createModalIsOpen = ref(false)
 const tasks = ref<Task[]>([])
-const selectedTask = ref<Task | null>(null)
 const selectedTaskItem = ref<Task[]>([])
 const showConfirmDialog = ref(false)
 
@@ -35,21 +33,6 @@ const closeCreateTaskModal = () => {
 
 const onTaskCreated = (newTask: never) => {
   tasks.value.push(newTask)
-}
-
-const saveUpdatedTask = async () => {
-  console.log('Selected Task:', selectedTask.value)
-  if (selectedTask.value) {
-    try {
-      await updateTask(selectedTask.value.id, selectedTask.value)
-      tasks.value = tasks.value.map((task) =>
-        task.id === selectedTask.value!.id ? selectedTask.value! : task,
-      )
-      createModalIsOpen.value = false
-    } catch (error) {
-      console.error('Error updating task:', error)
-    }
-  }
 }
 
 const taskItemSelected = (task: Task) => {
@@ -114,26 +97,6 @@ onMounted(fetchTasks)
       @close="closeCreateTaskModal"
       @handle-submit="onTaskCreated"
     />
-
-    <div v-if="createModalIsOpen" class="border w-[80%] mx-auto p-4">
-      <input type="text" v-model="selectedTask!.task" class="border p-1 w-[100%]" />
-      <div class="flex gap-2 mt-2">
-        <BaseButton
-          :btn-type="SUCCESS"
-          class="cursor-pointer p-2 rounded transform active:scale-95"
-          @click="saveUpdatedTask"
-        >
-          Save
-        </BaseButton>
-        <BaseButton
-          :btn-type="DANGER"
-          class="cursor-pointer p-2 rounded transform active:scale-95"
-          @click="createModalIsOpen = false"
-        >
-          Cancel
-        </BaseButton>
-      </div>
-    </div>
 
     <!-- Confirmation Dialog -->
     <ConfirmDeletionDialog
