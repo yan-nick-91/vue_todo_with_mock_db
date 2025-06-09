@@ -31,9 +31,14 @@ const emit = defineEmits(['close', 'handleSubmit'])
 
 const taskInput = ref('')
 const itemForBulletListInput = ref('')
+const startDateInput = ref('')
+const endDateInput = ref('')
+
 const bulletList = ref<BulletItem[]>([])
 const taskInputError = ref('')
 const bulletInputError = ref('')
+const startDateInputError = ref('')
+const endDateInputError = ref('')
 const selectedPriority = ref<(typeof PRIORITIES)[number]>(PRIORITIES[0])
 
 watch(
@@ -51,6 +56,16 @@ watch(
 const submitHandler = async () => {
   if (taskInput.value.trim() === '') {
     taskInputError.value = invalidInput('Input field for task should not be empty').message
+    return
+  }
+
+  if (new Date(startDateInput.value).getTime() <= Date.now() || startDateInput.value === '') {
+    startDateInputError.value = invalidInput('Start date cannot start in the past').message
+    return
+  }
+
+  if (new Date(endDateInput.value) < new Date(startDateInput.value) || endDateInput.value === '') {
+    endDateInputError.value = invalidInput('End date should not happen before start date').message
     return
   }
 
@@ -192,6 +207,30 @@ const removeBulletItem = (id: string) => {
           type="button"
           >Add item</BaseButton
         >
+      </BaseContainer>
+      <hr />
+      <BaseContainer>
+        <label for="startDate">Start date</label>
+        <input
+          type="date"
+          :class="`border p-1 mb-2 w-[100%] ${startDateInputError ? 'border-red-500 bg-red-200' : ''}`"
+          v-model="startDateInput"
+          id="startDate"
+        />
+        <BaseNotification
+          v-if="startDateInputError"
+          :type="DANGER"
+          :message="startDateInputError"
+        />
+        <label for="endDate">End date</label>
+        <input
+          type="date"
+          :class="`border p-1 mb-2 w-[100%] ${endDateInputError ? 'border-red-500 bg-red-200' : ''}`"
+          placeholder="Choose an end date"
+          v-model="endDateInput"
+          id="endDate"
+        />
+        <BaseNotification v-if="endDateInputError" :type="DANGER" :message="endDateInputError" />
       </BaseContainer>
       <hr />
       <div class="flex gap-2 mt-8">
