@@ -3,10 +3,11 @@ import { ref, onMounted } from 'vue'
 import { deleteTask, getAllFinishedTasks } from '@/controller/task-controller'
 import type { Task } from '@/interface/Task'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
-import TheCompletionList from '../completion/TheCompletionList.vue'
+import TheCompletionList from './TheCompletionList.vue'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import { DANGER } from '@/const/base-types'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
+import { LIST_OF_COMPLETED_TASKS_IS_EMPTY } from '@/const/task'
 
 const finishedTasks = ref<Task[]>([])
 const selectedFinishedTask = ref<Task[]>([])
@@ -67,7 +68,7 @@ onMounted(() => {
         @selected="completedTaskItemSelected"
       />
       <BaseButton
-        v-show="selectedFinishedTask.length > 0"
+        v-show="selectedFinishedTask.length > LIST_OF_COMPLETED_TASKS_IS_EMPTY"
         :btn-type="DANGER"
         class="cursor-pointer p-2 rounded transform active:scale-95"
         @click="removeSelectedCompletion"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TheCompletedTaskComponent from '../components/task/TheCompletedTaskComponent.vue'
+import TheCompletedTaskComponent from '../components/completion/TheCompletedTaskComponent.vue'
 </script>
 
 <template>

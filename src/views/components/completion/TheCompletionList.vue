@@ -3,6 +3,7 @@ import type { PropType } from 'vue'
 import { type Task } from '@/interface/Task'
 import BaseNotification from '@/views/UI/BaseNotification.vue'
 import TheTask from '../task/TheTask.vue'
+import { LIST_OF_COMPLETED_TASKS_IS_EMPTY } from '@/const/task'
 
 defineProps({
   finishedTasks: {
@@ -13,7 +14,7 @@ defineProps({
 </script>
 
 <template>
-  <section v-if="finishedTasks.length > 0">
+  <section v-if="finishedTasks.length > LIST_OF_COMPLETED_TASKS_IS_EMPTY">
     <ul>
       <TheTask
         v-for="task in finishedTasks"

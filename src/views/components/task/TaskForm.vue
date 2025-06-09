@@ -11,6 +11,7 @@ import { DANGER, SUCCESS, TRANSPARENT, PRIORITIES } from '@/const/base-types'
 import { invalidInput } from '@/errors/task-error-handler'
 import { generateBulletItemId, generateCurrentDate, generateTaskId } from '@/util/value-generator'
 import { XMarkIcon } from '@heroicons/vue/16/solid'
+import { BULLET_ITEM_LIST_IN_TASK_IS_EMPTY } from '@/const/task'
 
 const props = defineProps({
   modalIsOpen: {
@@ -145,7 +146,7 @@ const removeBulletItem = (id: string) => {
           class="w-[100%] mb-2 min-h-[10%] max-h-[10%] bg-gray-100"
           is-bordered
         >
-          <div v-if="bulletList.length > 0">
+          <div v-if="bulletList.length > BULLET_ITEM_LIST_IN_TASK_IS_EMPTY">
             <ul>
               <li
                 v-for="item in bulletList"

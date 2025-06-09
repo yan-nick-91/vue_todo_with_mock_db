@@ -8,6 +8,7 @@ import { deleteTask, getTasks, updateTask } from '@/controller/task-controller'
 import TheToDoList from '../home/TheToDoList.vue'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TaskForm from '../task/TaskForm.vue'
+import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
 
 const createTaskModalIsOpen = ref(false)
 const createModalIsOpen = ref(false)
@@ -91,14 +92,14 @@ onMounted(fetchTasks)
       <TheToDoList class="mt-2 mb-2" :tasks="tasks" @selected="taskItemSelected" />
       <div class="flex gap-2">
         <BaseButton
-          v-show="selectedTaskItem.length > 0"
+          v-show="selectedTaskItem.length > AMOUNT_OF_SELECTED_TASK_IS_ZERO"
           :btn-type="DANGER"
           class="cursor-pointer p-2 rounded transform active:scale-95"
           @click="removeSelectedTasks"
           >Remove selected items</BaseButton
         >
         <BaseButton
-          v-show="selectedTaskItem.length === 0"
+          v-show="selectedTaskItem.length === AMOUNT_OF_SELECTED_TASK_IS_ZERO"
           :btn-type="SUCCESS"
           class="cursor-pointer p-2 rounded transform active:scale-95"
           @click="openCreateTaskModal"
