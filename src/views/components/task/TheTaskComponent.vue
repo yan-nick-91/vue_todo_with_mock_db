@@ -9,6 +9,7 @@ import { deleteTask, getTaskId, updateTask } from '@/controller/task-controller'
 import { DANGER, SUCCESS, INFO } from '@/const/base-types'
 import DeleteTaskModal from './DeleteTaskModal.vue'
 import UpdateTaskModal from './UpdateTaskModal.vue'
+import { BULLET_ITEM_LIST_IN_TASK_IS_EMPTY } from '@/const/task'
 
 const route = useRoute()
 const router = useRouter()
@@ -165,7 +166,10 @@ const onTaskUpdated = (updatedTask: Task) => {
 
       <!-- Bullet List -->
       <div class="mb-2">
-        <ul v-if="task.bulletList.length > 0" class="list-disc pl-6 space-y-2 text-gray-700">
+        <ul
+          v-if="task.bulletList.length > BULLET_ITEM_LIST_IN_TASK_IS_EMPTY"
+          class="list-disc pl-6 space-y-2 text-gray-700"
+        >
           <li v-for="(bullet, index) in task.bulletList" :key="index">
             <div class="flex gap-2 items-start">
               <span :class="{ 'line-through': bullet.itemIsFinished }" class="min-w-[15%]">

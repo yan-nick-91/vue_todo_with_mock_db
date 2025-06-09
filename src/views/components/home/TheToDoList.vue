@@ -3,6 +3,7 @@ import { type PropType, computed } from 'vue'
 import TheTask from '../task/TheTask.vue'
 import type { Task } from '@/interface/Task'
 import BaseNotification from '@/views/UI/BaseNotification.vue'
+import { LIST_OF_NON_COMPLETED_TASKS_IS_EMPTY } from '@/const/task'
 
 const props = defineProps({
   tasks: {
@@ -17,7 +18,7 @@ const visibleTasks = computed(() => {
 </script>
 
 <template>
-  <section v-if="visibleTasks.length > 0">
+  <section v-if="visibleTasks.length > LIST_OF_NON_COMPLETED_TASKS_IS_EMPTY">
     <ul>
       <TheTask
         v-for="task in tasks"
