@@ -18,10 +18,12 @@ defineProps({
     type: String as PropType<buttonType>,
   },
 })
+
+defineEmits(['click'])
 </script>
 
 <template>
-  <button :class="buttonTypesMap[btnType]" @click="$emit('click')">
+  <button :class="buttonTypesMap[btnType]" @click="$emit('click', $event)">
     <slot></slot>
   </button>
 </template>
