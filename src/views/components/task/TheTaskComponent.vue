@@ -21,6 +21,8 @@ const task = ref<Task>({
   createdAt: '',
   updatedAt: '',
   priority: '',
+  startDate: '',
+  endDate: '',
   isFinished: false,
   isDrafted: false,
   bulletList: [],
