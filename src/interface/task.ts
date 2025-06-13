@@ -6,6 +6,8 @@ export interface Task {
   createdAt: string
   updatedAt: string
   priority: string
+  startDate: string
+  endDate: string
   isFinished: boolean
   isDrafted: boolean
   bulletList: BulletItem[]
