@@ -92,6 +92,8 @@ const generatePayload = () => {
     createdAt: props.taskToEdit?.createdAt ?? generateCurrentDate(),
     updatedAt: props.mode === 'edit' ? generateCurrentDate() : '',
     priority: selectedPriority.value,
+    startDate: props.mode === 'edit' ? props.taskToEdit?.startDate : startDateInput.value,
+    endDate: props.mode === 'edit' ? props.taskToEdit?.endDate : endDateInput.value,
     isFinished: props.taskToEdit?.isFinished ?? false,
     bulletList: bulletList.value,
   }
