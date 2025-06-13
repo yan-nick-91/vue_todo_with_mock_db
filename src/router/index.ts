@@ -21,7 +21,12 @@ const router = createRouter({
       path: '/tasks/:id',
       name: 'task',
       component: () => import('@/views/pages/TaskView.vue'), // Ensure this file exists at the specified path
-    }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not found',
+      component: () => import('@/views/pages/NotFoundView.vue'),
+    },
   ],
 })
 
