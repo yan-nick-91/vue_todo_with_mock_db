@@ -81,6 +81,7 @@ const confirmRemoval = async () => {
 const cancelRemoval = () => {
   showConfirmDialog.value = false
 }
+
 onMounted(fetchTasks)
 </script>
 
