@@ -18,6 +18,11 @@ const router = createRouter({
       component: () => import('@/views/pages/CompletedTasksView.vue'),
     },
     {
+      path: '/drafts',
+      name: 'drafts',
+      component: () => import('@/views/pages/DraftView.vue'),
+    },
+    {
       path: '/tasks/:id',
       name: 'task',
       component: () => import('@/views/pages/TaskView.vue'), // Ensure this file exists at the specified path
