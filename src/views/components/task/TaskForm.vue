@@ -4,7 +4,7 @@ import type { Task } from '@/interface/Task'
 import type { BulletItem } from '@/interface/BulletItem'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
-import BaseNotification from '@/views/UI/BaseNotification.vue'
+import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import BaseSelection from '@/views/UI/BaseSelection.vue'
 import { addTask, updateTask } from '@/controller/task-controller'
 import { DANGER, SUCCESS, TRANSPARENT, PRIORITIES } from '@/const/base-types'
@@ -19,10 +19,13 @@ const props = defineProps({
     default: false,
   },
   mode: {
-    type: String as PropType<'create' | 'edit'>,
+    type: String as PropType<'create' | 'draft' | 'edit'>,
     required: true,
   },
   taskToEdit: {
+    type: Object as PropType<Task>,
+  },
+  draftedTask: {
     type: Object as PropType<Task>,
   },
 })
@@ -35,14 +38,19 @@ const bulletList = ref<BulletItem[]>([])
 const taskInputError = ref('')
 const bulletInputError = ref('')
 const selectedPriority = ref<(typeof PRIORITIES)[number]>(PRIORITIES[0])
+const shouldSaveAsDraft = ref(false)
 
 watch(
-  () => props.taskToEdit,
-  (newTask) => {
+  [() => props.taskToEdit, () => props.draftedTask],
+  ([newTask, newDraftedTask]) => {
     if (props.mode === 'edit' && newTask) {
       taskInput.value = newTask.task
       selectedPriority.value = newTask.priority as (typeof PRIORITIES)[number]
       bulletList.value = JSON.parse(JSON.stringify(newTask.bulletList))
+    } else if (props.mode === 'draft' && newDraftedTask) {
+      taskInput.value = newDraftedTask.task
+      selectedPriority.value = newDraftedTask.priority as (typeof PRIORITIES)[number]
+      bulletList.value = JSON.parse(JSON.stringify(newDraftedTask.bulletList))
     }
   },
   { immediate: true },
@@ -71,6 +79,10 @@ const submitHandler = async () => {
 }
 
 const generatePayload = () => {
+  const wasAlreadyCreated = !!props.taskToEdit
+
+  const isDraft = shouldSaveAsDraft.value && !wasAlreadyCreated
+
   return {
     id: props.taskToEdit?.id ?? generateTaskId(),
     task: taskInput.value.trim(),
@@ -78,6 +90,7 @@ const generatePayload = () => {
     updatedAt: props.mode === 'edit' ? generateCurrentDate() : '',
     priority: selectedPriority.value,
     isFinished: props.taskToEdit?.isFinished ?? false,
+    isDrafted: isDraft,
     bulletList: bulletList.value,
   }
 }
@@ -95,6 +108,10 @@ const addItemToBulletList = () => {
   })
 
   itemForBulletListInput.value = ''
+}
+
+const saveAsDraft = () => {
+  shouldSaveAsDraft.value = true
 }
 
 const closeModalFormTask = () => {
@@ -116,6 +133,7 @@ const removeBulletItem = (id: string) => {
     :data-id="props.mode === 'create' ? 'createFormModal' : 'editFormModal'"
     class="border w-[80%] mx-auto p-4"
   >
+    <h2>Task Form <strong v-if="props.mode === 'draft'">Drafted</strong></h2>
     <form @submit.prevent="submitHandler">
       <BaseContainer class="w-[100%] mb-2">
         <div>
@@ -130,7 +148,7 @@ const removeBulletItem = (id: string) => {
           />
         </div>
         <div class="mb-2 min-h-[1.5rem]">
-          <BaseNotification v-if="taskInputError" :type="DANGER" :message="taskInputError" />
+          <BaseMessageDisplay v-if="taskInputError" :type="DANGER" :message="taskInputError" />
         </div>
       </BaseContainer>
       <hr />
@@ -183,7 +201,7 @@ const removeBulletItem = (id: string) => {
           />
         </div>
         <div class="mb-1 min-h-[1.5rem]">
-          <BaseNotification v-if="bulletInputError" :type="DANGER" :message="bulletInputError" />
+          <BaseMessageDisplay v-if="bulletInputError" :type="DANGER" :message="bulletInputError" />
         </div>
         <BaseButton
           :btn-type="SUCCESS"
@@ -196,11 +214,21 @@ const removeBulletItem = (id: string) => {
       <hr />
       <div class="flex gap-2 mt-8">
         <BaseButton
+          v-if="props.mode === 'create' || props.mode === 'edit' || props.mode === 'draft'"
           type="submit"
           :btn-type="SUCCESS"
           class="cursor-pointer p-2 rounded transform active:scale-95"
         >
           {{ props.mode === 'create' ? 'Add Task' : 'Save' }}
+        </BaseButton>
+        <BaseButton
+          v-if="props.mode === 'create' || props.mode === 'draft'"
+          type="submit"
+          :btn-type="'info'"
+          class="cursor-pointer p-2 rounded transform active:scale-95"
+          @click="saveAsDraft"
+        >
+          Save as Draft
         </BaseButton>
         <BaseButton
           class="cursor-pointer rounded p-2 transform active:scale-95"
