@@ -66,6 +66,16 @@ export const sendRequestToGetAllFinishedTasks = async () => {
   return response.json()
 }
 
+export const sendRequestToGetAllDraftTasks = async () => {
+  const response = await fetch(`${TASK_ENDPOINT}?isDrafted=true`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  })
+
+  if (!response.ok) throw new Error(response.statusText)
+  return response.json()
+}
+
 export const sendRequestToUpdateTask = async (id: string, taskData: unknown) => {
   const response = await fetch(`${TASK_ENDPOINT}/${id}`, {
     method: 'PUT',
