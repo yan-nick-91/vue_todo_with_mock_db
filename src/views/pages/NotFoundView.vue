@@ -2,4 +2,6 @@
 import NotFoundComponent from '../components/not-found/NotFoundComponent.vue'
 </script>
 
-<template><NotFoundComponent /></template>
+<template>
+  <NotFoundComponent />
+</template>
