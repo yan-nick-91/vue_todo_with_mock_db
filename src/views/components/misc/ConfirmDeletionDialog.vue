@@ -8,6 +8,8 @@ defineProps({
     required: true,
   },
 })
+
+const emit = defineEmits(['confirm', 'cancel'])
 </script>
 
 <template>
@@ -16,8 +18,8 @@ defineProps({
       <h2 class="text-xl font-bold mb-4">Are you sure?</h2>
       <p class="mb-4">This will permanently remove the selected tasks.</p>
       <div class="flex gap-4 justify-end">
-        <BaseButton :btn-type="DANGER" @click="$emit('confirm')">Yes, remove</BaseButton>
-        <BaseButton :btn-type="SUCCESS" @click="$emit('cancel')">Cancel</BaseButton>
+        <BaseButton :btn-type="DANGER" @click="emit('confirm')">Yes, remove</BaseButton>
+        <BaseButton :btn-type="SUCCESS" @click="emit('cancel')">Cancel</BaseButton>
       </div>
     </div>
   </div>
