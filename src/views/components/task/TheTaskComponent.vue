@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import type { Task } from '@/interface/Task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
-import BaseNotification from '@/views/UI/BaseNotification.vue'
+import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import { deleteTask, getTaskId, updateTask } from '@/controller/task-controller'
 import { DANGER, SUCCESS, INFO } from '@/const/base-types'
 import DeleteTaskModal from './DeleteTaskModal.vue'
@@ -22,6 +22,7 @@ const task = ref<Task>({
   updatedAt: '',
   priority: '',
   isFinished: false,
+  isDrafted: false,
   bulletList: [],
 })
 const errorMessage = ref('')
@@ -187,7 +188,7 @@ const onTaskUpdated = (updatedTask: Task) => {
             </div>
           </li>
         </ul>
-        <BaseNotification v-else :message="'No details available'" />
+        <BaseMessageDisplay v-else :message="'No details available'" />
       </div>
 
       <hr />

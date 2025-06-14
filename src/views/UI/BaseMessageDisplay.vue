@@ -2,7 +2,7 @@
 import { SUCCESS, WARNING, DANGER, DEFAULT, type notificationType } from '@/const/base-types'
 import type { PropType } from 'vue'
 
-const notificationTypesMap: Record<string, string> = {
+const displayTypesMap: Record<string, string> = {
   [SUCCESS]: 'text-emerald-600',
   [WARNING]: 'text-yellow-400',
   [DANGER]: 'text-red-500',
@@ -25,6 +25,6 @@ defineProps({
 
 <template>
   <div>
-    <p :class="notificationTypesMap[type]">{{ message }}</p>
+    <p :class="displayTypesMap[type]">{{ message }}</p>
   </div>
 </template>
