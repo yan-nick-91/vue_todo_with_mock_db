@@ -2,16 +2,16 @@
 import { ref, watch, type PropType } from 'vue'
 import type { Task } from '@/interface/Task'
 import type { BulletItem } from '@/interface/BulletItem'
+import { BULLET_ITEM_LIST_IN_TASK_IS_EMPTY } from '@/const/task'
+import { DANGER, SUCCESS, TRANSPARENT, PRIORITIES } from '@/const/base-types'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import BaseSelection from '@/views/UI/BaseSelection.vue'
 import { addTask, updateTask } from '@/controller/task-controller'
-import { DANGER, SUCCESS, TRANSPARENT, PRIORITIES } from '@/const/base-types'
 import { invalidInput } from '@/errors/task-error-handler'
 import { generateBulletItemId, generateCurrentDate, generateTaskId } from '@/util/value-generator'
 import { XMarkIcon } from '@heroicons/vue/16/solid'
-import { BULLET_ITEM_LIST_IN_TASK_IS_EMPTY } from '@/const/task'
 
 const props = defineProps({
   modalIsOpen: {
@@ -62,19 +62,33 @@ watch(
 )
 
 const submitHandler = async () => {
-  if (taskInput.value.trim() === '') {
+  if (shouldSaveAsDraft.value && taskInput.value.trim() === '') {
+    taskInputError.value = invalidInput(
+      'Task cannot be save as draft when the task input field is empty',
+    ).message
+    shouldSaveAsDraft.value = false
+    return
+  }
+
+  if (!shouldSaveAsDraft.value && taskInput.value.trim() === '') {
     taskInputError.value = invalidInput('Input field for task should not be empty').message
     return
   }
 
-  if (new Date(startDateInput.value).getTime() <= Date.now() || startDateInput.value === '') {
-    startDateInputError.value = invalidInput('Start date cannot start in the past').message
-    return
-  }
+  // dates
+  if (!shouldSaveAsDraft.value) {
+    if (new Date(startDateInput.value).getTime() <= Date.now() || startDateInput.value === '') {
+      startDateInputError.value = invalidInput('Start date cannot start in the past').message
+      return
+    }
 
-  if (new Date(endDateInput.value) < new Date(startDateInput.value) || endDateInput.value === '') {
-    endDateInputError.value = invalidInput('End date should not happen before start date').message
-    return
+    if (
+      new Date(endDateInput.value) < new Date(startDateInput.value) ||
+      endDateInput.value === ''
+    ) {
+      endDateInputError.value = invalidInput('End date should not happen before start date').message
+      return
+    }
   }
 
   const payload = generatePayload()
@@ -88,8 +102,11 @@ const submitHandler = async () => {
 
     emit('handleSubmit', payload)
     closeModalFormTask()
+    window.location.reload()
   } catch (err) {
     console.error('Failed to add task:', err)
+  } finally {
+    shouldSaveAsDraft.value = false
   }
 }
 
@@ -129,6 +146,7 @@ const addItemToBulletList = () => {
 
 const saveAsDraft = () => {
   shouldSaveAsDraft.value = true
+  submitHandler()
 }
 
 const closeModalFormTask = () => {
