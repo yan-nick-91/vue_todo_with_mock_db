@@ -256,7 +256,7 @@ const removeBulletItem = (id: string) => {
           v-model="startDateInput"
           id="startDate"
         />
-        <BaseNotification
+        <BaseMessageDisplay
           v-if="startDateInputError"
           :type="DANGER"
           :message="startDateInputError"
@@ -269,7 +269,7 @@ const removeBulletItem = (id: string) => {
           v-model="endDateInput"
           id="endDate"
         />
-        <BaseNotification v-if="endDateInputError" :type="DANGER" :message="endDateInputError" />
+        <BaseMessageDisplay v-if="endDateInputError" :type="DANGER" :message="endDateInputError" />
       </BaseContainer>
       <hr />
       <div class="flex gap-2 mt-8">
