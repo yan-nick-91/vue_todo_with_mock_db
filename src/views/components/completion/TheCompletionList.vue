@@ -22,7 +22,6 @@ defineProps({
         :task="task"
         :mode="'task'"
         :task-mode="'complete'"
-        v-show="task.isFinished"
         @selected="$emit('selected', $event)"
       />
     </ul>
