@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { type PropType, computed } from 'vue'
-import TheTask from '../task/TheTask.vue'
 import type { Task } from '@/interface/Task'
-import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import { LIST_OF_DRAFTED_TASKS_IS_EMPTY } from '@/const/task'
+import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
+import TheTask from '../task/TheTask.vue'
 
 const props = defineProps({
   draftedTasks: {
@@ -20,7 +20,13 @@ const visibleDraftTasks = computed(() => {
 <template>
   <section v-if="visibleDraftTasks.length > LIST_OF_DRAFTED_TASKS_IS_EMPTY">
     <ul>
-      <TheTask v-for="task in draftedTasks" :key="task.id" :task="task" :mode="'draft'" />
+      <TheTask
+        v-for="task in draftedTasks"
+        :key="task.id"
+        :task="task"
+        :mode="'draft'"
+        @selected="$emit('selected', $event)"
+      />
     </ul>
   </section>
   <section v-else>
