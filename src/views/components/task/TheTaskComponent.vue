@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import type { Task } from '@/interface/Task'
+import { BULLET_ITEM_LIST_IN_TASK_IS_EMPTY } from '@/const/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
@@ -9,10 +10,8 @@ import { deleteTask, getTaskId, updateTask } from '@/controller/task-controller'
 import { DANGER, SUCCESS, INFO } from '@/const/base-types'
 import DeleteTaskModal from './DeleteTaskModal.vue'
 import UpdateTaskModal from './UpdateTaskModal.vue'
-import { BULLET_ITEM_LIST_IN_TASK_IS_EMPTY } from '@/const/task'
 
 const route = useRoute()
-const router = useRouter()
 const id = route.params.id as string
 
 const task = ref<Task>({
@@ -78,7 +77,7 @@ const finishTask = async () => {
           ...task.value,
           isFinished: true,
         })
-        router.push({ name: 'home' })
+        window.location.href = '/'
       } catch (error) {
         console.error('Error finishing task:', error)
         errorMessage.value = 'Failed to finish task.'
@@ -92,7 +91,7 @@ const finishTask = async () => {
         ...task.value,
         isFinished: false,
       })
-      router.push({ name: 'home' })
+      window.location.href = '/'
     } catch (error) {
       console.error('Error resetting task:', error)
       errorMessage.value = 'Failed to reset task.'
@@ -103,7 +102,7 @@ const finishTask = async () => {
 const confirmDeletion = async () => {
   try {
     await deleteTask(task.value.id)
-    router.push({ name: 'home' })
+    window.location.href = '/'
   } catch (error) {
     console.error('Something went wrong during task deletion process', error)
   }

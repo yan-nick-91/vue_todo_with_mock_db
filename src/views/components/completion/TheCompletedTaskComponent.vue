@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { deleteTask, getAllFinishedTasks } from '@/controller/task-controller'
 import type { Task } from '@/interface/Task'
-import BaseContainer from '@/views/UI/BaseContainer.vue'
-import TheCompletionList from './TheCompletionList.vue'
-import BaseButton from '@/views/UI/BaseButton.vue'
 import { DANGER } from '@/const/base-types'
-import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import { LIST_OF_COMPLETED_TASKS_IS_EMPTY } from '@/const/task'
+import BaseButton from '@/views/UI/BaseButton.vue'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
+import { deleteTask, getAllFinishedTasks } from '@/controller/task-controller'
+import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
+import TheCompletionList from './TheCompletionList.vue'
 
 const finishedTasks = ref<Task[]>([])
 const selectedFinishedTask = ref<Task[]>([])
@@ -43,6 +43,7 @@ const confirmRemoval = async () => {
     finishedTasks.value = finishedTasks.value.filter((task) => !selectedIds.has(task.id))
     selectedFinishedTask.value = []
     showConfirmDialog.value = false
+    window.location.href = '/completed-tasks'
   } catch (error) {
     console.error('Error deleting tasks:', error)
   }

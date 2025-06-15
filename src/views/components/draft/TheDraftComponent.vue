@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { getAllDraftedTasks } from '@/controller/task-controller'
-import BaseContainer from '@/views/UI/BaseContainer.vue'
-import TheDraftList from '@/views/components/draft/TheDraftList.vue'
-import TheDraftTaskModal from './TheDraftTaskModal.vue'
 import type { Task } from '@/interface/Task'
+import { DANGER } from '@/const/base-types'
+import { LIST_OF_DRAFTED_TASKS_IS_EMPTY } from '@/const/task'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
+import BaseButton from '@/views/UI/BaseButton.vue'
+import TheDraftList from '@/views/components/draft/TheDraftList.vue'
+import { deleteTask, getAllDraftedTasks } from '@/controller/task-controller'
+import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
+import TheDraftTaskModal from './TheDraftTaskModal.vue'
 
 const draftedTasks = ref<Task[]>([])
 const selectedDraftTask = ref<Task[]>([])
 const modalIsOpen = ref(false)
+const showConfirmDialog = ref(false)
 
 const fetchDraftedTasks = async () => {
   try {
@@ -35,7 +40,31 @@ const closeModal = () => {
   modalIsOpen.value = false
 }
 
-onMounted(fetchDraftedTasks)
+const removeSelectedCompletion = () => {
+  showConfirmDialog.value = true
+}
+
+const confirmRemoval = async () => {
+  try {
+    selectedDraftTask.value.map(async (task) => await deleteTask(task.id))
+
+    const selectedIds = new Set(selectedDraftTask.value.map((task) => task.id))
+    draftedTasks.value = draftedTasks.value.filter((task) => !selectedIds.has(task.id))
+    selectedDraftTask.value = []
+    showConfirmDialog.value = false
+    window.location.href = '/drafts'
+  } catch (error) {
+    console.error('Error deleting tasks:', error)
+  }
+}
+
+const cancelRemoval = () => {
+  showConfirmDialog.value = false
+}
+
+onMounted(() => {
+  fetchDraftedTasks()
+})
 </script>
 
 <template>
@@ -48,6 +77,19 @@ onMounted(fetchDraftedTasks)
       @selected="draftedTaskSelected"
       @click="openModal"
     />
+    <BaseButton
+      v-show="selectedDraftTask.length > LIST_OF_DRAFTED_TASKS_IS_EMPTY"
+      :btn-type="DANGER"
+      class="cursor-pointer p-2 rounded transform active:scale-95"
+      @click="removeSelectedCompletion"
+    >
+      Remove selected items
+    </BaseButton>
   </BaseContainer>
   <TheDraftTaskModal :modal-is-open="modalIsOpen" @close:draft="closeModal" />
+  <ConfirmDeletionDialog
+    :show-confirm-dialog="showConfirmDialog"
+    @confirm="confirmRemoval"
+    @cancel="cancelRemoval"
+  />
 </template>
