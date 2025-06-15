@@ -144,7 +144,8 @@ const addItemToBulletList = () => {
   itemForBulletListInput.value = ''
 }
 
-const saveAsDraft = () => {
+const saveAsDraft = (event: Event) => {
+  event.preventDefault()
   shouldSaveAsDraft.value = true
   submitHandler()
 }
