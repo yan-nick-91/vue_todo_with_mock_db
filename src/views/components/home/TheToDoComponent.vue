@@ -7,7 +7,7 @@ import { DANGER, SUCCESS } from '@/const/base-types'
 import { deleteTask, getTasks } from '@/controller/task-controller'
 import TheToDoList from '../home/TheToDoList.vue'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
-import TaskForm from '../task/TaskForm.vue'
+import TaskForm from '../task/form/TaskForm.vue'
 import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
 
 const createTaskModalIsOpen = ref(false)
