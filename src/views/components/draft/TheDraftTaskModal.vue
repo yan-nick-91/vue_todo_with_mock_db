@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import type { Task } from '@/interface/Task'
-import TaskForm from '../task/TaskForm.vue'
+import TaskForm from '../task/form/TaskForm.vue'
 
 defineProps({
   modalIsOpen: {
     type: Boolean,
   },
-  draftedTasks: {
-    type: Object as PropType<Task>,
+  draftedTask: {
+    type: Object as PropType<Task | null>,
   },
 })
 
@@ -25,7 +25,7 @@ const emit = defineEmits(['open:draft', 'close:draft'])
       <TaskForm
         :mode="'draft'"
         :modal-is-open="modalIsOpen"
-        :drafted-task="draftedTasks"
+        :drafted-task="draftedTask"
         @close="emit('close:draft')"
         class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-xl"
       />
