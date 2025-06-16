@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type PropType, computed } from 'vue'
 import type { Task } from '@/interface/Task'
-import TheTask from '../task/TheTask.vue'
+import TheTaskRow from '../task/TheTaskRow.vue'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import { LIST_OF_NON_COMPLETED_TASKS_IS_EMPTY } from '@/const/task'
 
@@ -23,7 +23,7 @@ const visibleTasks = computed(() => {
   <div>
     <section v-if="visibleTasks.length > LIST_OF_NON_COMPLETED_TASKS_IS_EMPTY">
       <ul>
-        <TheTask
+        <TheTaskRow
           v-for="task in visibleTasks"
           :key="task.id"
           :task="task"
