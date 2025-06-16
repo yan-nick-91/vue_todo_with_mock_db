@@ -2,16 +2,15 @@
 import { ref, watch, type PropType } from 'vue'
 import type { Task } from '@/interface/Task'
 import type { BulletItem } from '@/interface/BulletItem'
-import { BULLET_ITEM_LIST_IN_TASK_IS_EMPTY } from '@/const/task'
-import { DANGER, SUCCESS, TRANSPARENT, PRIORITIES } from '@/const/base-types'
+import { DANGER, SUCCESS, PRIORITIES } from '@/const/base-types'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import BaseSelection from '@/views/UI/BaseSelection.vue'
 import { addTask, updateTask } from '@/controller/task-controller'
 import { invalidInput } from '@/errors/task-error-handler'
-import { generateBulletItemId, generateCurrentDate, generateTaskId } from '@/util/value-generator'
-import { XMarkIcon } from '@heroicons/vue/16/solid'
+import { generateCurrentDate, generateTaskId } from '@/util/value-generator'
+import BulletListManager from '@/views/components/task/form/BulletListManager.vue'
 
 const props = defineProps({
   modalIsOpen: {
@@ -26,24 +25,23 @@ const props = defineProps({
     type: Object as PropType<Task>,
   },
   draftedTask: {
-    type: Object as PropType<Task>,
+    type: Object as PropType<Task | null>,
   },
 })
 
 const emit = defineEmits(['close', 'handleSubmit'])
 
 const taskInput = ref('')
-const itemForBulletListInput = ref('')
 const startDateInput = ref('')
 const endDateInput = ref('')
 
 const bulletList = ref<BulletItem[]>([])
-const taskInputError = ref('')
-const bulletInputError = ref('')
-const startDateInputError = ref('')
-const endDateInputError = ref('')
 const selectedPriority = ref<(typeof PRIORITIES)[number]>(PRIORITIES[0])
 const shouldSaveAsDraft = ref(false)
+
+const taskInputError = ref('')
+const startDateInputError = ref('')
+const endDateInputError = ref('')
 
 watch(
   [() => props.taskToEdit, () => props.draftedTask],
@@ -52,10 +50,14 @@ watch(
       taskInput.value = newTask.task
       selectedPriority.value = newTask.priority as (typeof PRIORITIES)[number]
       bulletList.value = JSON.parse(JSON.stringify(newTask.bulletList))
+      startDateInput.value = newTask.startDate
+      endDateInput.value = newTask.endDate
     } else if (props.mode === 'draft' && newDraftedTask) {
       taskInput.value = newDraftedTask.task
       selectedPriority.value = newDraftedTask.priority as (typeof PRIORITIES)[number]
       bulletList.value = JSON.parse(JSON.stringify(newDraftedTask.bulletList))
+      startDateInput.value = newDraftedTask.startDate
+      endDateInput.value = newDraftedTask.endDate
     }
   },
   { immediate: true },
@@ -129,21 +131,6 @@ const generatePayload = () => {
   }
 }
 
-const addItemToBulletList = () => {
-  if (itemForBulletListInput.value.trim() === '') {
-    bulletInputError.value = invalidInput('Input field to add a bullet should not be empty').message
-    return
-  }
-
-  bulletList.value.push({
-    id: generateBulletItemId(),
-    bulletItem: itemForBulletListInput.value.trim(),
-    itemIsFinished: false,
-  })
-
-  itemForBulletListInput.value = ''
-}
-
 const saveAsDraft = (event: Event) => {
   event.preventDefault()
   shouldSaveAsDraft.value = true
@@ -154,8 +141,11 @@ const closeModalFormTask = () => {
   taskInput.value = ''
   bulletList.value = []
   taskInputError.value = ''
-  bulletInputError.value = ''
   emit('close')
+}
+
+const addBulletItem = (item: BulletItem) => {
+  bulletList.value.push(item)
 }
 
 const removeBulletItem = (id: string) => {
@@ -194,59 +184,12 @@ const removeBulletItem = (id: string) => {
         </div>
       </BaseContainer>
       <hr />
-      <BaseContainer class="w-[100%] my-2">
-        <BaseContainer
-          data-id="bulletList"
-          class="w-[100%] mb-2 min-h-[10%] max-h-[10%] bg-gray-100"
-          is-bordered
-        >
-          <div v-if="bulletList.length > BULLET_ITEM_LIST_IN_TASK_IS_EMPTY">
-            <ul>
-              <li
-                v-for="item in bulletList"
-                :key="item.id"
-                class="flex items-center gap-2 py-1 px-2"
-              >
-                <span class="flex-grow">
-                  {{ item.bulletItem }}
-                </span>
-                <span>
-                  <BaseButton
-                    :btn-type="TRANSPARENT"
-                    class="cursor-pointer text-red-500 hover:text-red-600 transform active:scale-95"
-                    type="button"
-                    @click="removeBulletItem(item.id)"
-                    ><XMarkIcon class="h-7 w-7 mt-2"
-                  /></BaseButton>
-                </span>
-              </li>
-            </ul>
-          </div>
-          <div v-else>
-            <p class="p-2 text-gray-500">Nothing added yet.</p>
-          </div>
-        </BaseContainer>
-        <div>
-          <input
-            :class="`border p-1 mb-2 w-[100%] ${bulletInputError ? 'border-red-500 bg-red-200' : ''}`"
-            type="text"
-            id="bulletItemInput"
-            placeholder="Add Item to list (Optional)..."
-            v-model="itemForBulletListInput"
-            @input="bulletInputError = ''"
-          />
-        </div>
-        <div class="mb-1 min-h-[1.5rem]">
-          <BaseMessageDisplay v-if="bulletInputError" :type="DANGER" :message="bulletInputError" />
-        </div>
-        <BaseButton
-          :btn-type="SUCCESS"
-          class="cursor-pointer p-2 rounded transform active:scale-95"
-          @click="addItemToBulletList"
-          type="button"
-          >Add item</BaseButton
-        >
-      </BaseContainer>
+      <BulletListManager
+        :bullet-list="bulletList"
+        @add-bullet-item="addBulletItem"
+        @remove-bullet-item="removeBulletItem"
+      />
+
       <hr />
       <BaseContainer>
         <label for="startDate">Start date</label>
@@ -282,7 +225,7 @@ const removeBulletItem = (id: string) => {
           {{ props.mode === 'create' ? 'Add Task' : 'Save' }}
         </BaseButton>
         <BaseButton
-          v-if="props.mode === 'create' || props.mode === 'draft'"
+          v-if="props.mode === 'create'"
           type="submit"
           :btn-type="'info'"
           class="cursor-pointer p-2 rounded transform active:scale-95"
