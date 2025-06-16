@@ -3,7 +3,7 @@ import { type PropType, computed } from 'vue'
 import type { Task } from '@/interface/Task'
 import { LIST_OF_DRAFTED_TASKS_IS_EMPTY } from '@/const/task'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
-import TheTask from '../task/TheTask.vue'
+import TheTaskRow from '../task/TheTaskRow.vue'
 
 const props = defineProps({
   draftedTasks: {
@@ -20,7 +20,7 @@ const visibleDraftTasks = computed(() => {
 <template>
   <section v-if="visibleDraftTasks.length > LIST_OF_DRAFTED_TASKS_IS_EMPTY">
     <ul>
-      <TheTask
+      <TheTaskRow
         v-for="task in draftedTasks"
         :key="task.id"
         :task="task"

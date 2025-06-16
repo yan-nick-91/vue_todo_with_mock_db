@@ -2,7 +2,7 @@
 import type { PropType } from 'vue'
 import { type Task } from '@/interface/Task'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
-import TheTask from '../task/TheTask.vue'
+import TheTaskRow from '../task/TheTaskRow.vue'
 import { LIST_OF_COMPLETED_TASKS_IS_EMPTY } from '@/const/task'
 
 defineProps({
@@ -16,7 +16,7 @@ defineProps({
 <template>
   <section v-if="finishedTasks.length > LIST_OF_COMPLETED_TASKS_IS_EMPTY">
     <ul>
-      <TheTask
+      <TheTaskRow
         v-for="task in finishedTasks"
         :key="task.id"
         :task="task"
