@@ -11,6 +11,7 @@ import { addTask, updateTask } from '@/controller/task-controller'
 import { invalidInput } from '@/errors/task-error-handler'
 import { generateCurrentDate, generateTaskId } from '@/util/value-generator'
 import BulletListManager from '@/views/components/task/form/BulletListManager.vue'
+import DateInputSection from './DateInputSection.vue'
 
 const props = defineProps({
   modalIsOpen: {
@@ -63,34 +64,69 @@ watch(
   { immediate: true },
 )
 
+const validateDates = (): boolean => {
+  startDateInputError.value = ''
+  endDateInputError.value = ''
+
+  if (!startDateInput.value || new Date(startDateInput.value).getTime() <= Date.now()) {
+    startDateInputError.value = 'Start date cannot be in the past or empty'
+    return false
+  }
+
+  if (!endDateInput.value || new Date(endDateInput.value) < new Date(startDateInput.value)) {
+    endDateInputError.value = 'End date must be after start date and not empty'
+    return false
+  }
+  return true
+}
+
+const clearErrors = () => {
+  taskInputError.value = ''
+  startDateInputError.value = ''
+  endDateInputError.value = ''
+}
+
 const submitHandler = async () => {
-  if (shouldSaveAsDraft.value && taskInput.value.trim() === '') {
+  clearErrors()
+
+  const isDraft = shouldSaveAsDraft.value
+  let hasError = false
+
+  if (!taskInput.value.trim()) {
     taskInputError.value = invalidInput(
-      'Task cannot be save as draft when the task input field is empty',
+      isDraft
+        ? 'Task cannot be saved as draft when the task input field is empty'
+        : 'Input field for task should not be empty',
     ).message
-    shouldSaveAsDraft.value = false
-    return
+    hasError = true
   }
 
-  if (!shouldSaveAsDraft.value && taskInput.value.trim() === '') {
-    taskInputError.value = invalidInput('Input field for task should not be empty').message
-    return
+  if (!isDraft) {
+    const now = new Date()
+    const start = new Date(startDateInput.value)
+    const end = new Date(endDateInput.value)
+
+    if (!startDateInput.value || start <= now) {
+      startDateInputError.value = 'Start date cannot be in the past or empty'
+      hasError = true
+    }
+
+    if (!endDateInput.value || end < start) {
+      endDateInputError.value = 'End date must be after start date and not empty'
+      hasError = true
+    }
+
+    if (hasError) {
+      shouldSaveAsDraft.value = false
+      return
+    }
   }
 
-  // dates
   if (!shouldSaveAsDraft.value) {
-    if (new Date(startDateInput.value).getTime() <= Date.now() || startDateInput.value === '') {
-      startDateInputError.value = invalidInput('Start date cannot start in the past').message
-      return
-    }
-
-    if (
-      new Date(endDateInput.value) < new Date(startDateInput.value) ||
-      endDateInput.value === ''
-    ) {
-      endDateInputError.value = invalidInput('End date should not happen before start date').message
-      return
-    }
+    if (!validateDates()) return
+  } else {
+    startDateInputError.value = ''
+    endDateInputError.value = ''
   }
 
   const payload = generatePayload()
@@ -114,7 +150,6 @@ const submitHandler = async () => {
 
 const generatePayload = () => {
   const wasAlreadyCreated = !!props.taskToEdit
-
   const isDraft = shouldSaveAsDraft.value && !wasAlreadyCreated
 
   return {
@@ -192,27 +227,19 @@ const removeBulletItem = (id: string) => {
 
       <hr />
       <BaseContainer>
-        <label for="startDate">Start date</label>
-        <input
-          type="date"
-          :class="`border p-1 mb-2 w-[100%] ${startDateInputError ? 'border-red-500 bg-red-200' : ''}`"
+        <DateInputSection
+          :date-id="'startData'"
           v-model="startDateInput"
-          id="startDate"
+          :date-input-error-message="startDateInputError"
+          :label="'Start date'"
         />
-        <BaseMessageDisplay
-          v-if="startDateInputError"
-          :type="DANGER"
-          :message="startDateInputError"
-        />
-        <label for="endDate">End date</label>
-        <input
-          type="date"
-          :class="`border p-1 mb-2 w-[100%] ${endDateInputError ? 'border-red-500 bg-red-200' : ''}`"
-          placeholder="Choose an end date"
+
+        <DateInputSection
+          :date-id="'endData'"
           v-model="endDateInput"
-          id="endDate"
+          :date-input-error-message="endDateInputError"
+          :label="'End date'"
         />
-        <BaseMessageDisplay v-if="endDateInputError" :type="DANGER" :message="endDateInputError" />
       </BaseContainer>
       <hr />
       <div class="flex gap-2 mt-8">
