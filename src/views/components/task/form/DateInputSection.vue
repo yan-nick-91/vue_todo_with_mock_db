@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { DANGER } from '@/const/base-types'
+import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 
 defineProps({
-  dateInputValue: {
+  modelValue: {
     type: String,
     required: true,
   },
   dateInputErrorMessage: {
     type: String,
     required: true,
+    default: '',
   },
   dateId: {
     type: String,
     required: true,
+  },
+  label: {
+    type: String,
+    required: false,
   },
 })
 
@@ -24,12 +30,14 @@ const updateValue = (event: Event) => {
 </script>
 
 <template>
-  <label for="startDate">Start date</label>
+  <label :for="`${dateId}`">{{ label }}</label>
   <input
     type="date"
-    :class="`border p-1 mb-2 w-[100%] ${dateInputErrorMessage ? 'border-red-500 bg-red-200' : ''}`"
+    class="border p-1 mb-2 w-full"
+    :class="dateInputErrorMessage ? 'border-red-500 bg-red-200' : ''"
+    :value="modelValue"
     @input="updateValue"
-    id="startDate"
+    :id="`${dateId}`"
   />
   <BaseMessageDisplay
     v-if="dateInputErrorMessage"
