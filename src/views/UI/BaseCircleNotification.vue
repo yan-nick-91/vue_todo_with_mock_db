@@ -1,8 +1,16 @@
 <script setup lang="ts">
 defineProps({
-  counterDisplay: {
+  badgeDisplay: {
     type: [String, Number],
     required: true,
+  },
+  ariaLabel: {
+    type: String,
+    required: false,
+  },
+  role: {
+    type: String,
+    required: false,
   },
 })
 </script>
@@ -10,10 +18,12 @@ defineProps({
 <template>
   <div class="pr-1 flex items-center gap-2 cursor-pointer">
     <span
-      v-if="counterDisplay"
-      class="flex h-5 w-5 items-center justify-center rounded-full px-2 py-1 text-xs font-bold text-white bg-red-600"
+      v-if="badgeDisplay"
+      class="flex h-5 w-5 items-center justify-center rounded-full px-2 py-1 text-[13.5px] font-bold text-white bg-red-600"
+      :role="role"
+      :aria-label="ariaLabel"
     >
-      {{ counterDisplay }}
+      {{ badgeDisplay }}
     </span>
   </div>
 </template>

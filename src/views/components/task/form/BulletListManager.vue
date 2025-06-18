@@ -47,7 +47,7 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
       is-bordered
     >
       <div v-if="bulletList!.length > BULLET_ITEM_LIST_IN_TASK_IS_EMPTY">
-        <ul>
+        <ul role="list">
           <li v-for="item in bulletList" :key="item.id" class="flex items-center gap-2 py-1 px-2">
             <span class="flex-grow">
               {{ item.bulletItem }}
@@ -58,6 +58,7 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
                 class="cursor-pointer text-red-500 hover:text-red-600 transform active:scale-95"
                 type="button"
                 @click="removeBulletItem(item.id)"
+                :aria-label="`Remove bullet item: ${item.bulletItem}`"
                 ><XMarkIcon class="h-7 w-7 mt-2"
               /></BaseButton>
             </span>
@@ -65,7 +66,7 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
         </ul>
       </div>
       <div v-else>
-        <p class="p-2 text-gray-500">Nothing added yet.</p>
+        <p class="p-2 text-gray-500" role="status">Nothing added yet.</p>
       </div>
     </BaseContainer>
     <div>
