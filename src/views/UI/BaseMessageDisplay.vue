@@ -20,11 +20,15 @@ defineProps({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    required: false,
+  },
 })
 </script>
 
 <template>
   <div>
-    <p :class="displayTypesMap[type]">{{ message }}</p>
+    <p :class="displayTypesMap[type]" :role="role">{{ message }}</p>
   </div>
 </template>
