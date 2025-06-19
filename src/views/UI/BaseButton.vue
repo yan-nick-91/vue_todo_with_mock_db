@@ -17,13 +17,27 @@ defineProps({
     default: DEFAULT,
     type: String as PropType<buttonType>,
   },
+  nativeType: {
+    type: String as PropType<'button' | 'submit' | 'reset'>,
+    required: false,
+    default: 'button',
+  },
+  ariaLabel: {
+    type: String,
+    required: false,
+  },
 })
 
 defineEmits(['click'])
 </script>
 
 <template>
-  <button :class="buttonTypesMap[btnType]" @click="$emit('click', $event)">
+  <button
+    :type="nativeType"
+    :class="buttonTypesMap[btnType]"
+    :aria-label="ariaLabel"
+    @click="$emit('click', $event)"
+  >
     <slot></slot>
   </button>
 </template>

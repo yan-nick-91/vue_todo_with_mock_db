@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import BaseNotification from '@/views/UI/BaseNotification.vue'
-import BaseContainer from '@/views/UI/BaseContainer.vue'
 import { RouterLink } from 'vue-router'
+import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
 import { ArrowLeftIcon } from '@heroicons/vue/16/solid'
 </script>
 
 <template>
   <BaseContainer class="mx-auto my-5 p-4">
     <h1 class="text-lg font-medium">404: Page not found</h1>
-    <BaseNotification
+    <BaseMessageDisplay
       :message="'The requested page does not exist'"
       :type="'default'"
       aria-label="Page not found notification"
