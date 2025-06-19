@@ -243,7 +243,7 @@ const removeBulletItem = (id: string) => {
           {{ props.mode === 'create' || props.mode === 'draft' ? 'Add Task' : 'Save' }}
         </BaseButton>
         <BaseButton
-          v-if="props.mode === 'create'"
+          v-if="props.mode === 'create' || props.mode === 'draft'"
           type="submit"
           :btn-type="'info'"
           class="cursor-pointer p-2 rounded transform active:scale-95"
