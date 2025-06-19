@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, type PropType } from 'vue'
+import { computed, ref, watch, type PropType } from 'vue'
 import type { Task } from '@/interface/Task'
 import type { BulletItem } from '@/interface/BulletItem'
 import { DANGER, SUCCESS, PRIORITIES } from '@/const/base-types'
@@ -12,6 +12,7 @@ import { invalidInput } from '@/errors/task-error-handler'
 import { generateCurrentDate, generateTaskId } from '@/util/value-generator'
 import BulletListManager from '@/views/components/task/form/BulletListManager.vue'
 import DateInputSection from './DateInputSection.vue'
+import { FormMode } from '@/const/enums/ModeStates'
 
 const props = defineProps({
   modalIsOpen: {
@@ -26,7 +27,7 @@ const props = defineProps({
     type: Object as PropType<Task>,
   },
   draftedTask: {
-    type: Object as PropType<Task | null>,
+    type: Object as PropType<Task>,
   },
 })
 
@@ -44,27 +45,31 @@ const taskInputError = ref('')
 const startDateInputError = ref('')
 const endDateInputError = ref('')
 
+const prefillForm = (task?: Task) => {
+  if (!task) return
+  taskInput.value = task.task
+  selectedPriority.value = task.priority as (typeof PRIORITIES)[number]
+  bulletList.value = JSON.parse(JSON.stringify(task.bulletList))
+  startDateInput.value = task.startDate
+  endDateInput.value = task.endDate
+}
+
 watch(
   [() => props.taskToEdit, () => props.draftedTask],
   ([newTask, newDraftedTask]) => {
-    if (props.mode === 'edit' && newTask) {
-      taskInput.value = newTask.task
-      selectedPriority.value = newTask.priority as (typeof PRIORITIES)[number]
-      bulletList.value = JSON.parse(JSON.stringify(newTask.bulletList))
-      startDateInput.value = newTask.startDate
-      endDateInput.value = newTask.endDate
-    } else if (props.mode === 'draft' && newDraftedTask) {
-      taskInput.value = newDraftedTask.task
-      selectedPriority.value = newDraftedTask.priority as (typeof PRIORITIES)[number]
-      bulletList.value = JSON.parse(JSON.stringify(newDraftedTask.bulletList))
-      startDateInput.value = newDraftedTask.startDate
-      endDateInput.value = newDraftedTask.endDate
-    }
+    if (props.mode === 'edit') prefillForm(newTask)
+    else if (props.mode === 'draft') prefillForm(newDraftedTask)
   },
   { immediate: true },
 )
 
-const validateDates = (): boolean => {
+const clearErrors = () => {
+  taskInputError.value = ''
+  startDateInputError.value = ''
+  endDateInputError.value = ''
+}
+
+const isDateValid = (): boolean => {
   startDateInputError.value = ''
   endDateInputError.value = ''
 
@@ -80,17 +85,47 @@ const validateDates = (): boolean => {
   return true
 }
 
-const clearErrors = () => {
-  taskInputError.value = ''
-  startDateInputError.value = ''
-  endDateInputError.value = ''
+const isFormComplete = () => {
+  return (
+    taskInput.value.trim() !== '' &&
+    startDateInput.value !== '' &&
+    endDateInput.value !== '' &&
+    isDateValid()
+  )
+}
+
+const modeStatus = computed<FormMode>(() => {
+  if (props.mode === 'edit') return FormMode.EDIT
+  if (props.mode === 'draft') return FormMode.DRAFT
+  return shouldSaveAsDraft.value || !isFormComplete() ? FormMode.DRAFT : FormMode.CREATE
+})
+
+const generatePayload = () => {
+  const isDraft =
+    props.mode === 'draft' && !shouldSaveAsDraft.value && isFormComplete()
+      ? false
+      : modeStatus.value === FormMode.DRAFT
+
+  const id = props.taskToEdit?.id || props.draftedTask?.id || generateTaskId()
+
+  return {
+    id,
+    task: taskInput.value.trim(),
+    createdAt: props.taskToEdit?.createdAt ?? generateCurrentDate(),
+    updatedAt: props.mode === 'edit' ? generateCurrentDate() : '',
+    priority: selectedPriority.value,
+    startDate: props.mode === 'edit' ? props.taskToEdit?.startDate : startDateInput.value,
+    endDate: props.mode === 'edit' ? props.taskToEdit?.endDate : endDateInput.value,
+    isFinished: props.taskToEdit?.isFinished ?? false,
+    isDrafted: isDraft,
+    bulletList: bulletList.value,
+  }
 }
 
 const submitHandler = async () => {
   clearErrors()
 
-  const isDraft = shouldSaveAsDraft.value
-  let hasError = false
+  const isDraft = modeStatus.value === FormMode.DRAFT
 
   if (!taskInput.value.trim()) {
     taskInputError.value = invalidInput(
@@ -98,41 +133,15 @@ const submitHandler = async () => {
         ? 'Task cannot be saved as draft when the task input field is empty'
         : 'Input field for task should not be empty',
     ).message
-    hasError = true
+    return
   }
 
-  if (!isDraft) {
-    const now = new Date()
-    const start = new Date(startDateInput.value)
-    const end = new Date(endDateInput.value)
-
-    if (!startDateInput.value || start <= now) {
-      startDateInputError.value = 'Start date cannot be in the past or empty'
-      hasError = true
-    }
-
-    if (!endDateInput.value || end < start) {
-      endDateInputError.value = 'End date must be after start date and not empty'
-      hasError = true
-    }
-
-    if (hasError) {
-      shouldSaveAsDraft.value = false
-      return
-    }
-  }
-
-  if (!shouldSaveAsDraft.value) {
-    if (!validateDates()) return
-  } else {
-    startDateInputError.value = ''
-    endDateInputError.value = ''
-  }
+  if (!isDraft && !isDateValid()) return
 
   const payload = generatePayload()
 
   try {
-    if (props.mode === 'edit') {
+    if (props.mode === 'edit' || props.mode === 'draft') {
       await updateTask(payload.id, payload)
     } else {
       await addTask(payload)
@@ -145,24 +154,6 @@ const submitHandler = async () => {
     console.error('Failed to add task:', err)
   } finally {
     shouldSaveAsDraft.value = false
-  }
-}
-
-const generatePayload = () => {
-  const wasAlreadyCreated = !!props.taskToEdit
-  const isDraft = shouldSaveAsDraft.value && !wasAlreadyCreated
-
-  return {
-    id: props.taskToEdit?.id ?? generateTaskId(),
-    task: taskInput.value.trim(),
-    createdAt: props.taskToEdit?.createdAt ?? generateCurrentDate(),
-    updatedAt: props.mode === 'edit' ? generateCurrentDate() : '',
-    priority: selectedPriority.value,
-    startDate: props.mode === 'edit' ? props.taskToEdit?.startDate : startDateInput.value,
-    endDate: props.mode === 'edit' ? props.taskToEdit?.endDate : endDateInput.value,
-    isFinished: props.taskToEdit?.isFinished ?? false,
-    isDrafted: isDraft,
-    bulletList: bulletList.value,
   }
 }
 
@@ -249,7 +240,7 @@ const removeBulletItem = (id: string) => {
           :btn-type="SUCCESS"
           class="cursor-pointer p-2 rounded transform active:scale-95"
         >
-          {{ props.mode === 'create' ? 'Add Task' : 'Save' }}
+          {{ props.mode === 'create' || props.mode === 'draft' ? 'Add Task' : 'Save' }}
         </BaseButton>
         <BaseButton
           v-if="props.mode === 'create'"
