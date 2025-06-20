@@ -96,8 +96,8 @@ const isFormComplete = () => {
 
 const modeStatus = computed<FormMode>(() => {
   if (props.mode === 'edit') return FormMode.EDIT
-  if (props.mode === 'draft') return FormMode.DRAFT
-  return shouldSaveAsDraft.value || !isFormComplete() ? FormMode.DRAFT : FormMode.CREATE
+  if (shouldSaveAsDraft.value) return FormMode.DRAFT
+  return FormMode.CREATE
 })
 
 const generatePayload = () => {
@@ -233,7 +233,7 @@ const removeBulletItem = (id: string) => {
         />
       </BaseContainer>
       <hr />
-      <div class="flex gap-2 mt-8">
+      <section class="flex gap-2 mt-8">
         <BaseButton
           v-if="props.mode === 'create' || props.mode === 'edit' || props.mode === 'draft'"
           type="submit"
@@ -258,7 +258,7 @@ const removeBulletItem = (id: string) => {
         >
           Cancel
         </BaseButton>
-      </div>
+      </section>
     </form>
   </section>
 </template>
