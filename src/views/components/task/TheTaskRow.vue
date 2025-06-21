@@ -32,7 +32,7 @@ const emit = defineEmits(['selected', 'click'])
       <div class="flex gap-2 mb-2">
         <input
           type="checkbox"
-          class="border"
+          class="border cursor-pointer"
           :checked="isSelected"
           @change="emit('selected', task)"
         />
@@ -53,7 +53,7 @@ const emit = defineEmits(['selected', 'click'])
       <div class="flex gap-2 mb-2">
         <input
           type="checkbox"
-          class="border"
+          class="border cursor-pointer"
           :checked="isSelected"
           @change="emit('selected', task)"
         />

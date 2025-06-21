@@ -23,7 +23,13 @@ const onClick = () => emit('click')
 
 <template>
   <div class="flex gap-2 mb-2">
-    <input type="checkbox" class="border" :checked="isSelected" @change="onSelected" @click.stop />
+    <input
+      type="checkbox"
+      class="border cursor-pointer"
+      :checked="isSelected"
+      @change="onSelected"
+      @click.stop
+    />
     <BaseButton
       class="flex justify-between w-full p-2 border transform cursor-pointer active:scale-99"
       :btn-type="'transparent'"
