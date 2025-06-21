@@ -72,17 +72,23 @@ const clearErrors = () => {
 const isDateValid = (): boolean => {
   startDateInputError.value = ''
   endDateInputError.value = ''
+  let hasError = false
 
   if (!startDateInput.value || new Date(startDateInput.value).getTime() <= Date.now()) {
-    startDateInputError.value = 'Start date cannot be in the past or empty'
-    return false
+    startDateInputError.value =
+      'Start date cannot be in the past or empty before adding a new task. Either save it as draft of complete this field.'
+    hasError = true
   }
 
-  if (!endDateInput.value || new Date(endDateInput.value) < new Date(startDateInput.value)) {
-    endDateInputError.value = 'End date must be after start date and not empty'
-    return false
+  if (
+    !endDateInput.value ||
+    new Date(endDateInput.value).getTime() < new Date(startDateInput.value).getTime()
+  ) {
+    endDateInputError.value =
+      'End date must be after start date and not empty. Either save as draft or complete this field.'
+    hasError = true
   }
-  return true
+  return hasError
 }
 
 const isFormComplete = () => {
@@ -126,17 +132,20 @@ const submitHandler = async () => {
   clearErrors()
 
   const isDraft = modeStatus.value === FormMode.DRAFT
+  let hasError = false
 
   if (!taskInput.value.trim()) {
     taskInputError.value = invalidInput(
       isDraft
-        ? 'Task cannot be saved as draft when the task input field is empty'
-        : 'Input field for task should not be empty',
+        ? 'Task cannot be saved as draft when the task input field is empty.'
+        : 'Input field for task should not be empty.',
     ).message
-    return
+    hasError = true
   }
 
-  if (!isDraft && !isDateValid()) return
+  if (!isDraft && !isDateValid()) hasError = true
+
+  if (hasError) return
 
   const payload = generatePayload()
 
