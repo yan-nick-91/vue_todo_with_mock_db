@@ -72,12 +72,12 @@ const clearErrors = () => {
 const isDateValid = (): boolean => {
   startDateInputError.value = ''
   endDateInputError.value = ''
-  let hasError = false
+  let hasNoError = true
 
   if (!startDateInput.value || new Date(startDateInput.value).getTime() <= Date.now()) {
     startDateInputError.value =
       'Start date cannot be in the past or empty before adding a new task. Either save it as draft of complete this field.'
-    hasError = true
+    hasNoError = false
   }
 
   if (
@@ -86,9 +86,9 @@ const isDateValid = (): boolean => {
   ) {
     endDateInputError.value =
       'End date must be after start date and not empty. Either save as draft or complete this field.'
-    hasError = true
+    hasNoError = false
   }
-  return hasError
+  return hasNoError
 }
 
 const isFormComplete = () => {
@@ -145,7 +145,10 @@ const submitHandler = async () => {
 
   if (!isDraft && !isDateValid()) hasError = true
 
-  if (hasError) return
+  if (hasError) {
+    shouldSaveAsDraft.value = false
+    return
+  }
 
   const payload = generatePayload()
 
@@ -176,6 +179,7 @@ const closeModalFormTask = () => {
   taskInput.value = ''
   bulletList.value = []
   taskInputError.value = ''
+  shouldSaveAsDraft.value = false
   emit('close')
 }
 
