@@ -8,7 +8,7 @@ defineProps({
     type: Boolean,
   },
   draftedTask: {
-    type: Object as PropType<Task | null>,
+    type: Object as PropType<Task>,
   },
 })
 

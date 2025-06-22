@@ -13,7 +13,7 @@ import TheDraftTaskModal from './TheDraftTaskModal.vue'
 
 const draftedTasks = ref<Task[]>([])
 const selectedDraftTask = ref<Task[]>([])
-const selectedTaskForModal = ref<Task | null>(null)
+const selectedTaskForModal = ref<Task>()
 const modalIsOpen = ref(false)
 const showConfirmDialog = ref(false)
 
