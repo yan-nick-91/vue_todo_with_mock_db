@@ -148,6 +148,14 @@ const onTaskUpdated = (updatedTask: Task) => {
   task.value = { ...updatedTask }
   updateBtnIsSelected.value = false
 }
+
+const dateFormat = (date: string) => {
+  const d = new Date(date)
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+  return `${day}-${month}-${year}`
+}
 </script>
 
 <template>
@@ -190,6 +198,11 @@ const onTaskUpdated = (updatedTask: Task) => {
           </li>
         </ul>
         <BaseMessageDisplay v-else :message="'No details available'" />
+      </div>
+
+      <div>
+        <p><strong>Start date:</strong> {{ dateFormat(task.startDate) }}</p>
+        <p><strong>End date:</strong> {{ dateFormat(task.endDate) }}</p>
       </div>
 
       <hr />
