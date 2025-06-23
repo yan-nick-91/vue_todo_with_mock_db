@@ -9,6 +9,7 @@ import TheToDoList from '../home/TheToDoList.vue'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TaskForm from '../task/form/TaskForm.vue'
 import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
+import TheCalendarComponent from '../calendar/TheCalendarComponent.vue'
 
 const createTaskModalIsOpen = ref(false)
 const tasks = ref<Task[]>([])
@@ -70,6 +71,7 @@ onMounted(fetchTasks)
 
 <template>
   <section>
+    <TheCalendarComponent created-date="t" />
     <BaseContainer class="mx-auto my-5 p-4" is-bordered>
       <h1>To Do's</h1>
       <hr />
