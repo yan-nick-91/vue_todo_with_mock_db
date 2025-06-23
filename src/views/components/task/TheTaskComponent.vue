@@ -66,36 +66,44 @@ const toggleCompletion = async (index: number) => {
   }
 }
 
-const finishTask = async () => {
+const taskIsCompleted = async () => {
   const allDone = task.value.bulletList.every((bullet) => bullet.itemIsFinished)
 
   if (!task.value.isFinished) {
-    if (allDone) {
-      try {
-        errorMessage.value = ''
-        await updateTask(id, {
-          ...task.value,
-          isFinished: true,
-        })
-        window.location.href = '/'
-      } catch (error) {
-        console.error('Error finishing task:', error)
-        errorMessage.value = 'Failed to finish task.'
-      }
-    } else {
-      errorMessage.value = 'Please complete all tasks before finishing.'
-    }
+    setTaskAsFinished(allDone)
   } else {
+    setTaskUnfinished()
+  }
+}
+
+const setTaskAsFinished = async (allDone: boolean) => {
+  if (allDone) {
     try {
+      errorMessage.value = ''
       await updateTask(id, {
         ...task.value,
-        isFinished: false,
+        isFinished: true,
       })
       window.location.href = '/'
     } catch (error) {
-      console.error('Error resetting task:', error)
-      errorMessage.value = 'Failed to reset task.'
+      console.error('Error finishing task:', error)
+      errorMessage.value = 'Failed to finish task.'
     }
+  } else {
+    errorMessage.value = 'Please complete all tasks before finishing.'
+  }
+}
+
+const setTaskUnfinished = async () => {
+  try {
+    await updateTask(id, {
+      ...task.value,
+      isFinished: false,
+    })
+    window.location.href = '/'
+  } catch (error) {
+    console.error('Error resetting task:', error)
+    errorMessage.value = 'Failed to reset task.'
   }
 }
 
@@ -169,6 +177,7 @@ const onTaskUpdated = (updatedTask: Task) => {
       <!-- Bullet List -->
       <div class="mb-2">
         <ul
+          role="list"
           v-if="task.bulletList.length > BULLET_ITEM_LIST_IN_TASK_IS_EMPTY"
           class="list-disc pl-6 space-y-2 text-gray-700"
         >
@@ -210,7 +219,7 @@ const onTaskUpdated = (updatedTask: Task) => {
           Delete
         </BaseButton>
         <BaseButton
-          @click="finishTask"
+          @click="taskIsCompleted"
           :btn-type="SUCCESS"
           class="p-2 rounded cursor-pointer transform active:scale-95"
           >{{ task.isFinished ? 'Mark as Unfinished' : 'Finish Task' }}</BaseButton
