@@ -74,7 +74,15 @@ const isDateValid = (): boolean => {
   endDateInputError.value = ''
   let hasNoError = true
 
-  if (!startDateInput.value || new Date(startDateInput.value).getTime() <= Date.now()) {
+  const start = new Date(startDateInput.value)
+  const end = new Date(endDateInput.value)
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  start.setHours(0, 0, 0, 0)
+  end.setHours(0, 0, 0, 0)
+
+  if (!startDateInput.value || isNaN(start.getTime()) || start < today) {
     startDateInputError.value =
       'Start date cannot be in the past or empty before adding a new task. Either save it as draft of complete this field.'
     hasNoError = false
