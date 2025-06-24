@@ -24,14 +24,40 @@ When('I should see a modal appearing with a form', async () => {
 })
 
 When(
-  'I fill in a task within the task input field with the placeholder {string}',
-  async (placeholder) => {
+  'I fill in the value {string} within the task input field with the placeholder {string}',
+  async (taskValue, placeholder) => {
     const placeholderValue = await pageFixture.page.locator(
       `#taskInput[placeholder^="${placeholder}"]`,
     )
-    await placeholderValue.fill(`task 1`)
+    await placeholderValue.fill(taskValue)
   },
 )
+
+When(
+  'I fill in a date in the start date input input field under the label {string}',
+  async (dateLabel) => {
+    const dateInput = await pageFixture.page.locator(
+      `label:has-text("${dateLabel}") ~ input[type="date"]`,
+    )
+
+    const startDate = new Date()
+    const formattedDate = startDate.toISOString().split('T')[0]
+    await dateInput.fill(formattedDate)
+  },
+)
+
+When('I fill in a date in the end date input field under the label {string}', async (dateLabel) => {
+  const dateInput = await pageFixture.page.locator(
+    `label:has-text("${dateLabel}") ~ input[type="date"]`,
+  )
+
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
+  const formattedDate = tomorrow.toISOString().split('T')[0] // "YYYY-MM-DD"
+
+  await dateInput.fill(formattedDate)
+})
 
 When('I leave the task input field with the placeholder {string} empty', async (placeholder) => {
   const taskInputField = await pageFixture.page.locator(`
