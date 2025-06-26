@@ -18,15 +18,13 @@ defineProps({
 </script>
 
 <template>
-  <section>
-    <select
-      :class="`cursor-pointer ${isBordered ? 'border' : ''}`"
-      :value="modelValue"
-      @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
-    >
-      <option v-for="item in items" :key="item" :value="item">
-        {{ item }}
-      </option>
-    </select>
-  </section>
+  <select
+    :class="`cursor-pointer ${isBordered ? 'border' : ''}`"
+    :value="modelValue"
+    @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
+  >
+    <option v-for="item in items" :key="item" :value="item">
+      {{ item }}
+    </option>
+  </select>
 </template>

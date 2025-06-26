@@ -69,35 +69,46 @@ onMounted(fetchTasks)
 </script>
 
 <template>
-  <section>
+  <section aria-labelledby="todo-list-title">
     <BaseContainer class="mx-auto my-5 p-4" is-bordered>
-      <h1>To Do's</h1>
+      <h1 id="todo-list-title">To Do's</h1>
       <hr />
-      <TheToDoList class="mt-2 mb-2" :tasks="tasks" @selected="taskItemSelected" />
-      <div class="flex gap-2">
+      <TheToDoList
+        class="mt-2 mb-2"
+        :tasks="tasks"
+        aria-labelledby="todo-list-title"
+        @selected="taskItemSelected"
+      />
+      <section class="flex gap-2">
         <BaseButton
-          v-show="selectedTaskItem.length > AMOUNT_OF_SELECTED_TASK_IS_ZERO"
-          :btn-type="DANGER"
-          class="cursor-pointer p-2 rounded transform active:scale-95"
-          @click="removeSelectedTasks"
-          >Remove selected items</BaseButton
-        >
-        <BaseButton
-          v-show="selectedTaskItem.length === AMOUNT_OF_SELECTED_TASK_IS_ZERO"
+          v-if="selectedTaskItem.length === AMOUNT_OF_SELECTED_TASK_IS_ZERO"
           :btn-type="SUCCESS"
           class="cursor-pointer p-2 rounded transform active:scale-95"
           @click="openCreateTaskModal"
+          aria-label="Create new task"
         >
           Create task
         </BaseButton>
-      </div>
+        <BaseButton
+          v-if="selectedTaskItem.length > AMOUNT_OF_SELECTED_TASK_IS_ZERO"
+          :btn-type="DANGER"
+          class="cursor-pointer p-2 rounded transform active:scale-95"
+          @click="removeSelectedTasks"
+          aria-label="Remove selected tasks"
+          >Remove selected items</BaseButton
+        >
+      </section>
     </BaseContainer>
-    <div
+    <section
       v-if="createTaskModalIsOpen"
       class="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="create-task-title"
       @click="closeCreateTaskModal"
     >
       <div @click.stop>
+        <h2 id="create-task-title" class="sr-only">Create New Task</h2>
         <TaskForm
           :mode="'create'"
           :modal-is-open="createTaskModalIsOpen"
@@ -106,7 +117,7 @@ onMounted(fetchTasks)
           class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-md"
         />
       </div>
-    </div>
+    </section>
 
     <!-- Confirmation Dialog -->
     <ConfirmDeletionDialog

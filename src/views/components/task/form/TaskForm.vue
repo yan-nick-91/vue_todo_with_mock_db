@@ -226,9 +226,8 @@ const removeBulletItem = (id: string) => {
       </BaseContainer>
       <hr />
       <BaseContainer class="w-[100%] mb-2">
-        <div>
-          <BaseSelection v-model="selectedPriority" :items="PRIORITIES" is-bordered />
-        </div>
+        <h3 class="sr-only">Select priority</h3>
+        <BaseSelection v-model="selectedPriority" :items="PRIORITIES" is-bordered />
       </BaseContainer>
       <hr />
       <BulletListManager
