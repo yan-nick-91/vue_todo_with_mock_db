@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { LINKS } from '@/const/navigation'
 import { getAllDraftedTasks, getAllFinishedTasks } from '@/controller/task-controller'
 import BaseCircleNotification from '@/views/UI/BaseCircleNotification.vue'
@@ -20,6 +20,8 @@ const refreshHeaderTaskCounts = async () => {
 onMounted(() => {
   refreshHeaderTaskCounts()
 })
+
+const route = useRoute()
 </script>
 
 <template>
@@ -28,12 +30,12 @@ onMounted(() => {
       class="sticky top-0 w-full bg-gradient-to-r from-cyan-800 to-emerald-700 text-amber-50"
       role="navigation"
     >
-      <ul class="flex flex-wrap pl-4" role="list">
-        <li v-for="link in LINKS" :key="link.id" role="listitem">
+      <ul class="flex flex-wrap pl-4">
+        <li v-for="link in LINKS" :key="link.id">
           <RouterLink
             class="flex px-3 py-2 hover:bg-emerald-600 items-center gap-1 font-medium"
             :to="link.url"
-            role="link"
+            :aria-current="route.path === link.url ? 'page' : 'undefined'"
           >
             {{ link.nameToPage }}
             <BaseCircleNotification
