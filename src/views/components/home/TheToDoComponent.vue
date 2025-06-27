@@ -99,16 +99,12 @@ onMounted(fetchTasks)
         >
       </section>
     </BaseContainer>
-    <section
+    <div
       v-if="createTaskModalIsOpen"
       class="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="create-task-title"
       @click="closeCreateTaskModal"
     >
       <div @click.stop>
-        <h2 id="create-task-title" class="sr-only">Create New Task</h2>
         <TaskForm
           :mode="'create'"
           :modal-is-open="createTaskModalIsOpen"
@@ -117,7 +113,7 @@ onMounted(fetchTasks)
           class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-md"
         />
       </div>
-    </section>
+    </div>
 
     <!-- Confirmation Dialog -->
     <ConfirmDeletionDialog
