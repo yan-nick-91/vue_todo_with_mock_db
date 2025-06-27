@@ -30,18 +30,21 @@ const updateValue = (event: Event) => {
 </script>
 
 <template>
-  <label :for="`${dateId}`">{{ label }}</label>
-  <input
-    type="date"
-    class="border p-1 mb-2 w-full"
-    :class="dateInputErrorMessage ? 'border-red-500 bg-red-200' : ''"
-    :value="modelValue"
-    @input="updateValue"
-    :id="`${dateId}`"
-  />
-  <BaseMessageDisplay
-    v-if="dateInputErrorMessage"
-    :type="DANGER"
-    :message="dateInputErrorMessage"
-  />
+  <section>
+    <h4 class="sr-only">{{ label }} input section</h4>
+    <label :for="`${dateId}`">{{ label }}</label>
+    <input
+      type="date"
+      class="border p-1 mb-2 w-full"
+      :class="dateInputErrorMessage ? 'border-red-500 bg-red-200' : ''"
+      :value="modelValue"
+      @input="updateValue"
+      :id="`${dateId}`"
+    />
+    <BaseMessageDisplay
+      v-if="dateInputErrorMessage"
+      :type="DANGER"
+      :message="dateInputErrorMessage"
+    />
+  </section>
 </template>

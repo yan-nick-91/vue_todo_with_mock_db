@@ -40,12 +40,9 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
 </script>
 
 <template>
-  <BaseContainer class="w-[100%] my-2">
-    <BaseContainer
-      data-id="bulletList"
-      class="w-[100%] mb-2 min-h-[10%] max-h-[10%] bg-gray-100"
-      is-bordered
-    >
+  <BaseContainer class="w-full my-2">
+    <h3 class="sr-only">BulletListManager</h3>
+    <div data-id="bulletList" class="w-[100%] mb-2 min-h-[10%] max-h-[10%] bg-gray-100 border">
       <div v-if="bulletList!.length > BULLET_ITEM_LIST_IN_TASK_IS_EMPTY">
         <ul role="list">
           <li v-for="item in bulletList" :key="item.id" class="flex items-center gap-2 py-1 px-2">
@@ -68,7 +65,7 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
       <div v-else>
         <p class="p-2 text-gray-500" role="status">Nothing added yet.</p>
       </div>
-    </BaseContainer>
+    </div>
     <div>
       <input
         :class="`border p-1 mb-2 w-[100%] ${bulletInputError ? 'border-red-500 bg-red-200' : ''}`"

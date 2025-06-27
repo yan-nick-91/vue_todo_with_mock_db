@@ -22,7 +22,7 @@ const visibleTasks = computed(() => {
 <template>
   <div>
     <section v-if="visibleTasks.length > LIST_OF_NON_COMPLETED_TASKS_IS_EMPTY">
-      <ul>
+      <ul aria-label="To-Do List">
         <TheTaskRow
           v-for="task in visibleTasks"
           :key="task.id"
