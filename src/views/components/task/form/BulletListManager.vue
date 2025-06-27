@@ -40,7 +40,8 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
 </script>
 
 <template>
-  <BaseContainer class="w-[100%] my-2">
+  <BaseContainer class="w-full my-2">
+    <h3 class="sr-only">BulletListManager</h3>
     <div data-id="bulletList" class="w-[100%] mb-2 min-h-[10%] max-h-[10%] bg-gray-100 border">
       <div v-if="bulletList!.length > BULLET_ITEM_LIST_IN_TASK_IS_EMPTY">
         <ul role="list">
