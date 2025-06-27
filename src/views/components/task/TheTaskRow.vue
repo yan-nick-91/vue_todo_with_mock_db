@@ -28,46 +28,35 @@ const emit = defineEmits(['selected', 'click'])
 
 <template>
   <li v-if="props.mode === 'task'">
-    <div v-if="props.taskMode === 'main'">
-      <div class="flex gap-2 mb-2">
+    <div v-if="props.taskMode === 'main' || props.taskMode === 'complete'">
+      <article class="flex gap-2 mb-2" :aria-labelledby="`task-${task.id}-label`">
         <input
           type="checkbox"
           class="border cursor-pointer"
           :checked="isSelected"
+          :id="`checkbox-${task.id}`"
+          :aria-checked="isSelected"
+          :aria-labelledby="`checkbox-${task.id} task-${task.id}-label`"
           @change="emit('selected', task)"
         />
         <RouterLink
           :to="{ name: 'task', params: { id: props.task.id } }"
           class="flex justify-between w-full p-2 border transform active:scale-99"
+          :aria-labelledby="`task-${task.id}-label`"
+          role="link"
         >
           <div class="flex items-center gap-2">
             <ChevronRightIcon class="h-6 w-6 text-gray-800" />
             {{ props.task.task }}
           </div>
-          <span><strong>Created at:</strong> {{ props.task.createdAt }}</span>
+          <span :id="`task-${task.id}-label`">
+            <strong>Created at: </strong>
+            <time :datetime="props.task.createdAt">
+              {{ props.task.createdAt }}
+            </time>
+          </span>
         </RouterLink>
-      </div>
-    </div>
-
-    <div v-if="props.taskMode === 'complete'">
-      <div class="flex gap-2 mb-2">
-        <input
-          type="checkbox"
-          class="border cursor-pointer"
-          :checked="isSelected"
-          @change="emit('selected', task)"
-        />
-        <RouterLink
-          :to="{ name: 'task', params: { id: props.task.id } }"
-          class="flex justify-between w-full p-2 border transform active:scale-99"
-        >
-          <div class="flex items-center gap-2">
-            <ChevronRightIcon class="h-6 w-6 text-gray-800" />
-            {{ props.task.task }}
-          </div>
-          <span><strong>Created at:</strong> {{ props.task.createdAt }}</span>
-        </RouterLink>
-      </div>
+      </article>
     </div>
   </li>
   <li v-if="props.mode === 'draft'">
