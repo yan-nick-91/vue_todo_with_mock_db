@@ -2,8 +2,7 @@
 import { computed, ref, watch, type PropType } from 'vue'
 import type { Task } from '@/interface/Task'
 import type { BulletItem } from '@/interface/BulletItem'
-import { DANGER, SUCCESS, PRIORITIES } from '@/const/base-types'
-import BaseButton from '@/views/UI/BaseButton.vue'
+import { DANGER, PRIORITIES } from '@/const/base-types'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import BaseSelection from '@/views/UI/BaseSelection.vue'
@@ -13,6 +12,7 @@ import { generateCurrentDate, generateTaskId } from '@/util/value-generator'
 import BulletListManager from '@/views/components/task/form/BulletListManager.vue'
 import DateInputSection from './DateInputSection.vue'
 import { FormMode } from '@/const/enums/ModeStates'
+import FormButtonSection from './FormButtonSection.vue'
 
 const props = defineProps({
   modalIsOpen: {
@@ -139,19 +139,15 @@ const generatePayload = () => {
 const submitHandler = async () => {
   clearErrors()
 
-  const isDraft = modeStatus.value === FormMode.DRAFT
+  const isSavingAsDraft = shouldSaveAsDraft.value
   let hasError = false
 
-  if (!taskInput.value.trim()) {
-    taskInputError.value = invalidInput(
-      isDraft
-        ? 'Task cannot be saved as draft when the task input field is empty.'
-        : 'Input field for task should not be empty.',
-    ).message
+  if (!isSavingAsDraft && !taskInput.value.trim()) {
+    taskInputError.value = invalidInput('Input field for task should not be empty.').message
     hasError = true
   }
 
-  if (!isDraft && !isDateValid()) hasError = true
+  if (!isSavingAsDraft && !isDateValid()) hasError = true
 
   if (hasError) {
     shouldSaveAsDraft.value = false
@@ -160,9 +156,13 @@ const submitHandler = async () => {
 
   const payload = generatePayload()
 
+  addOrUpdateTaskFetchHandler(payload.id, payload)
+}
+
+const addOrUpdateTaskFetchHandler = async (id: string, payload: unknown) => {
   try {
     if (props.mode === 'edit' || props.mode === 'draft') {
-      await updateTask(payload.id, payload)
+      await updateTask(id, payload)
     } else {
       await addTask(payload)
     }
@@ -206,34 +206,55 @@ const removeBulletItem = (id: string) => {
     :data-id="props.mode === 'create' ? 'createFormModal' : 'editFormModal'"
     class="border w-[80%] mx-auto p-4"
   >
-    <h2>Task Form <strong v-if="props.mode === 'draft'">Drafted</strong></h2>
-    <form @submit.prevent="submitHandler">
-      <BaseContainer class="w-[100%] mb-2">
+    <h2 class="text-[1.5rem]">
+      <span v-if="props.mode === 'create'">Task Form</span>
+      <span v-if="props.mode === 'edit'">Update Task</span>
+      <span v-if="props.mode === 'draft'">Task Form <strong>(Drafted)</strong></span>
+    </h2>
+    <hr />
+    <form @submit.prevent="submitHandler" class="mt-5">
+      <BaseContainer class="w-full mb-2">
         <div>
+          <label for="taskInput" class="block font-semibold mb-1">Task Description</label>
           <input
-            :class="`border p-1 w-[100%]
-          ${taskInputError ? 'border-red-500 bg-red-200' : ''}`"
             id="taskInput"
+            class="border p-1 w-full"
+            :class="{ 'border-red-500 bg-red-200': taskInputError }"
             type="text"
             placeholder="Enter a task..."
             v-model="taskInput"
             @input="taskInputError = ''"
+            aria-required="true"
+            :aria-invalid="taskInputError ? 'true' : 'false'"
+            aria-describedby="taskInputError"
           />
         </div>
         <div class="mb-2 min-h-[1.5rem]">
-          <BaseMessageDisplay v-if="taskInputError" :type="DANGER" :message="taskInputError" />
+          <BaseMessageDisplay
+            v-if="taskInputError"
+            :id="'taskInputError'"
+            :type="DANGER"
+            :message="taskInputError"
+            role="alert"
+          />
         </div>
       </BaseContainer>
       <hr />
-      <BaseContainer class="w-[100%] mb-2">
-        <h3 class="sr-only">Select priority</h3>
-        <BaseSelection v-model="selectedPriority" :items="PRIORITIES" is-bordered />
+      <BaseContainer class="w-full mb-2">
+        <h3 class="sr-only" id="prioritySection">Select priority</h3>
+        <BaseSelection
+          v-model="selectedPriority"
+          :items="PRIORITIES"
+          is-bordered
+          aria-labelledby="prioritySection"
+        />
       </BaseContainer>
       <hr />
       <BulletListManager
         :bullet-list="bulletList"
         @add-bullet-item="addBulletItem"
         @remove-bullet-item="removeBulletItem"
+        aria-label="Bullet list manager"
       />
 
       <hr />
@@ -253,31 +274,13 @@ const removeBulletItem = (id: string) => {
         />
       </BaseContainer>
       <hr />
-      <section class="flex gap-2 mt-8">
-        <BaseButton
-          v-if="props.mode === 'create' || props.mode === 'edit' || props.mode === 'draft'"
-          type="submit"
-          :btn-type="SUCCESS"
-          class="cursor-pointer p-2 rounded transform active:scale-95"
-        >
-          {{ props.mode === 'create' || props.mode === 'draft' ? 'Add Task' : 'Save' }}
-        </BaseButton>
-        <BaseButton
-          v-if="props.mode === 'create' || props.mode === 'draft'"
-          type="submit"
-          :btn-type="'info'"
-          class="cursor-pointer p-2 rounded transform active:scale-95"
-          @click="saveAsDraft"
-        >
-          Save as Draft
-        </BaseButton>
-        <BaseButton
-          class="cursor-pointer rounded p-2 transform active:scale-95"
-          :btn-type="DANGER"
-          @click="closeModalFormTask"
-        >
-          Cancel
-        </BaseButton>
+      <section class="flex gap-2 mt-8" aria-label="Form action buttons">
+        <h3 class="sr-only">Button section</h3>
+        <FormButtonSection
+          :mode="mode"
+          @save:draft="saveAsDraft"
+          @close:modal="closeModalFormTask"
+        />
       </section>
     </form>
   </section>
