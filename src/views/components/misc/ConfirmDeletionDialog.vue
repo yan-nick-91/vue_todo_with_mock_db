@@ -14,7 +14,7 @@ const emit = defineEmits(['confirm', 'cancel'])
 
 <template>
   <section
-    v-show="showConfirmDialog"
+    v-if="showConfirmDialog"
     class="flex justify-center items-center z-50"
     role="dialog"
     aria-modal="true"
