@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
+import { taskStore } from '@/stores/taskStore'
 import { RouterLink, useRoute } from 'vue-router'
 import { LINKS } from '@/const/navigation'
-import { getAllDraftedTasks, getAllFinishedTasks } from '@/controller/task-controller'
 import BaseCircleNotification from '@/views/UI/BaseCircleNotification.vue'
 
-const draftedTasks = ref([])
-const finishedTasks = ref([])
+const store = taskStore()
 
 const refreshHeaderTaskCounts = async () => {
   try {
-    draftedTasks.value = await getAllDraftedTasks()
-    finishedTasks.value = await getAllFinishedTasks()
+    await store.refreshTasks()
   } catch (error) {
     console.error('Failed to refresh header task counts:', error)
   }
@@ -40,14 +38,14 @@ const route = useRoute()
             {{ link.nameToPage }}
             <BaseCircleNotification
               v-if="link.nameToPage === 'Completed Task'"
-              :badge-display="finishedTasks.length"
-              :aria-label="`Count ${finishedTasks.length}`"
+              :badge-display="store.finishedTasks.length"
+              :aria-label="`Count ${store.finishedTasks.length}`"
               :role="'status'"
             />
             <BaseCircleNotification
               v-else-if="link.nameToPage === 'Drafts'"
-              :badge-display="draftedTasks.length"
-              :aria-label="`Count ${draftedTasks.length}`"
+              :badge-display="store.draftedTasks.length"
+              :aria-label="`Count ${store.draftedTasks.length}`"
               :role="'status'"
             />
           </RouterLink>
