@@ -156,7 +156,7 @@ const submitHandler = async () => {
 
   const payload = generatePayload()
 
-  addOrUpdateTaskFetchHandler(payload.id, payload)
+  await addOrUpdateTaskFetchHandler(payload.id, payload)
 }
 
 const addOrUpdateTaskFetchHandler = async (id: string, payload: unknown) => {
