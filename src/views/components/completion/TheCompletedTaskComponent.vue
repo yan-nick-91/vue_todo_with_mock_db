@@ -8,6 +8,9 @@ import BaseContainer from '@/views/UI/BaseContainer.vue'
 import { deleteTask, getAllFinishedTasks } from '@/controller/task-controller'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TheCompletionList from './TheCompletionList.vue'
+import { taskStore } from '@/stores/taskStore'
+
+const store = taskStore()
 
 const finishedTasks = ref<Task[]>([])
 const selectedFinishedTask = ref<Task[]>([])
@@ -43,7 +46,7 @@ const confirmRemoval = async () => {
     finishedTasks.value = finishedTasks.value.filter((task) => !selectedIds.has(task.id))
     selectedFinishedTask.value = []
     showConfirmDialog.value = false
-    window.location.href = '/completed-tasks'
+    store.refreshTasks() // Refresh the task list in the store
   } catch (error) {
     console.error('Error deleting tasks:', error)
   }

@@ -10,6 +10,9 @@ import { deleteTask, getAllDraftedTasks } from '@/controller/task-controller'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TheTaskRow from '../task/TheTaskRow.vue'
 import TheDraftTaskModal from './TheDraftTaskModal.vue'
+import { taskStore } from '@/stores/taskStore'
+
+const store = taskStore()
 
 const draftedTasks = ref<Task[]>([])
 const selectedDraftTask = ref<Task[]>([])
@@ -55,7 +58,8 @@ const confirmRemoval = async () => {
     draftedTasks.value = draftedTasks.value.filter((task) => !selectedIds.has(task.id))
     selectedDraftTask.value = []
     showConfirmDialog.value = false
-    window.location.href = '/drafts'
+    store.refreshTasks() // Refresh the task list in the store
+    // window.location.href = '/drafts'
   } catch (error) {
     console.error('Error deleting tasks:', error)
   }
