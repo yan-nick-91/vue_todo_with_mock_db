@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { taskStore } from '@/stores/taskStore'
 import type { Task } from '@/interface/Task'
 import { BULLET_ITEM_LIST_IN_TASK_IS_EMPTY } from '@/const/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
@@ -11,7 +12,9 @@ import { DANGER, SUCCESS, INFO } from '@/const/base-types'
 import DeleteTaskModal from './DeleteTaskModal.vue'
 import UpdateTaskModal from './UpdateTaskModal.vue'
 
+const store = taskStore()
 const route = useRoute()
+const router = useRouter()
 const id = route.params.id as string
 
 const task = ref<Task>({
@@ -84,7 +87,9 @@ const setTaskAsFinished = async (allDone: boolean) => {
         ...task.value,
         isFinished: true,
       })
-      window.location.href = '/'
+      store.refreshTasks()
+      router.push('/')
+      // window.location.href = '/'
     } catch (error) {
       console.error('Error finishing task:', error)
       errorMessage.value = 'Failed to finish task.'
@@ -100,7 +105,9 @@ const setTaskUnfinished = async () => {
       ...task.value,
       isFinished: false,
     })
-    window.location.href = '/'
+    store.refreshTasks()
+    router.push('/')
+    // window.location.href = '/'
   } catch (error) {
     console.error('Error resetting task:', error)
     errorMessage.value = 'Failed to reset task.'

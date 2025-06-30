@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch, type PropType } from 'vue'
+import { taskStore } from '@/stores/taskStore'
 import type { Task } from '@/interface/Task'
 import type { BulletItem } from '@/interface/BulletItem'
 import { DANGER, PRIORITIES } from '@/const/base-types'
@@ -32,6 +33,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close', 'handleSubmit'])
+
+const store = taskStore()
 
 const taskInput = ref('')
 const startDateInput = ref('')
@@ -167,9 +170,9 @@ const addOrUpdateTaskFetchHandler = async (id: string, payload: unknown) => {
       await addTask(payload)
     }
 
+    await store.refreshTasks()
     emit('handleSubmit', payload)
     closeModalFormTask()
-    window.location.reload()
   } catch (err) {
     console.error('Failed to add task:', err)
   } finally {
