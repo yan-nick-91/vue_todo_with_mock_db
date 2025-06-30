@@ -6,7 +6,7 @@ import { LIST_OF_DRAFTED_TASKS_IS_EMPTY } from '@/const/task'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
-import { deleteTask, getAllDraftedTasks } from '@/controller/task-controller'
+import { deleteTask } from '@/controller/task-controller'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TheTaskRow from '../task/TheTaskRow.vue'
 import TheDraftTaskModal from './TheDraftTaskModal.vue'
@@ -14,7 +14,6 @@ import { taskStore } from '@/stores/taskStore'
 
 const store = taskStore()
 
-const draftedTasks = ref<Task[]>([])
 const selectedDraftTask = ref<Task[]>([])
 const selectedTaskForModal = ref<Task>()
 const modalIsOpen = ref(false)
@@ -22,7 +21,7 @@ const showConfirmDialog = ref(false)
 
 const fetchDraftedTasks = async () => {
   try {
-    draftedTasks.value = await getAllDraftedTasks()
+    await store.refreshTasks()
   } catch (error) {
     console.error('Error fetching drafted tasks:', error)
   }
@@ -52,14 +51,11 @@ const removeSelectedCompletion = () => {
 
 const confirmRemoval = async () => {
   try {
-    selectedDraftTask.value.map(async (task) => await deleteTask(task.id))
+    await Promise.all(selectedDraftTask.value.map((task) => deleteTask(task.id)))
 
-    const selectedIds = new Set(selectedDraftTask.value.map((task) => task.id))
-    draftedTasks.value = draftedTasks.value.filter((task) => !selectedIds.has(task.id))
-    selectedDraftTask.value = []
+selectedDraftTask.value = []
     showConfirmDialog.value = false
     store.refreshTasks() // Refresh the task list in the store
-    // window.location.href = '/drafts'
   } catch (error) {
     console.error('Error deleting tasks:', error)
   }
@@ -79,10 +75,10 @@ onMounted(() => {
     <h1>Draft</h1>
     <hr />
 
-    <section class="mt-2 mb-2" v-if="draftedTasks.length > LIST_OF_DRAFTED_TASKS_IS_EMPTY">
+    <section class="mt-2 mb-2" v-if="store.draftedTasks.length > LIST_OF_DRAFTED_TASKS_IS_EMPTY">
       <ul>
         <TheTaskRow
-          v-for="task in draftedTasks"
+          v-for="task in store.draftedTasks"
           :key="task.id"
           :task="task"
           :mode="'draft'"
