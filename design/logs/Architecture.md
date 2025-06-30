@@ -1,6 +1,6 @@
 # Architectuur van ToDo app
 
-![frontend architecture](../model/simple_frontend_architecture.png)
+![frontend architecture](../model/simple_frontend_architecture_new.png)
 
 In het voorbeeld is de architectuur van de ToDo app in kaart gebracht, waarbij verschillende verantwoordelijkheden zijn ingedeeld binnen de betreffende (sub)folders.
 
@@ -10,6 +10,8 @@ In het voorbeeld is de architectuur van de ToDo app in kaart gebracht, waarbij v
 - typescript
 - tailwind
 - vite
+- pinia
+- json-server (mock-backend)
 
 ---
 
