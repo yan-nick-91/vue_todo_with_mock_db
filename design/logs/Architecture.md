@@ -66,27 +66,33 @@ flowchart LR
 
     %% Heen route zonder labels (standaard pijlen)
     Views --> Controller
+    Views --> Store
     Controller --> Service
     Service --> Backend
 
     %% Retour route als aparte nodes en rechte verbindingen
     subgraph Communication: Views-Controller-Service
       direction LR
-      Backend --- DataLabel ---> Service --- ResponseLabel ---> Controller --- UpdateLabel ---> Views
+      Backend --- DataLabel ---> Service
+      Service --- ResponseLabel ---> Controller
+      Controller --- StoreUpdateLabel ---> Store
+      Store --- ReactiveLabel ---> Views
     end
 
     %% Label nodes met tekst
     DataLabel["data"]
     ResponseLabel["response"]
-    UpdateLabel["update"]
+    StoreUpdateLabel["store.update()"]
+    ReactiveLabel["reads from store"]
 
     %% Style label nodes
-    class DataLabel,ResponseLabel,UpdateLabel labelStyle;
+    class DataLabel,ResponseLabel,StoreUpdateLabel,ReactiveLabel labelStyle;
 
     classDef labelStyle fill:#58a6ff,stroke:none,color:#fff,font-weight:bold,font-size:12px,border-radius:4px,padding:4px;
 
-    %% Retourlijnen een aparte class voor gestippelde stijl (inclusief laatste 2 pijlen)
-    linkStyle 3,4,5,6,7,8 stroke:#58a6ff, stroke-width:2px, stroke-dasharray: 6 4, fill:none
+    %% Gestippelde stijl voor retourroute (inclusief Store → Views)
+    linkStyle 4,5,6,7,8,9,10,11 stroke:#58a6ff, stroke-width:2px, stroke-dasharray: 6 4, fill:none
+
 ```
 
 ## Service
