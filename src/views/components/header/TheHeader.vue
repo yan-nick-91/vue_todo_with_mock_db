@@ -31,13 +31,18 @@ const route = useRoute()
       <ul class="flex flex-wrap pl-4">
         <li v-for="link in LINKS" :key="link.id">
           <RouterLink
-            class="flex px-3 py-2 hover:bg-emerald-600 items-center gap-1 font-medium"
+            class="flex px-3 py-2 hover:bg-emerald-600 items-center gap-1 font-medium cursor-pointer transform active:scale-95"
             :to="link.url"
             :aria-current="route.path === link.url ? 'page' : 'undefined'"
+            :class="{ 'bg-emerald-500 text-white': route.path === link.url }"
           >
             {{ link.nameToPage }}
             <BaseCircleNotification
-              v-if="link.nameToPage === 'Completed Task'"
+              v-if="link.nameToPage === 'Home'"
+              :badge-display="store.defaultTasks.length"
+            />
+            <BaseCircleNotification
+              v-else-if="link.nameToPage === 'Completed Task'"
               :badge-display="store.finishedTasks.length"
               :aria-label="`Count ${store.finishedTasks.length}`"
               :role="'status'"
