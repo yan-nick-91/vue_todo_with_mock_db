@@ -9,6 +9,9 @@ import TheToDoList from '../home/TheToDoList.vue'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TaskForm from '../task/form/TaskForm.vue'
 import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
+import { taskStore } from '@/stores/taskStore'
+
+const store = taskStore()
 
 const createTaskModalIsOpen = ref(false)
 const tasks = ref<Task[]>([])
@@ -56,6 +59,7 @@ const confirmRemoval = async () => {
     tasks.value = tasks.value.filter((task) => !selectedIds.has(task.id))
     selectedTaskItem.value = []
     showConfirmDialog.value = false
+    store.refreshTasks() // Refresh the task list in the store
   } catch (error) {
     console.error('Error deleting tasks:', error)
   }
