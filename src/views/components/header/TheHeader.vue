@@ -40,6 +40,8 @@ const route = useRoute()
             <BaseCircleNotification
               v-if="link.nameToPage === 'Home'"
               :badge-display="store.defaultTasks.length"
+              :aria-label="`Count ${store.defaultTasks.length}`"
+              :role="'status'"
             />
             <BaseCircleNotification
               v-else-if="link.nameToPage === 'Completed Task'"
