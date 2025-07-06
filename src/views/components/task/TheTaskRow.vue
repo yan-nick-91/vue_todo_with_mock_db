@@ -48,6 +48,9 @@ const emit = defineEmits(['selected', 'click'])
           <div class="flex items-center gap-2">
             <ChevronRightIcon class="h-6 w-6 text-gray-800" />
             {{ props.task.task }}
+            <span v-if="new Date(props.task.endDate) < new Date() && !props.task.isFinished">
+              <span class="text-red-600 text-sm font-medium">(Past Due)</span>
+            </span>
           </div>
           <span :id="`task-${task.id}-label`">
             <strong>Created at: </strong>
