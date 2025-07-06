@@ -102,14 +102,14 @@ const isDateValid = (): boolean => {
   return hasNoError
 }
 
-const isFormComplete = () => {
-  return (
-    taskInput.value.trim() !== '' &&
-    startDateInput.value !== '' &&
-    endDateInput.value !== '' &&
-    isDateValid()
-  )
-}
+// const isFormComplete = () => {
+//   return (
+//     taskInput.value.trim() !== '' &&
+//     startDateInput.value !== '' &&
+//     endDateInput.value !== '' &&
+//     isDateValid()
+//   )
+// }
 
 const modeStatus = computed<FormMode>(() => {
   if (props.mode === 'edit') return FormMode.EDIT
@@ -118,10 +118,7 @@ const modeStatus = computed<FormMode>(() => {
 })
 
 const generatePayload = () => {
-  const isDraft =
-    props.mode === 'draft' && !shouldSaveAsDraft.value && isFormComplete()
-      ? false
-      : modeStatus.value === FormMode.DRAFT
+  // const isDraft = shouldSaveAsDraft.value || modeStatus.value === FormMode.DRAFT
 
   const id = props.taskToEdit?.id || props.draftedTask?.id || generateTaskId()
 
@@ -134,7 +131,7 @@ const generatePayload = () => {
     startDate: props.mode === 'edit' ? props.taskToEdit?.startDate : startDateInput.value,
     endDate: props.mode === 'edit' ? props.taskToEdit?.endDate : endDateInput.value,
     isFinished: props.taskToEdit?.isFinished ?? false,
-    isDrafted: isDraft,
+    isDrafted: shouldSaveAsDraft.value || modeStatus.value === FormMode.DRAFT,
     bulletList: bulletList.value,
   }
 }
@@ -145,7 +142,7 @@ const submitHandler = async () => {
   const isSavingAsDraft = shouldSaveAsDraft.value
   let hasError = false
 
-  if (!isSavingAsDraft && !taskInput.value.trim()) {
+  if (!taskInput.value.trim()) {
     taskInputError.value = invalidInput('Input field for task should not be empty.').message
     hasError = true
   }
