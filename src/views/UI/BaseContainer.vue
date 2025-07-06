@@ -4,11 +4,15 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  fullWidth: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 
 <template>
-  <section :class="`w-[80%] ${isBordered ? 'border' : ''}`">
+  <section :class="`${fullWidth ? 'w-full' : 'w-[80%]'} ${isBordered ? 'border' : ''}`">
     <slot></slot>
   </section>
 </template>
