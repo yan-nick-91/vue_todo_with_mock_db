@@ -3,9 +3,9 @@ import { computed, ref, watch, type PropType } from 'vue'
 import { taskStore } from '@/stores/taskStore'
 import type { Task } from '@/interface/Task'
 import type { BulletItem } from '@/interface/BulletItem'
-import { DANGER, PRIORITIES } from '@/const/base-types'
+import { PRIORITIES } from '@/const/base-types'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
-import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
+// import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import BaseSelection from '@/views/UI/BaseSelection.vue'
 import { addTask, updateTask } from '@/controller/task-controller'
 import { invalidInput } from '@/errors/task-error-handler'
@@ -14,6 +14,7 @@ import BulletListManager from '@/views/components/task/form/BulletListManager.vu
 import DateInputSection from './DateInputSection.vue'
 import { FormMode } from '@/const/enums/ModeStates'
 import FormButtonSection from './FormButtonSection.vue'
+import BaseInputSection from '@/views/UI/BaseInputSection.vue'
 
 const props = defineProps({
   modalIsOpen: {
@@ -139,10 +140,9 @@ const submitHandler = async () => {
     props.mode === 'edit' && startDateInput.value !== props.taskToEdit?.startDate
   const isEndDateChanged = props.mode === 'edit' && endDateInput.value !== props.taskToEdit?.endDate
 
-  const shouldValidateDate =
-    props.mode !== 'edit' || (!shouldSaveAsDraft.value && (isStartDateChanged || isEndDateChanged))
+  const shouldValidateDate = props.mode !== 'edit' || isStartDateChanged || isEndDateChanged
 
-  if (shouldValidateDate && !isDateValid()) hasError = true
+  if (!shouldSaveAsDraft.value && shouldValidateDate && !isDateValid()) hasError = true
 
   if (hasError) {
     shouldSaveAsDraft.value = false
@@ -208,7 +208,15 @@ const removeBulletItem = (id: string) => {
     </h2>
     <hr />
     <form @submit.prevent="submitHandler" class="mt-5">
-      <BaseContainer class="w-full mb-2">
+      <BaseInputSection
+        id="taskInput"
+        label="Task Description"
+        labelDisplay="Task Description"
+        v-model="taskInput"
+        :inputError="taskInputError"
+        @update:modelValue="taskInput = $event"
+      />
+      <!-- <BaseContainer class="w-full mb-2">
         <div>
           <label for="taskInput" class="block font-semibold mb-1">Task Description</label>
           <input
@@ -233,9 +241,9 @@ const removeBulletItem = (id: string) => {
             role="alert"
           />
         </div>
-      </BaseContainer>
+      </BaseContainer> -->
       <hr />
-      <BaseContainer class="w-full mb-2">
+      <BaseContainer class="mb-2" full-width>
         <h3 class="sr-only" id="prioritySection">Select priority</h3>
         <BaseSelection
           v-model="selectedPriority"
