@@ -39,8 +39,8 @@ const route = useRoute()
             {{ link.nameToPage }}
             <BaseCircleNotification
               v-if="link.nameToPage === 'Home'"
-              :badge-display="store.defaultTasks.length"
-              :aria-label="`Count ${store.defaultTasks.length}`"
+              :badge-display="store.activeTasks.length"
+              :aria-label="`Count ${store.activeTasks.length}`"
               :role="'status'"
             />
             <BaseCircleNotification
