@@ -62,30 +62,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <section>
-    <BaseContainer class="mx-auto my-5 p-4" is-bordered>
-      <h1>Completed tasks</h1>
-      <hr />
-      <TheCompletionList
-        class="mt-2 mb-2"
-        :finished-tasks="finishedTasks"
-        @selected="completedTaskItemSelected"
-      />
-      <BaseButton
-        v-show="selectedFinishedTask.length > LIST_OF_COMPLETED_TASKS_IS_EMPTY"
-        :btn-type="DANGER"
-        class="cursor-pointer p-2 rounded transform active:scale-95"
-        @click="removeSelectedCompletion"
-      >
-        Remove selected items
-      </BaseButton>
-    </BaseContainer>
-
-    <!-- Confirmation Dialog -->
-    <ConfirmDeletionDialog
-      :show-confirm-dialog="showConfirmDialog"
-      @confirm="confirmRemoval"
-      @cancel="cancelRemoval"
+  <BaseContainer class="mx-auto my-5 p-4 mt-15" is-bordered>
+    <h1>Completed tasks</h1>
+    <hr />
+    <TheCompletionList
+      class="mt-2 mb-2"
+      :finished-tasks="finishedTasks"
+      @selected="completedTaskItemSelected"
     />
-  </section>
+    <BaseButton
+      v-show="selectedFinishedTask.length > LIST_OF_COMPLETED_TASKS_IS_EMPTY"
+      :btn-type="DANGER"
+      class="cursor-pointer p-2 rounded transform active:scale-95"
+      @click="removeSelectedCompletion"
+    >
+      Remove selected items
+    </BaseButton>
+  </BaseContainer>
+
+  <!-- Confirmation Dialog -->
+  <ConfirmDeletionDialog
+    :show-confirm-dialog="showConfirmDialog"
+    @confirm="confirmRemoval"
+    @cancel="cancelRemoval"
+  />
 </template>
