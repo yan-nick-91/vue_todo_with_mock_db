@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { type PropType } from 'vue'
+import { onBeforeUnmount, onMounted, type PropType } from 'vue'
 import type { Task } from '@/interface/Task'
-
+import { setupEscapeListener } from '@/util/key-values'
 import TaskForm from './form/TaskForm.vue'
 
-defineProps({
+const props = defineProps({
   modalIsOpen: {
     type: Boolean,
   },
@@ -31,6 +31,18 @@ const handleUpdate = async (updatedTask: Task) => {
 const closeModal = () => {
   emit('close')
 }
+
+onMounted(() => {
+  setupEscapeListener(() => {
+    if (props.modalIsOpen) {
+      closeModal()
+    }
+  })
+})
+
+onBeforeUnmount(() => {
+  setupEscapeListener(() => {})
+})
 </script>
 
 <template>
