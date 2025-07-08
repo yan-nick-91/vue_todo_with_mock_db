@@ -25,7 +25,7 @@ const route = useRoute()
 <template>
   <header class="w-full">
     <nav
-      class="sticky top-0 w-full bg-gradient-to-r from-cyan-800 to-emerald-700 text-amber-50"
+      class="fixed top-0 w-full bg-gradient-to-r from-cyan-800 to-emerald-700 text-amber-50"
       role="navigation"
     >
       <ul class="flex flex-wrap pl-4">
