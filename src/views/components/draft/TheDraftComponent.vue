@@ -53,7 +53,7 @@ const confirmRemoval = async () => {
   try {
     await Promise.all(selectedDraftTask.value.map((task) => deleteTask(task.id)))
 
-selectedDraftTask.value = []
+    selectedDraftTask.value = []
     showConfirmDialog.value = false
     store.refreshTasks() // Refresh the task list in the store
   } catch (error) {
@@ -71,7 +71,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <BaseContainer class="mx-auto my-5 p-4" is-bordered>
+  <BaseContainer class="mx-auto my-5 p-4 mt-15" is-bordered>
     <h1>Draft</h1>
     <hr />
 
