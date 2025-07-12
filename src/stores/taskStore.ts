@@ -1,3 +1,4 @@
+import { getTaskId } from './../controller/task-controller'
 import { defineStore } from 'pinia'
 
 import { getAllDraftedTasks, getAllFinishedTasks, getTasks } from '@/controller/task-controller'
@@ -8,6 +9,7 @@ export const taskStore = defineStore('taskStore', () => {
   const allTasks = ref<Task[]>([])
   const draftedTasks = ref<Task[]>([])
   const finishedTasks = ref<Task[]>([])
+  const selectedTask = ref<Task | null>(null)
 
   const refreshTasks = async () => {
     allTasks.value = await getTasks()
@@ -19,10 +21,20 @@ export const taskStore = defineStore('taskStore', () => {
     allTasks.value.filter((task) => !task.isDrafted && !task.isFinished),
   )
 
+  const fetchTaskById = async (id: string) => {
+    try {
+      selectedTask.value = await getTaskId(id)
+    } catch {
+      selectedTask.value = null
+    }
+  }
+
   return {
     defaultTasks,
     draftedTasks,
     finishedTasks,
+    selectedTask,
     refreshTasks,
+    fetchTaskById,
   }
 })
