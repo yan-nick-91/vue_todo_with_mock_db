@@ -5,6 +5,7 @@ import type { Task } from '@/interface/Task'
 import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
 import { DANGER, SUCCESS, DEFAULT, PRIORITIES } from '@/const/base-types'
 import { deleteTask, getTasks } from '@/controller/task-controller'
+import { cleanupEscapeListener, setupEscapeListener } from '@/util/key-values'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseSelection from '@/views/UI/BaseSelection.vue'
@@ -88,23 +89,13 @@ const clearAllFiltering = () => {
   filteredTasks.value = tasks.value
 }
 
-const handleEscape = (event: KeyboardEvent) => {
-  if (event.key === 'Escape' && createTaskModalIsOpen.value) {
-    closeCreateTaskModal()
-  }
-}
-
-const setupEscapeListener = () => {
-  addEventListener('keydown', handleEscape)
-}
-
-const cleanupEscapeListener = () => {
-  removeEventListener('keydown', handleEscape)
-}
-
 onMounted(() => {
   fetchTasks()
-  setupEscapeListener()
+  setupEscapeListener(() => {
+    if (createTaskModalIsOpen.value) {
+      closeCreateTaskModal()
+    }
+  })
 })
 
 onBeforeUnmount(() => {
