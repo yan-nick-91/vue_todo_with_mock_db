@@ -58,12 +58,10 @@ De `Component` is de belangrijktste subfolder binnen de `Views` omdat deze de ke
 
 De `Controller` folder heeft de verantwoordelijkheid om als een middelpersoon te dienen tussen de subfolder `Component` en `Service`. De controller vangt de aanroepen vanuit de componenten op en stuurt deze door naar de juiste `Service` afhandeling.
 
-Met deze aanpak behoudt de component de focus op de view kant (of ook wel de UI en webcomponenten), terwijl de controller de koppeling de datalogica en interacties, zoals requests of responses, afhandelt.
+Met deze aanpak behoudt de component de focus op de view kant (of ook wel de UI en webcomponenten), terwijl de controller de koppeling met de datalogica en interacties, zoals requests of responses, afhandelt.
 
 ```mermaid
-%%{init: {"flowchart": {"htmlLabels": false}} }%%
 flowchart LR
-
     %% Heen route zonder labels (standaard pijlen)
     Views --> Controller
     Views --> Store
@@ -76,7 +74,7 @@ flowchart LR
       Backend --- DataLabel ---> Service
       Service --- ResponseLabel ---> Controller
       Controller --- StoreUpdateLabel ---> Store
-      Store --- ReactiveLabel ---> Views
+      Views --- ReactiveLabel ---> Store
     end
 
     %% Label nodes met tekst
@@ -92,14 +90,14 @@ flowchart LR
 
     %% Gestippelde stijl voor retourroute (inclusief Store → Views)
     linkStyle 4,5,6,7,8,9,10,11 stroke:#58a6ff, stroke-width:2px, stroke-dasharray: 6 4, fill:none
-
 ```
 
 ## Service
 
-De `Service` folder bevat verantwoordlijkheden om API Calls uit te sturen of response van het geaddresseede backend te ontvangen.
+De `Service` folder bevat verantwoordelijkheden om API-calls uit te sturen of responses van het geadresseede backend te ontvangen.
 
-De gebruiker heeft de mogelijkheid om een taak aan de to do lijst toe te voegen waarbij die vooraf de verplichte invoerlijsten moet invoeren.
-Omdat de scope van deze project begonnen was om met Vue.js te oefenen is er voor deze project geen backend opgezet die de data vooraf kan valideren voordat deze aan de database wordt toegevoegd. Om toch hetzelfde ervaring te krijgen dat de data naar de backend wordt gestuurd of wordt opgehaald is hiervoor gekozen om een javascript tool json-server te gebruiken. Deze simuleert de ervaring dat data naar de backend wordt gestuurd waarvan deze later in de database wordt opgeslagen. In werkelijkheid wordt hiervoor een json bestand gebruikt waarbij deze gebruikt maakt van een eigen port, waarvan de frontend deze gebruikt om mee te kunnen communiceren.
+De gebruiker heeft de mogelijkheid om een taak aan de to-do lijst toe te voegen, waarbij die vooraf de verplichte invoerlijsten moet invoeren.
 
-Eerder bij het stuk `Controller` is er vermeld dat de functies die binnen deze folder bevindt de opdracht aan de `Service` geeft waarbij er specifiek een opdracht wordt gegeven om een API call uit te voeren. Met de response die met de API call wordt gegeven gaat dit op hetzelfde manier weer terug. De `Service` geeft de response door aan de `Controller` waarvan deze op zijn beurt deze weer doorgeeft aan de `Component` die zich in de `Views` folder bevindt. De `Service` folder heeft ook een associatie met de folders `Errors` en de `Const`. Dit heeft de maken omdat de `Service` ook een foutbericht als response mag doorgeven aan de `Controller`, waarvan deze het weer doorgeeft aan de `Component`. De `Service` maakt alleen gebruik van de `Const` omdat hierin ook een constante variabel is opgezet waarvan dit gaat om een string waarde die de url naar de backend omschrijft.
+Omdat de scope van dit project begonnen was om met Vue.js te oefenen, is er voor dit project geen backend opgezet die de data vooraf kan valideren voordat deze aan de database wordt toegevoegd. Om toch dezelfde ervaring te krijgen dat de data naar de backend wordt gestuurd of wordt opgehaald, is hiervoor gekozen om een JavaScript tool, json-server, te gebruiken. Deze simuleert de ervaring dat data naar de backend wordt gestuurd, waarvan deze later in de database wordt opgeslagen. In werkelijkheid wordt hiervoor een json bestand gebruikt, waarbij dit gebruikmaakt van een eigen port, waarvan de frontend deze gebruikt om mee te kunnen communiceren.
+
+Eerder bij het stuk `Controller` is er vermeld dat de functies die binnen deze folder bevinden de opdracht aan de `Service` geven, waarbij er specifiek een opdracht wordt gegeven om een API-call uit te voeren. Met de response die met de API-call wordt gegeven, gaat dit op dezelfde manier weer terug. De `Service` geeft de response door aan de `Controller`  die op zijn beurt deze weer doorgeeft aan de `Component` die zich in de `Views` folder bevindt. De `Service` folder heeft ook een associatie met de folders `Errors` en de `Const`. Dit heeft te maken omdat de `Service` ook een foutbericht als response mag doorgeven aan de `Controller`, waarvan deze het weer doorgeeft aan de `Component`. De `Service` maakt alleen gebruik van de `Const` omdat hierin ook een constante variabel is opgezet ,waarvan dit gaat om een stringwaarde die de url naar de backend omschrijft.
