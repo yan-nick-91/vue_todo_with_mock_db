@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { taskStore } from '@/stores/taskStore'
 import type { Task } from '@/interface/Task'
-import BaseButton from '@/views/UI/BaseButton.vue'
-import BaseContainer from '@/views/UI/BaseContainer.vue'
+import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
 import { DANGER, SUCCESS } from '@/const/base-types'
 import { deleteTask, getTasks } from '@/controller/task-controller'
-import TheToDoList from '../home/TheToDoList.vue'
+import BaseButton from '@/views/UI/BaseButton.vue'
+import BaseContainer from '@/views/UI/BaseContainer.vue'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
+import FilterComponent from '../misc/FilterComponent.vue'
+import TheToDoList from '../home/TheToDoList.vue'
 import TaskForm from '../task/form/TaskForm.vue'
-import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
-import { taskStore } from '@/stores/taskStore'
 
 const store = taskStore()
 
@@ -73,8 +74,13 @@ onMounted(fetchTasks)
 </script>
 
 <template>
-  <section aria-labelledby="todo-list-title">
-    <BaseContainer class="mx-auto my-5 p-4" is-bordered>
+  <section aria-labelledby="todo-list-title" class="mt-15">
+    <div class="relative bottom-15">
+      <FilterComponent class="fixed mt-5 ml-[10%] mx-auto" :container-width="20" />
+    </div>
+    <hr />
+
+    <BaseContainer class="mx-auto my-2 p-4" is-bordered>
       <h1 id="todo-list-title">To Do's</h1>
       <hr />
       <TheToDoList
