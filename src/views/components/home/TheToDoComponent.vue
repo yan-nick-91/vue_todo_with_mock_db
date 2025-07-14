@@ -22,6 +22,7 @@ const filteredTasks = ref<Task[]>([])
 const selectedTaskItem = ref<Task[]>([])
 const showConfirmDialog = ref(false)
 const selectedPriority = ref<(typeof PRIORITIES)[number] | ''>('')
+const filterApplied = ref(false)
 
 const fetchTasks = async () => {
   try {
@@ -78,15 +79,18 @@ const cancelRemoval = () => {
 
 const filterByPriority = () => {
   if (!selectedPriority.value) {
-    return tasks.value
+    filteredTasks.value = tasks.value
+    filterApplied.value = false
   } else {
     filteredTasks.value = tasks.value.filter((task) => task.priority === selectedPriority.value)
+    filterApplied.value = true
   }
 }
 
 const clearAllFiltering = () => {
   selectedPriority.value = ''
   filteredTasks.value = tasks.value
+  filterApplied.value = false
 }
 
 onMounted(() => {
@@ -106,7 +110,7 @@ onBeforeUnmount(() => {
 <template>
   <BaseContainer class="mx-auto my-2 p-4 mt-15" aria-labelledby="todo-list-title" is-bordered>
     <h1 id="todo-list-title">To Do's</h1>
-    <p v-if="selectedPriority !== '' && filteredTasks.length < tasks.length" class="mt-2">
+    <p v-if="filterApplied" class="mt-2">
       <strong>Showing by priority:</strong> {{ selectedPriority }}
     </p>
     <FilterComponent class="mx-auto">
