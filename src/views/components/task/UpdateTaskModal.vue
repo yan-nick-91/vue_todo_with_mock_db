@@ -39,14 +39,14 @@ const closeModal = () => {
     class="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
     @click="closeModal"
   >
-    <div @click.stop>
+    <div @click.stop class="w-[80%] max-h-[100vh] overflow-y-auto bg-white shadow-md">
       <TaskForm
         :mode="'edit'"
         :modal-is-open="modalIsOpen"
         :task-to-edit="taskToEdit"
         @handle-submit="handleUpdate"
         @close="closeModal"
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-xl"
+        class="w-full"
       />
     </div>
   </div>

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/pages/HomeView.vue'
+import { taskStore } from '@/stores/taskStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,18 @@ const router = createRouter({
       path: '/tasks/:id',
       name: 'task',
       component: () => import('@/views/pages/TaskView.vue'), // Ensure this file exists at the specified path
+      beforeEnter: async (to, from, next) => {
+        const store = taskStore()
+
+        const taskId = to.params.id as string
+        await store.fetchTaskById(taskId)
+
+        if (!store.selectedTask) {
+          next({ name: 'not found' })
+        } else {
+          next()
+        }
+      },
     },
     {
       path: '/:pathMatch(.*)*',
