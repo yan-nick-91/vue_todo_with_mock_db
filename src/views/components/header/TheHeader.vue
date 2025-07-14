@@ -59,7 +59,7 @@ onUnmounted(() => {
 <template>
   <header class="w-full">
     <nav
-      class="sticky top-0 w-full bg-gradient-to-r from-cyan-800 to-emerald-700 text-amber-50"
+      class="fixed top-0 w-full bg-gradient-to-r from-cyan-800 to-emerald-700 text-amber-50"
       role="navigation"
     >
       <ul v-if="!isMobile" class="flex flex-wrap pl-4">
@@ -73,8 +73,8 @@ onUnmounted(() => {
             {{ link.nameToPage }}
             <BaseCircleNotification
               v-if="link.nameToPage === 'Home'"
-              :badge-display="store.defaultTasks.length"
-              :aria-label="`Count ${store.defaultTasks.length}`"
+              :badge-display="store.activeTasks.length"
+              :aria-label="`Count ${store.activeTasks.length}`"
               :role="'status'"
             />
             <BaseCircleNotification

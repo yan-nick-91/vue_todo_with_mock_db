@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { taskStore } from '@/stores/taskStore'
 import type { Task } from '@/interface/Task'
 import { DANGER } from '@/const/base-types'
 import { LIST_OF_DRAFTED_TASKS_IS_EMPTY } from '@/const/task'
+import { deleteTask } from '@/controller/task-controller'
+import { cleanupEscapeListener, setupEscapeListener } from '@/util/key-values'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
-import { deleteTask } from '@/controller/task-controller'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TheTaskRow from '../task/TheTaskRow.vue'
 import TheDraftTaskModal from './TheDraftTaskModal.vue'
-import { taskStore } from '@/stores/taskStore'
 
 const store = taskStore()
 
@@ -53,7 +54,7 @@ const confirmRemoval = async () => {
   try {
     await Promise.all(selectedDraftTask.value.map((task) => deleteTask(task.id)))
 
-selectedDraftTask.value = []
+    selectedDraftTask.value = []
     showConfirmDialog.value = false
     store.refreshTasks() // Refresh the task list in the store
   } catch (error) {
@@ -67,11 +68,19 @@ const cancelRemoval = () => {
 
 onMounted(() => {
   fetchDraftedTasks()
+  setupEscapeListener(() => {
+    modalIsOpen.value = false
+    showConfirmDialog.value = false
+  })
+})
+
+onBeforeUnmount(() => {
+  cleanupEscapeListener()
 })
 </script>
 
 <template>
-  <BaseContainer class="mx-auto my-5 p-4" is-bordered>
+  <BaseContainer class="mx-auto my-5 p-4 mt-15" is-bordered>
     <h1>Draft</h1>
     <hr />
 

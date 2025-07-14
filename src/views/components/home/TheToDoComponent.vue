@@ -1,26 +1,34 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { taskStore } from '@/stores/taskStore'
 import type { Task } from '@/interface/Task'
+import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
+import { DANGER, SUCCESS, DEFAULT, PRIORITIES } from '@/const/base-types'
+import { deleteTask, getTasks } from '@/controller/task-controller'
+import { cleanupEscapeListener, setupEscapeListener } from '@/util/key-values'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
-import { DANGER, SUCCESS } from '@/const/base-types'
-import { deleteTask, getTasks } from '@/controller/task-controller'
-import TheToDoList from '../home/TheToDoList.vue'
+import BaseSelection from '@/views/UI/BaseSelection.vue'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
+import FilterComponent from '../misc/FilterComponent.vue'
+import TheToDoList from '../home/TheToDoList.vue'
 import TaskForm from '../task/form/TaskForm.vue'
-import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
-import { taskStore } from '@/stores/taskStore'
 
 const store = taskStore()
 
 const createTaskModalIsOpen = ref(false)
 const tasks = ref<Task[]>([])
+const filteredTasks = ref<Task[]>([])
 const selectedTaskItem = ref<Task[]>([])
 const showConfirmDialog = ref(false)
+const selectedPriority = ref<(typeof PRIORITIES)[number] | ''>('')
+const filterApplied = ref(false)
 
 const fetchTasks = async () => {
   try {
-    tasks.value = await getTasks()
+    const data: Task[] = await getTasks()
+    tasks.value = data
+    filteredTasks.value = data
   } catch (error) {
     console.error('Error fetching tasks:', error)
   }
@@ -69,61 +77,106 @@ const cancelRemoval = () => {
   showConfirmDialog.value = false
 }
 
-onMounted(fetchTasks)
+const filterByPriority = () => {
+  if (!selectedPriority.value) {
+    filteredTasks.value = tasks.value
+    filterApplied.value = false
+  } else {
+    filteredTasks.value = tasks.value.filter((task) => task.priority === selectedPriority.value)
+    filterApplied.value = true
+  }
+}
+
+const clearAllFiltering = () => {
+  selectedPriority.value = ''
+  filteredTasks.value = tasks.value
+  filterApplied.value = false
+}
+
+onMounted(() => {
+  fetchTasks()
+  setupEscapeListener(() => {
+    if (createTaskModalIsOpen.value) {
+      closeCreateTaskModal()
+    }
+  })
+})
+
+onBeforeUnmount(() => {
+  cleanupEscapeListener()
+})
 </script>
 
 <template>
-  <section aria-labelledby="todo-list-title">
-    <BaseContainer class="mx-auto my-5 p-4" is-bordered>
-      <h1 id="todo-list-title">To Do's</h1>
-      <hr />
-      <TheToDoList
-        class="mt-2 mb-2"
-        :tasks="tasks"
-        aria-labelledby="todo-list-title"
-        @selected="taskItemSelected"
-      />
-      <section class="flex gap-2">
-        <BaseButton
-          v-if="selectedTaskItem.length === AMOUNT_OF_SELECTED_TASK_IS_ZERO"
-          :btn-type="SUCCESS"
-          class="cursor-pointer p-2 rounded transform active:scale-95"
-          @click="openCreateTaskModal"
-          aria-label="Create new task"
+  <BaseContainer class="mx-auto my-2 p-4 mt-15" aria-labelledby="todo-list-title" is-bordered>
+    <h1 id="todo-list-title">To Do's</h1>
+    <p v-if="filterApplied" class="mt-2">
+      <strong>Showing by priority:</strong> {{ selectedPriority }}
+    </p>
+    <FilterComponent class="mx-auto">
+      <!-- Your filter form here -->
+      <section class="flex flex-col">
+        <label for="priority">Priority</label>
+        <BaseSelection :items="PRIORITIES" class="border" v-model="selectedPriority" />
+      </section>
+      <section class="flex gap-2 mt-2">
+        <BaseButton :btn-type="SUCCESS" class="p-1 rounded cursor-pointer" @click="filterByPriority"
+          >Filter</BaseButton
         >
-          Create task
-        </BaseButton>
         <BaseButton
-          v-if="selectedTaskItem.length > AMOUNT_OF_SELECTED_TASK_IS_ZERO"
-          :btn-type="DANGER"
-          class="cursor-pointer p-2 rounded transform active:scale-95"
-          @click="removeSelectedTasks"
-          aria-label="Remove selected tasks"
-          >Remove selected items</BaseButton
+          :btn-type="DEFAULT"
+          class="p-1 rounded cursor-pointer"
+          @click="clearAllFiltering"
+          >Clear</BaseButton
         >
       </section>
-    </BaseContainer>
-    <div
-      v-if="createTaskModalIsOpen"
-      class="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
-      @click="closeCreateTaskModal"
-    >
-      <div @click.stop class="w-[80%] max-h-[100vh] overflow-y-auto bg-white shadow-md">
-        <TaskForm
-          :mode="'create'"
-          :modal-is-open="createTaskModalIsOpen"
-          @close="closeCreateTaskModal"
-          @handle-submit="onTaskCreated"
-          class="w-full"
-        />
-      </div>
-    </div>
-
-    <!-- Confirmation Dialog -->
-    <ConfirmDeletionDialog
-      :show-confirm-dialog="showConfirmDialog"
-      @confirm="confirmRemoval"
-      @cancel="cancelRemoval"
+    </FilterComponent>
+    <TheToDoList
+      class="mt-2 mb-2"
+      :tasks="filteredTasks"
+      aria-labelledby="todo-list-title"
+      @selected="taskItemSelected"
     />
-  </section>
+    <section class="flex gap-2">
+      <BaseButton
+        v-if="selectedTaskItem.length === AMOUNT_OF_SELECTED_TASK_IS_ZERO"
+        :btn-type="SUCCESS"
+        class="cursor-pointer p-2 rounded transform active:scale-95"
+        @click="openCreateTaskModal"
+        aria-label="Create new task"
+      >
+        Create task
+      </BaseButton>
+      <BaseButton
+        v-if="selectedTaskItem.length > AMOUNT_OF_SELECTED_TASK_IS_ZERO"
+        :btn-type="DANGER"
+        class="cursor-pointer p-2 rounded transform active:scale-95"
+        @click="removeSelectedTasks"
+        aria-label="Remove selected tasks"
+        >Remove selected items</BaseButton
+      >
+    </section>
+  </BaseContainer>
+  <div
+    v-if="createTaskModalIsOpen"
+    class="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
+    @click="closeCreateTaskModal"
+  >
+    <div @click.stop class="w-[80%] max-h-[100vh] overflow-y-auto bg-white shadow-md">
+      <TaskForm
+        :mode="'create'"
+        :modal-is-open="createTaskModalIsOpen"
+        @close="closeCreateTaskModal"
+        @handle-submit="onTaskCreated"
+        class="w-full"
+      />
+    </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <ConfirmDeletionDialog
+    :show-confirm-dialog="showConfirmDialog"
+    @confirm="confirmRemoval"
+    @cancel="cancelRemoval"
+  />
 </template>
