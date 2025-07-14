@@ -102,15 +102,6 @@ const isDateValid = (): boolean => {
   return hasNoError
 }
 
-// const isFormComplete = () => {
-//   return (
-//     taskInput.value.trim() !== '' &&
-//     startDateInput.value !== '' &&
-//     endDateInput.value !== '' &&
-//     isDateValid()
-//   )
-// }
-
 const modeStatus = computed<FormMode>(() => {
   if (props.mode === 'edit') return FormMode.EDIT
   if (shouldSaveAsDraft.value) return FormMode.DRAFT
@@ -118,8 +109,6 @@ const modeStatus = computed<FormMode>(() => {
 })
 
 const generatePayload = () => {
-  // const isDraft = shouldSaveAsDraft.value || modeStatus.value === FormMode.DRAFT
-
   const id = props.taskToEdit?.id || props.draftedTask?.id || generateTaskId()
 
   return {
@@ -139,7 +128,6 @@ const generatePayload = () => {
 const submitHandler = async () => {
   clearErrors()
 
-  const isSavingAsDraft = shouldSaveAsDraft.value
   let hasError = false
 
   if (!taskInput.value.trim()) {
@@ -147,7 +135,14 @@ const submitHandler = async () => {
     hasError = true
   }
 
-  if (!isSavingAsDraft && !isDateValid()) hasError = true
+  const isStartDateChanged =
+    props.mode === 'edit' && startDateInput.value !== props.taskToEdit?.startDate
+  const isEndDateChanged = props.mode === 'edit' && endDateInput.value !== props.taskToEdit?.endDate
+
+  const shouldValidateDate =
+    props.mode !== 'edit' || (!shouldSaveAsDraft.value && (isStartDateChanged || isEndDateChanged))
+
+  if (shouldValidateDate && !isDateValid()) hasError = true
 
   if (hasError) {
     shouldSaveAsDraft.value = false
