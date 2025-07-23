@@ -15,6 +15,23 @@ In het voorbeeld is de architectuur van de ToDo app in kaart gebracht, waarbij v
 
 ---
 
+## DOM -> main.ts
+
+In de frontend wordt er van de DOM gesproken wanneer het om de elementen gaat die door **JavaScript** (of **TypeScript**) kan worden gemanipuleerd. In dit geval zou dit gaan om één **HTML** index page die van één div element is voorzien waarop **vue.js** op leunt. De `index.html` – tevens de enige html in het gehele project – heeft een associatie met de main.ts, waarin daar verder de vue.js gelanceerd. 
+
+## main.ts -> App.vue
+
+De `main.ts` maakt associatie met de `App.vue`, waarin deze van twee belangrijke elementen is voorzien. De **navbar** om van de ene naar de andere pagina te kunnen navigeren en de **display** die is opgebouwd uit verschillende componenten. De display wordt niet als een losse component in de App.vue gepresenteerd. Dit gebeurd door middel van een injectie dat door de vue framework **vue-router** mogelijk wordt gemaakt. Dit gebeurd door via de router laag de specifieke view component aan te roepen en deze later aan de `RouterView` in de App.vue te injecteren.
+
+
+## App.vue -> router (laag)
+
+Zoals net kort toegelicht wordt de view componenten niet direct vanuit als componenten in de code geplaatst. Hiervoor wordt een vue framework gebruikt waarbij deze volgens een stroom verloopt. De App.vue – dat een associatie heeft met de router (laag) – doet een verzoek om naar een specifieke pagina, de view component, te navigeren. De index.ts binnen de router laag ontvangt deze verzoek en handelt verder af door de specifieke view component op te vragen. Deze wordt later verder als een injectie aan de App.vue weergegeven als een RouterView, waarvan vue router dit onder de motorkap alle behorende componenten heeft gerenderd.  
+
+## router (laag)  -> pages (laag)
+
+Zoals net toegelicht, heeft de router laag associatie met de pages laag, waarvan deze de view componenten aanroept zodat dit later als een injectie kan worden gebruikt voor de RouterView die in de App.vue is geïmplementeerd.
+
 ## Views
 
 Zoals te zien is, hebben alleen de DOM en de Router laag associatie met de `Pages` sublaag (weergegeven als sublaag binnen de `Views`, waarbij deze laag in lichtblauw is weergegeven).
