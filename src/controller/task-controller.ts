@@ -6,7 +6,7 @@ import {
   sendRequestToGetSpecificTask,
   sendRequestToGetAllFinishedTasks,
   sendRequestToGetAllDraftTasks,
-} from '@/service/task-services'
+} from '@/service/mock/task-services'
 
 export const addTask = (taskData: unknown) => sendRequestToCreateNewTask(taskData)
 

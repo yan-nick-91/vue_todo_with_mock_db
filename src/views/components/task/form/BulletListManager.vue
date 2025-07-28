@@ -29,8 +29,8 @@ const addItemToBulletList = () => {
 
   emit('addBulletItem', {
     id: generateBulletItemId(),
-    bulletItem: itemForBulletListInput.value.trim(),
-    itemIsFinished: false,
+    bullet_item: itemForBulletListInput.value.trim(),
+    item_is_finished: false,
   })
   itemForBulletListInput.value = ''
   bulletInputError.value = ''

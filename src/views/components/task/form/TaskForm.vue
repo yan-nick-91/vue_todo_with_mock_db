@@ -109,20 +109,25 @@ const modeStatus = computed<FormMode>(() => {
   return FormMode.CREATE
 })
 
+const formatDateTimeToISO = (dateStr: string) => {
+  if (!dateStr) return ''
+  return `${dateStr}T00:00:00`
+}
+
 const generatePayload = () => {
   const id = props.taskToEdit?.id || props.draftedTask?.id || generateTaskId()
 
   return {
     id,
     task: taskInput.value.trim(),
-    createdAt: props.taskToEdit?.createdAt ?? generateCurrentDate(),
-    updatedAt: props.mode === 'edit' ? generateCurrentDate() : '',
+    created_at: props.taskToEdit?.createdAt ?? generateCurrentDate(),
+    updated_at: props.mode === 'edit' ? generateCurrentDate() : '',
     priority: selectedPriority.value,
-    startDate: props.mode === 'edit' ? props.taskToEdit?.startDate : startDateInput.value,
-    endDate: props.mode === 'edit' ? props.taskToEdit?.endDate : endDateInput.value,
-    isFinished: props.taskToEdit?.isFinished ?? false,
-    isDrafted: shouldSaveAsDraft.value || modeStatus.value === FormMode.DRAFT,
-    bulletList: bulletList.value,
+    start_date: props.mode === 'edit' ? props.taskToEdit?.startDate : formatDateTimeToISO(startDateInput.value),
+    end_date: props.mode === 'edit' ? props.taskToEdit?.endDate : formatDateTimeToISO(endDateInput.value),
+    is_finished: props.taskToEdit?.isFinished ?? false,
+    is_drafted: shouldSaveAsDraft.value || modeStatus.value === FormMode.DRAFT,
+    bullet_list: bulletList.value,
   }
 }
 
