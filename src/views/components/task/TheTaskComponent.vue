@@ -89,7 +89,6 @@ const setTaskAsFinished = async (allDone: boolean) => {
       })
       store.refreshTasks()
       router.push('/')
-      // window.location.href = '/'
     } catch (error) {
       console.error('Error finishing task:', error)
       errorMessage.value = 'Failed to finish task.'
