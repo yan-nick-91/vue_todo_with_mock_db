@@ -216,43 +216,21 @@ const removeBulletItem = (id: string) => {
         :inputError="taskInputError"
         @update:modelValue="taskInput = $event"
       />
-      <!-- <BaseContainer class="w-full mb-2">
-        <div>
-          <label for="taskInput" class="block font-semibold mb-1">Task Description</label>
-          <input
-            id="taskInput"
-            class="border p-1 w-full"
-            :class="{ 'border-red-500 bg-red-200': taskInputError }"
-            type="text"
-            placeholder="Enter a task..."
-            v-model="taskInput"
-            @input="taskInputError = ''"
-            aria-required="true"
-            :aria-invalid="taskInputError ? 'true' : 'false'"
-            aria-describedby="taskInputError"
-          />
-        </div>
-        <div class="mb-2 min-h-[1.5rem]">
-          <BaseMessageDisplay
-            v-if="taskInputError"
-            :id="'taskInputError'"
-            :type="DANGER"
-            :message="taskInputError"
-            role="alert"
-          />
-        </div>
-      </BaseContainer> -->
+      <h3 class="text-[1rem]" id="prioritySection">Priority</h3>
       <hr />
       <BaseContainer class="mb-2" full-width>
-        <h3 class="sr-only" id="prioritySection">Select priority</h3>
         <BaseSelection
+          class="mt-2 w-full py-1"
           v-model="selectedPriority"
           :items="PRIORITIES"
           is-bordered
           aria-labelledby="prioritySection"
         />
       </BaseContainer>
+
+      <h3 class="text-[1rem]">SubTasks</h3>
       <hr />
+
       <BulletListManager
         :bullet-list="bulletList"
         @add-bullet-item="addBulletItem"
@@ -260,9 +238,11 @@ const removeBulletItem = (id: string) => {
         aria-label="Bullet list manager"
       />
 
+      <h3 class="text-[1rem]">Dates</h3>
       <hr />
-      <BaseContainer>
+      <BaseContainer full-width>
         <DateInputSection
+          class="mt-2"
           :date-id="'startData'"
           v-model="startDateInput"
           :date-input-error-message="startDateInputError"
@@ -276,8 +256,8 @@ const removeBulletItem = (id: string) => {
           :label="'End date'"
         />
       </BaseContainer>
-      <hr />
-      <section class="flex gap-2 mt-8" aria-label="Form action buttons">
+
+      <section class="flex gap-2" aria-label="Form action buttons">
         <h3 class="sr-only">Button section</h3>
         <FormButtonSection
           :mode="mode"
