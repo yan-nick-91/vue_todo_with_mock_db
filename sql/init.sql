@@ -5,11 +5,11 @@ CREATE TYPE priority_level AS ENUM ('High', 'Medium', 'Low');
 CREATE TABLE tasks (
     id VARCHAR(30) PRIMARY KEY,
     task TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP,
+    created_at TEXT NOT NULL,
+    updated_at TEXT,
     priority priority_level NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
+    start_date TEXT NOT NULL,
+    end_date TEXT NOT NULL,
     is_finished BOOLEAN DEFAULT FALSE,
     is_drafted BOOLEAN DEFAULT FALSE
 );
