@@ -46,7 +46,7 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
         <ul role="list">
           <li v-for="item in bulletList" :key="item.id" class="flex items-center gap-2 py-1 px-2">
             <span class="flex-grow">
-              {{ item.bulletItem }}
+              {{ item.bullet_item }}
             </span>
             <span>
               <BaseButton
@@ -54,7 +54,7 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
                 class="cursor-pointer text-red-500 hover:text-red-600 transform active:scale-95"
                 type="button"
                 @click="removeBulletItem(item.id)"
-                :aria-label="`Remove bullet item: ${item.bulletItem}`"
+                :aria-label="`Remove bullet item: ${item.bullet_item}`"
                 ><XMarkIcon class="h-7 w-7 mt-2"
               /></BaseButton>
             </span>

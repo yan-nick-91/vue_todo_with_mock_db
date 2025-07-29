@@ -39,7 +39,7 @@ const onClick = () => emit('click')
         <ChevronRightIcon class="h-6 w-6 text-gray-800" />
         {{ props.task.task }}
       </div>
-      <span><strong>Created at:</strong> {{ props.task.createdAt }}</span>
+      <span><strong>Created at:</strong> {{ props.task.created_at }}</span>
     </BaseButton>
   </div>
 </template>
