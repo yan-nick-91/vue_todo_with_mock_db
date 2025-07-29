@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 const visibleDraftTasks = computed(() => {
-  return props.draftedTasks.filter((task) => task.isDrafted)
+  return props.draftedTasks.filter((task) => task.is_drafted)
 })
 </script>
 

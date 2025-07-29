@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
 import { computed, ref, watch, type PropType } from 'vue'
 import { taskStore } from '@/stores/taskStore'
@@ -5,9 +6,13 @@ import type { Task } from '@/interface/Task'
 import type { BulletItem } from '@/interface/BulletItem'
 import { PRIORITIES } from '@/const/base-types'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
-// import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import BaseSelection from '@/views/UI/BaseSelection.vue'
-import { addTask, updateTask } from '@/controller/task-controller'
+import {
+  addBulletsToTask,
+  addTask,
+  getBulletsByTaskId,
+  updateTask,
+} from '@/controller/task-controller'
 import { invalidInput } from '@/errors/task-error-handler'
 import { generateCurrentDate, generateTaskId } from '@/util/value-generator'
 import BulletListManager from '@/views/components/task/form/BulletListManager.vue'
@@ -53,9 +58,19 @@ const prefillForm = (task?: Task) => {
   if (!task) return
   taskInput.value = task.task
   selectedPriority.value = task.priority as (typeof PRIORITIES)[number]
-  bulletList.value = JSON.parse(JSON.stringify(task.bulletList))
-  startDateInput.value = task.startDate
-  endDateInput.value = task.endDate
+  // fetching bullets
+  fetchingBulletsForTask(task)
+  startDateInput.value = task.start_date
+  endDateInput.value = task.end_date
+}
+
+const fetchingBulletsForTask = async (task: Task) => {
+  if (task.bullet_list) {
+    bulletList.value = JSON.parse(JSON.stringify(task.bullet_list))
+  } else {
+    const bullets = await getBulletsByTaskId(task.id)
+    bulletList.value = bullets || []
+  }
 }
 
 watch(
@@ -115,14 +130,14 @@ const generatePayload = () => {
   return {
     id,
     task: taskInput.value.trim(),
-    createdAt: props.taskToEdit?.createdAt ?? generateCurrentDate(),
-    updatedAt: props.mode === 'edit' ? generateCurrentDate() : '',
+    created_at: props.taskToEdit?.created_at ?? generateCurrentDate(),
+    updated_at: props.mode === 'edit' ? generateCurrentDate() : undefined,
     priority: selectedPriority.value,
-    startDate: props.mode === 'edit' ? props.taskToEdit?.startDate : startDateInput.value,
-    endDate: props.mode === 'edit' ? props.taskToEdit?.endDate : endDateInput.value,
-    isFinished: props.taskToEdit?.isFinished ?? false,
-    isDrafted: shouldSaveAsDraft.value || modeStatus.value === FormMode.DRAFT,
-    bulletList: bulletList.value,
+    start_date: props.mode === 'edit' ? (props.taskToEdit?.start_date ?? '') : startDateInput.value,
+    end_date: props.mode === 'edit' ? (props.taskToEdit?.end_date ?? '') : endDateInput.value,
+    is_finished: props.taskToEdit?.is_finished ?? false,
+    is_drafted: shouldSaveAsDraft.value || modeStatus.value === FormMode.DRAFT,
+    bullet_list: bulletList.value,
   }
 }
 
@@ -137,8 +152,9 @@ const submitHandler = async () => {
   }
 
   const isStartDateChanged =
-    props.mode === 'edit' && startDateInput.value !== props.taskToEdit?.startDate
-  const isEndDateChanged = props.mode === 'edit' && endDateInput.value !== props.taskToEdit?.endDate
+    props.mode === 'edit' && startDateInput.value !== props.taskToEdit?.start_date
+  const isEndDateChanged =
+    props.mode === 'edit' && endDateInput.value !== props.taskToEdit?.end_date
 
   const shouldValidateDate = props.mode !== 'edit' || isStartDateChanged || isEndDateChanged
 
@@ -154,12 +170,23 @@ const submitHandler = async () => {
   await addOrUpdateTaskFetchHandler(payload.id, payload)
 }
 
-const addOrUpdateTaskFetchHandler = async (id: string, payload: unknown) => {
+const addOrUpdateTaskFetchHandler = async (id: string, payload: Task) => {
   try {
+    const { bullet_list, ...taskWithoutBullets } = payload
+
     if (props.mode === 'edit' || props.mode === 'draft') {
-      await updateTask(id, payload)
+      await updateTask(id, taskWithoutBullets)
     } else {
-      await addTask(payload)
+      await addTask(taskWithoutBullets)
+    }
+
+    if (bulletList.value.length > 0) {
+      const bulletsWithSpecificTaskId = bulletList.value.map((item) => ({
+        ...item,
+        task_id: payload.id,
+      }))
+
+      await addBulletsToTask(bulletsWithSpecificTaskId)
     }
 
     await store.refreshTasks()
@@ -216,43 +243,21 @@ const removeBulletItem = (id: string) => {
         :inputError="taskInputError"
         @update:modelValue="taskInput = $event"
       />
-      <!-- <BaseContainer class="w-full mb-2">
-        <div>
-          <label for="taskInput" class="block font-semibold mb-1">Task Description</label>
-          <input
-            id="taskInput"
-            class="border p-1 w-full"
-            :class="{ 'border-red-500 bg-red-200': taskInputError }"
-            type="text"
-            placeholder="Enter a task..."
-            v-model="taskInput"
-            @input="taskInputError = ''"
-            aria-required="true"
-            :aria-invalid="taskInputError ? 'true' : 'false'"
-            aria-describedby="taskInputError"
-          />
-        </div>
-        <div class="mb-2 min-h-[1.5rem]">
-          <BaseMessageDisplay
-            v-if="taskInputError"
-            :id="'taskInputError'"
-            :type="DANGER"
-            :message="taskInputError"
-            role="alert"
-          />
-        </div>
-      </BaseContainer> -->
+      <h3 class="text-[1rem]" id="prioritySection">Priority</h3>
       <hr />
       <BaseContainer class="mb-2" full-width>
-        <h3 class="sr-only" id="prioritySection">Select priority</h3>
         <BaseSelection
+          class="mt-2 w-full py-1"
           v-model="selectedPriority"
           :items="PRIORITIES"
           is-bordered
           aria-labelledby="prioritySection"
         />
       </BaseContainer>
+
+      <h3 class="text-[1rem]">SubTasks</h3>
       <hr />
+
       <BulletListManager
         :bullet-list="bulletList"
         @add-bullet-item="addBulletItem"
@@ -260,9 +265,11 @@ const removeBulletItem = (id: string) => {
         aria-label="Bullet list manager"
       />
 
+      <h3 class="text-[1rem]">Dates</h3>
       <hr />
-      <BaseContainer>
+      <BaseContainer full-width>
         <DateInputSection
+          class="mt-2"
           :date-id="'startData'"
           v-model="startDateInput"
           :date-input-error-message="startDateInputError"
@@ -276,8 +283,8 @@ const removeBulletItem = (id: string) => {
           :label="'End date'"
         />
       </BaseContainer>
-      <hr />
-      <section class="flex gap-2 mt-8" aria-label="Form action buttons">
+
+      <section class="flex gap-2" aria-label="Form action buttons">
         <h3 class="sr-only">Button section</h3>
         <FormButtonSection
           :mode="mode"

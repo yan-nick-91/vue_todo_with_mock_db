@@ -15,7 +15,7 @@ const props = defineProps({
 const emit = defineEmits(['selected'])
 
 const visibleTasks = computed(() => {
-  return props.tasks.filter((task) => !task.isFinished && !task.isDrafted)
+  return props.tasks.filter((task) => !task.is_finished && !task.is_drafted)
 })
 </script>
 
