@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
 import { computed, ref, watch, type PropType } from 'vue'
 import { taskStore } from '@/stores/taskStore'
@@ -5,9 +6,13 @@ import type { Task } from '@/interface/Task'
 import type { BulletItem } from '@/interface/BulletItem'
 import { PRIORITIES } from '@/const/base-types'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
-// import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import BaseSelection from '@/views/UI/BaseSelection.vue'
-import { addTask, updateTask } from '@/controller/task-controller'
+import {
+  addBulletsToTask,
+  addTask,
+  getBulletsByTaskId,
+  updateTask,
+} from '@/controller/task-controller'
 import { invalidInput } from '@/errors/task-error-handler'
 import { generateCurrentDate, generateTaskId } from '@/util/value-generator'
 import BulletListManager from '@/views/components/task/form/BulletListManager.vue'
@@ -53,9 +58,19 @@ const prefillForm = (task?: Task) => {
   if (!task) return
   taskInput.value = task.task
   selectedPriority.value = task.priority as (typeof PRIORITIES)[number]
-  bulletList.value = JSON.parse(JSON.stringify(task.bulletList))
-  startDateInput.value = task.startDate
-  endDateInput.value = task.endDate
+  // fetching bullets
+  fetchingBulletsForTask(task)
+  startDateInput.value = task.start_date
+  endDateInput.value = task.end_date
+}
+
+const fetchingBulletsForTask = async (task: Task) => {
+  if (task.bullet_list) {
+    bulletList.value = JSON.parse(JSON.stringify(task.bullet_list))
+  } else {
+    const bullets = await getBulletsByTaskId(task.id)
+    bulletList.value = bullets || []
+  }
 }
 
 watch(
@@ -109,23 +124,18 @@ const modeStatus = computed<FormMode>(() => {
   return FormMode.CREATE
 })
 
-const formatDateTimeToISO = (dateStr: string) => {
-  if (!dateStr) return ''
-  return `${dateStr}T00:00:00`
-}
-
 const generatePayload = () => {
   const id = props.taskToEdit?.id || props.draftedTask?.id || generateTaskId()
 
   return {
     id,
     task: taskInput.value.trim(),
-    created_at: props.taskToEdit?.createdAt ?? generateCurrentDate(),
-    updated_at: props.mode === 'edit' ? generateCurrentDate() : '',
+    created_at: props.taskToEdit?.created_at ?? generateCurrentDate(),
+    updated_at: props.mode === 'edit' ? generateCurrentDate() : undefined,
     priority: selectedPriority.value,
-    start_date: props.mode === 'edit' ? props.taskToEdit?.startDate : formatDateTimeToISO(startDateInput.value),
-    end_date: props.mode === 'edit' ? props.taskToEdit?.endDate : formatDateTimeToISO(endDateInput.value),
-    is_finished: props.taskToEdit?.isFinished ?? false,
+    start_date: props.mode === 'edit' ? (props.taskToEdit?.start_date ?? '') : startDateInput.value,
+    end_date: props.mode === 'edit' ? (props.taskToEdit?.end_date ?? '') : endDateInput.value,
+    is_finished: props.taskToEdit?.is_finished ?? false,
     is_drafted: shouldSaveAsDraft.value || modeStatus.value === FormMode.DRAFT,
     bullet_list: bulletList.value,
   }
@@ -142,8 +152,9 @@ const submitHandler = async () => {
   }
 
   const isStartDateChanged =
-    props.mode === 'edit' && startDateInput.value !== props.taskToEdit?.startDate
-  const isEndDateChanged = props.mode === 'edit' && endDateInput.value !== props.taskToEdit?.endDate
+    props.mode === 'edit' && startDateInput.value !== props.taskToEdit?.start_date
+  const isEndDateChanged =
+    props.mode === 'edit' && endDateInput.value !== props.taskToEdit?.end_date
 
   const shouldValidateDate = props.mode !== 'edit' || isStartDateChanged || isEndDateChanged
 
@@ -159,12 +170,23 @@ const submitHandler = async () => {
   await addOrUpdateTaskFetchHandler(payload.id, payload)
 }
 
-const addOrUpdateTaskFetchHandler = async (id: string, payload: unknown) => {
+const addOrUpdateTaskFetchHandler = async (id: string, payload: Task) => {
   try {
+    const { bullet_list, ...taskWithoutBullets } = payload
+
     if (props.mode === 'edit' || props.mode === 'draft') {
-      await updateTask(id, payload)
+      await updateTask(id, taskWithoutBullets)
     } else {
-      await addTask(payload)
+      await addTask(taskWithoutBullets)
+    }
+
+    if (bulletList.value.length > 0) {
+      const bulletsWithSpecificTaskId = bulletList.value.map((item) => ({
+        ...item,
+        task_id: payload.id,
+      }))
+
+      await addBulletsToTask(bulletsWithSpecificTaskId)
     }
 
     await store.refreshTasks()
