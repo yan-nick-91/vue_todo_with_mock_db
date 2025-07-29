@@ -13,14 +13,13 @@ export const taskStore = defineStore('taskStore', () => {
   const selectedTask = ref<Task | null>(null)
 
   const refreshTasks = async () => {
-
     createdTasks.value = await getTasks()
     draftedTasks.value = await getAllDraftedTasks()
     finishedTasks.value = await getAllFinishedTasks()
   }
 
   const activeTasks = computed(() =>
-    createdTasks.value.filter((task) => !task.isDrafted && !task.isFinished),
+    createdTasks.value.filter((task) => !task.is_drafted && !task.is_finished),
   )
 
   const fetchTaskById = async (id: string) => {
