@@ -26,7 +26,7 @@ export const taskStore = defineStore('taskStore', () => {
   }
 
   const activeTasks = computed(() =>
-    createdTasks.value.filter((task) => !task.isDrafted && !task.isFinished),
+    createdTasks.value.filter((task) => !task.is_drafted && !task.is_finished),
   )
 
   const completedTasks = computed(() => {

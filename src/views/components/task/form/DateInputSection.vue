@@ -35,7 +35,7 @@ const updateValue = (event: Event) => {
     <label :for="`${dateId}`">{{ label }}</label>
     <input
       type="date"
-      class="border p-1 mb-2 w-full"
+      class="border p-1 mb-1 w-full"
       :class="dateInputErrorMessage ? 'border-red-500 bg-red-200' : ''"
       :value="modelValue"
       @input="updateValue"
@@ -45,6 +45,7 @@ const updateValue = (event: Event) => {
       v-if="dateInputErrorMessage"
       :type="DANGER"
       :message="dateInputErrorMessage"
+      class="mb-1"
     />
   </section>
 </template>

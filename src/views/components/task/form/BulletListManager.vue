@@ -29,8 +29,8 @@ const addItemToBulletList = () => {
 
   emit('addBulletItem', {
     id: generateBulletItemId(),
-    bulletItem: itemForBulletListInput.value.trim(),
-    itemIsFinished: false,
+    bullet_item: itemForBulletListInput.value.trim(),
+    item_is_finished: false,
   })
   itemForBulletListInput.value = ''
   bulletInputError.value = ''
@@ -41,13 +41,12 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
 
 <template>
   <BaseContainer class="w-full my-2">
-    <h3 class="sr-only">BulletListManager</h3>
     <div data-id="bulletList" class="w-[100%] mb-2 min-h-[10%] max-h-[10%] bg-gray-100 border">
       <div v-if="bulletList!.length > BULLET_ITEM_LIST_IN_TASK_IS_EMPTY">
         <ul role="list">
           <li v-for="item in bulletList" :key="item.id" class="flex items-center gap-2 py-1 px-2">
             <span class="flex-grow">
-              {{ item.bulletItem }}
+              {{ item.bullet_item }}
             </span>
             <span>
               <BaseButton
@@ -55,7 +54,7 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
                 class="cursor-pointer text-red-500 hover:text-red-600 transform active:scale-95"
                 type="button"
                 @click="removeBulletItem(item.id)"
-                :aria-label="`Remove bullet item: ${item.bulletItem}`"
+                :aria-label="`Remove bullet item: ${item.bullet_item}`"
                 ><XMarkIcon class="h-7 w-7 mt-2"
               /></BaseButton>
             </span>
@@ -68,7 +67,7 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
     </div>
     <div>
       <input
-        :class="`border p-1 mb-2 w-[100%] ${bulletInputError ? 'border-red-500 bg-red-200' : ''}`"
+        :class="`border p-1 w-[100%] ${bulletInputError ? 'border-red-500 bg-red-200' : ''}`"
         type="text"
         id="bulletItemInput"
         placeholder="Add Item to list (Optional)..."
@@ -76,12 +75,12 @@ const removeBulletItem = (id: string) => emit('removeBulletItem', id)
         @input="bulletInputError = ''"
       />
     </div>
-    <div class="mb-1 min-h-[1.5rem]">
+    <div class="mb-2 min-h-[1.5rem]">
       <BaseMessageDisplay v-if="bulletInputError" :type="DANGER" :message="bulletInputError" />
     </div>
     <BaseButton
       :btn-type="SUCCESS"
-      class="cursor-pointer p-2 rounded transform active:scale-95"
+      class="cursor-pointer p-2 rounded transform active:scale-95 mb-2"
       @click="addItemToBulletList"
       type="button"
       >Add item</BaseButton

@@ -48,15 +48,18 @@ const emit = defineEmits(['selected', 'click'])
           <div class="flex items-center gap-2 md:mb-0 mb-2">
             <ChevronRightIcon class="h-6 w-6 text-gray-800" />
             {{ props.task.task }}
-            <span v-if="new Date(props.task.endDate) < new Date() && !props.task.isFinished">
+            <span v-if="new Date(props.task.end_date) < new Date() && !props.task.is_finished">
               <span class="text-red-600 text-sm font-medium">(Past Due)</span>
             </span>
           </div>
           <hr class="md:hidden w-full border-gray-300 my-1" />
-          <span :id="`task-${task.id}-label`" class="flex items-center gap-1 flex-wrap sm:flex-nowrap">
+          <span
+            :id="`task-${task.id}-label`"
+            class="flex items-center gap-1 flex-wrap sm:flex-nowrap"
+          >
             <strong>Created at: </strong>
-            <time :datetime="props.task.createdAt" class="block sm:inline">
-              {{ props.task.createdAt }}
+            <time :datetime="props.task.created_at" class="block sm:inline">
+              {{ props.task.created_at }}
             </time>
           </span>
         </RouterLink>

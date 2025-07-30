@@ -1,3 +1,4 @@
+import type { BulletItem } from '@/interface/BulletItem'
 import {
   sendRequestToCreateNewTask,
   sendRequestToGetAllTasks,
@@ -6,9 +7,20 @@ import {
   sendRequestToGetSpecificTask,
   sendRequestToGetAllFinishedTasks,
   sendRequestToGetAllDraftTasks,
-} from '@/service/task-services'
+  sendRequestToAddBulletsToTask,
+  sendRequestToToggleItemIsFinished,
+  sendRequestToGetBulletsByTaskId,
+} from '@/service/supabase/task-services'
 
 export const addTask = (taskData: unknown) => sendRequestToCreateNewTask(taskData)
+
+export const addBulletsToTask = (bulletData: BulletItem[]) =>
+  sendRequestToAddBulletsToTask(bulletData)
+
+export const toggleBulletItemFinishingState = (BulletItem: BulletItem, id: string) =>
+  sendRequestToToggleItemIsFinished(BulletItem, id)
+
+export const getBulletsByTaskId = (id: string) => sendRequestToGetBulletsByTaskId(id)
 
 export const getTasks = () => sendRequestToGetAllTasks()
 
