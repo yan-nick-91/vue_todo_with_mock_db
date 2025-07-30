@@ -13,22 +13,20 @@ import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import FilterComponent from '../misc/FilterComponent.vue'
 import TheToDoList from '../home/TheToDoList.vue'
 import TaskForm from '../task/form/TaskForm.vue'
+import { FilterTaskMode } from '@/const/enums/ModeStates'
 
 const store = taskStore()
 
 const createTaskModalIsOpen = ref(false)
 const tasks = ref<Task[]>([])
-const filteredTasks = ref<Task[]>([])
 const selectedTaskItem = ref<Task[]>([])
 const showConfirmDialog = ref(false)
-const selectedPriority = ref<(typeof PRIORITIES)[number] | ''>('')
-const filterApplied = ref(false)
 
 const fetchTasks = async () => {
   try {
     const data: Task[] = await getTasks()
     tasks.value = data
-    filteredTasks.value = data
+    store.filteredTasks = data
   } catch (error) {
     console.error('Error fetching tasks:', error)
   }
@@ -77,22 +75,6 @@ const cancelRemoval = () => {
   showConfirmDialog.value = false
 }
 
-const filterByPriority = () => {
-  if (!selectedPriority.value) {
-    filteredTasks.value = tasks.value
-    filterApplied.value = false
-  } else {
-    filteredTasks.value = tasks.value.filter((task) => task.priority === selectedPriority.value)
-    filterApplied.value = true
-  }
-}
-
-const clearAllFiltering = () => {
-  selectedPriority.value = ''
-  filteredTasks.value = tasks.value
-  filterApplied.value = false
-}
-
 onMounted(() => {
   fetchTasks()
   setupEscapeListener(() => {
@@ -110,30 +92,30 @@ onBeforeUnmount(() => {
 <template>
   <BaseContainer class="mx-auto my-2 p-4 mt-15" aria-labelledby="todo-list-title" is-bordered>
     <h1 id="todo-list-title">To Do's</h1>
-    <p v-if="filterApplied" class="mt-2">
-      <strong>Showing by priority:</strong> {{ selectedPriority }}
+    <p v-if="store.filterApplied" class="mt-2">
+      <strong>Showing by priority:</strong> {{ store.selectedPriority }}
     </p>
     <FilterComponent class="mx-auto">
       <!-- Your filter form here -->
       <section class="flex flex-col">
         <label for="priority">Priority</label>
-        <BaseSelection :items="PRIORITIES" class="border" v-model="selectedPriority" />
+        <BaseSelection :items="PRIORITIES" class="border" v-model="store.selectedPriority" />
       </section>
       <section class="flex gap-2 mt-2">
-        <BaseButton :btn-type="SUCCESS" class="p-1 rounded cursor-pointer" @click="filterByPriority"
+        <BaseButton :btn-type="SUCCESS" class="p-1 rounded cursor-pointer" @click="store.filterByPriority(FilterTaskMode.HOME)"
           >Filter</BaseButton
         >
         <BaseButton
           :btn-type="DEFAULT"
           class="p-1 rounded cursor-pointer"
-          @click="clearAllFiltering"
+          @click="store.clearAllFiltering(FilterTaskMode.HOME)"
           >Clear</BaseButton
         >
       </section>
     </FilterComponent>
     <TheToDoList
       class="mt-2 mb-2"
-      :tasks="filteredTasks"
+      :tasks="store.filteredTasks"
       aria-labelledby="todo-list-title"
       @selected="taskItemSelected"
     />
