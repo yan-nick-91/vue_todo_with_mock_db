@@ -40,12 +40,12 @@ const handleLinkClick = () => {
           >
             <BaseCircleNotification
               v-if="link.nameToPage === 'Home'"
-              :badge-display="store.finishedTasks.length"
+              :badge-display="store.activeTasks.length"
               :aria-label="`Count ${store.finishedTasks.length}`"
               :role="'status'"
             />
             <BaseCircleNotification
-              v-else-if="link.nameToPage === 'Completed Task'"
+              v-else-if="link.nameToPage === 'Completed Tasks'"
               :badge-display="store.finishedTasks.length"
               :aria-label="`Count ${store.finishedTasks.length}`"
               :role="'status'"
