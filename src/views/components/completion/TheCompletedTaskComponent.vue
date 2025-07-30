@@ -1,24 +1,26 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import type { Task } from '@/interface/Task'
-import { DANGER } from '@/const/base-types'
+import { DANGER, DEFAULT, SUCCESS, PRIORITIES } from '@/const/base-types'
 import { LIST_OF_COMPLETED_TASKS_IS_EMPTY } from '@/const/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
+import BaseSelection from '@/views/UI/BaseSelection.vue'
 import { deleteTask, getAllFinishedTasks } from '@/controller/task-controller'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TheCompletionList from './TheCompletionList.vue'
+import FilterComponent from '../misc/FilterComponent.vue'
 import { taskStore } from '@/stores/taskStore'
+import { FilterTaskMode } from '@/const/enums/ModeStates'
 
 const store = taskStore()
 
-const finishedTasks = ref<Task[]>([])
 const selectedFinishedTask = ref<Task[]>([])
 const showConfirmDialog = ref(false)
 
 const getFinishedTasks = async () => {
   try {
-    finishedTasks.value = await getAllFinishedTasks()
+    store.finishedTasks = await getAllFinishedTasks()
   } catch (error) {
     console.error('Error fetching finished tasks:', error)
   }
@@ -43,7 +45,7 @@ const confirmRemoval = async () => {
     selectedFinishedTask.value.map(async (task) => await deleteTask(task.id))
 
     const selectedIds = new Set(selectedFinishedTask.value.map((task) => task.id))
-    finishedTasks.value = finishedTasks.value.filter((task) => !selectedIds.has(task.id))
+    store.finishedTasks = store.finishedTasks.filter((task) => !selectedIds.has(task.id))
     selectedFinishedTask.value = []
     showConfirmDialog.value = false
     store.refreshTasks() // Refresh the task list in the store
@@ -65,9 +67,31 @@ onMounted(() => {
   <BaseContainer class="mx-auto my-5 p-4 mt-15" is-bordered>
     <h1>Completed tasks</h1>
     <hr />
+        <p v-if="store.filterApplied" class="mt-2">
+      <strong>Showing by priority:</strong> {{ store.selectedPriority }}
+    </p>
+    <FilterComponent class="mx-auto">
+      <!-- Your filter form here -->
+      <section class="flex flex-col">
+        <label for="priority">Priority</label>
+        <BaseSelection :items="PRIORITIES" class="border" v-model="store.selectedPriority" />
+      </section>
+      <section class="flex gap-2 mt-2">
+        <BaseButton :btn-type="SUCCESS" class="p-1 rounded cursor-pointer" @click="store.filterByPriority(FilterTaskMode.COMPLETED)"
+          >Filter</BaseButton
+        >
+        <BaseButton
+          :btn-type="DEFAULT"
+          class="p-1 rounded cursor-pointer"
+          @click="store.clearAllFiltering(FilterTaskMode.COMPLETED)"
+          >Clear</BaseButton
+        >
+      </section>
+    </FilterComponent>
+
     <TheCompletionList
       class="mt-2 mb-2"
-      :finished-tasks="finishedTasks"
+      :finished-tasks="store.completedTasks"
       @selected="completedTaskItemSelected"
     />
     <BaseButton
