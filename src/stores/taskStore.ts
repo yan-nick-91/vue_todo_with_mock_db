@@ -30,7 +30,7 @@ export const taskStore = defineStore('taskStore', () => {
   )
 
   const completedTasks = computed(() => {
-    const tasks = finishedTasks.value.filter((task) => !task.isDrafted && task.isFinished)
+    const tasks = finishedTasks.value.filter((task) => !task.is_drafted && task.is_finished)
     if (!filterApplied.value || !selectedPriority.value) return tasks
     return tasks.filter((task) => task.priority === selectedPriority.value)
   })
