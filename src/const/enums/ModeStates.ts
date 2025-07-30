@@ -3,3 +3,8 @@ export enum FormMode {
   DRAFT = 'draft',
   CREATE = 'create',
 }
+
+export enum FilterTaskMode {
+  HOME = 'home',
+  COMPLETED = 'completed',
+}
