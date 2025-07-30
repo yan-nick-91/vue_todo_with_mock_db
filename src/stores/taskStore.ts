@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 import { getAllDraftedTasks, getAllFinishedTasks, getTasks } from '@/controller/task-controller'
 import { computed, ref } from 'vue'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import type { PRIORITIES } from '@/const/base-types'
 import { FilterTaskMode } from '@/const/enums/ModeStates'
 

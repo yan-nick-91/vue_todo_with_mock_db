@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { taskStore } from '@/stores/taskStore'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
 import { DANGER, SUCCESS, DEFAULT, PRIORITIES } from '@/const/base-types'
 import { deleteTask, getTasks } from '@/controller/task-controller'
@@ -102,7 +102,10 @@ onBeforeUnmount(() => {
         <BaseSelection :items="PRIORITIES" class="border" v-model="store.selectedPriority" />
       </section>
       <section class="flex gap-2 mt-2">
-        <BaseButton :btn-type="SUCCESS" class="p-1 rounded cursor-pointer" @click="store.filterByPriority(FilterTaskMode.HOME)"
+        <BaseButton
+          :btn-type="SUCCESS"
+          class="p-1 rounded cursor-pointer"
+          @click="store.filterByPriority(FilterTaskMode.HOME)"
           >Filter</BaseButton
         >
         <BaseButton

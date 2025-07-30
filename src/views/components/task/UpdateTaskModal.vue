@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, type PropType } from 'vue'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import { setupEscapeListener } from '@/util/key-values'
 import TaskForm from './form/TaskForm.vue'
 

@@ -3,7 +3,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { taskStore } from '@/stores/taskStore'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import { BULLET_ITEM_LIST_IN_TASK_IS_EMPTY } from '@/const/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
