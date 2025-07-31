@@ -21,3 +21,9 @@ CREATE TABLE task_bullet_list (
     bullet_item TEXT NOT NULL,
     item_is_finished BOOLEAN DEFAULT FALSE
 );
+
+alter table task_bullet_list
+drop constraint task_bullet_list_task_id_fkey,
+add constraint task_bullet_list_task_id_fkey
+foreign key (task_id) references tasks(id) on delete cascade;
+
