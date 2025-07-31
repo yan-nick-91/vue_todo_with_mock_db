@@ -41,7 +41,7 @@ const closeCreateTaskModal = () => {
 }
 
 const onTaskCreated = (newTask: never) => {
-  tasks.value.push(newTask)
+  store.filteredTasks.push(newTask)
 }
 
 const taskItemSelected = (task: Task) => {
@@ -59,10 +59,11 @@ const removeSelectedTasks = () => {
 
 const confirmRemoval = async () => {
   try {
-    selectedTaskItem.value.map(async (task) => await deleteTask(task.id))
+    await Promise.all(selectedTaskItem.value.map(async (task) => await deleteTask(task.id)))
 
     const selectedIds = new Set(selectedTaskItem.value.map((task) => task.id))
-    tasks.value = tasks.value.filter((task) => !selectedIds.has(task.id))
+    store.filteredTasks = store.filteredTasks.filter((task) => !selectedIds.has(task.id))
+
     selectedTaskItem.value = []
     showConfirmDialog.value = false
     store.refreshTasks() // Refresh the task list in the store
