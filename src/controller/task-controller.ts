@@ -10,6 +10,8 @@ import {
   sendRequestToAddBulletsToTask,
   sendRequestToToggleItemIsFinished,
   sendRequestToGetBulletsByTaskId,
+  sendRequestToDeleteBulletFromTask,
+  sendRequestToDeleteAllBulletsByTaskId,
 } from '@/service/supabase/task-services'
 
 export const addTask = (taskData: unknown) => sendRequestToCreateNewTask(taskData)
@@ -21,6 +23,13 @@ export const toggleBulletItemFinishingState = (BulletItem: BulletItem, id: strin
   sendRequestToToggleItemIsFinished(BulletItem, id)
 
 export const getBulletsByTaskId = (id: string) => sendRequestToGetBulletsByTaskId(id)
+
+export const deleteBulletFromTask = (id: string) => {
+  sendRequestToDeleteBulletFromTask(id)
+}
+
+export const deleteAllBulletsByTaskId = (taskId: string) =>
+  sendRequestToDeleteAllBulletsByTaskId(taskId)
 
 export const getTasks = () => sendRequestToGetAllTasks()
 
