@@ -220,7 +220,11 @@ const onTaskUpdated = (updatedTask: Task) => {
       <BaseMessageDisplay
         class="mt-2"
         v-else
-        :message="'No subtasks found. Add one via the task form manager using the Update button.'"
+        :message="
+          task.is_finished
+            ? 'No subtasks found.'
+            : 'No subtasks found. Add one via the task form manager using the Update button.'
+        "
       />
     </div>
 
