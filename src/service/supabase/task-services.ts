@@ -30,7 +30,13 @@ export const sendRequestToToggleItemIsFinished = async (bulletItem: BulletItem, 
   return data
 }
 
-export const sendRequestToDeleteBulletFromTask = async (taskId: string) => {
+export const sendRequestToDeleteBulletFromTask = async (id: string) => {
+  const { error } = await supabase.from('task_bullet_list').delete().eq('id', id)
+
+  if (error) throw new Error(error.message)
+}
+
+export const sendRequestToDeleteAllBulletsByTaskId = async (taskId: string) => {
   const { error } = await supabase.from('task_bullet_list').delete().eq('task_id', taskId)
 
   if (error) throw new Error(error.message)
@@ -79,8 +85,7 @@ export const sendRequestToUpdateTask = async (id: string, taskData: unknown) => 
 }
 
 export const sendRequestToDeleteTask = async (id: string) => {
-  const { data, error } = await supabase.from('tasks').delete().eq('id', id)
+  const { error } = await supabase.from('tasks').delete().eq('id', id)
 
   if (error) throw new Error(error.message)
-  return data
 }
