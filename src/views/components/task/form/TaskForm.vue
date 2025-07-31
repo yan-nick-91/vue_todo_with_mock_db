@@ -255,7 +255,7 @@ const removeBulletItem = (id: string) => {
         />
       </BaseContainer>
 
-      <h3 class="text-[1rem]">SubTasks</h3>
+      <h3 class="text-[1rem]">Subtasks</h3>
       <hr />
 
       <BulletListManager
