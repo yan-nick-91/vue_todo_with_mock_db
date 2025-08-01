@@ -33,22 +33,21 @@ export const sendRequestToGetSpecificTask = async (id: string) => {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   })
+
   if (!response.ok) {
     let errorMessage = `HTTP ${response.status} - ${response.statusText}`
     try {
-      // Probeer JSON eerst, als dat faalt wordt het opgevangen hieronder
       const contentType = response.headers.get('content-type')
 
       if (contentType && contentType.includes('application/json')) {
         const errorData = await response.json()
         errorMessage = errorData.message || errorMessage
       } else {
-        const text = await response.text() // Alleen als het geen JSON is
+        const text = await response.text()
         errorMessage = text || errorMessage
       }
     } catch {
-      // Als zelfs het lezen mislukt
-      errorMessage = 'Er trad een fout op bij het verwerken van de foutmelding.'
+      errorMessage = 'An error occurred while processing the error message.'
     }
     console.error('Failed to fetch task:', errorMessage)
     throw new Error(errorMessage)
@@ -82,21 +81,20 @@ export const sendRequestToUpdateTask = async (id: string, taskData: unknown) => 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(taskData),
   })
+
   if (!response.ok) {
     let errorMessage = `HTTP ${response.status} - ${response.statusText}`
     try {
-      // Probeer JSON eerst, als dat faalt wordt het opgevangen hieronder
       const contentType = response.headers.get('content-type')
       if (contentType && contentType.includes('application/json')) {
         const errorData = await response.json()
         errorMessage = errorData.message || errorMessage
       } else {
-        const text = await response.text() // Alleen als het geen JSON is
+        const text = await response.text()
         errorMessage = text || errorMessage
       }
     } catch {
-      // Als zelfs het lezen mislukt
-      errorMessage = 'Er trad een fout op bij het verwerken van de foutmelding.'
+      errorMessage = 'An error occurred while processing the error message.'
     }
 
     console.error('Failed to update task:', errorMessage)
