@@ -3,5 +3,7 @@ import TheDraftComponent from '../components/draft/TheDraftComponent.vue'
 </script>
 
 <template>
-  <TheDraftComponent />
+  <div class="max-h-screen overflow-auto">
+    <TheDraftComponent />
+  </div>
 </template>

@@ -3,5 +3,7 @@ import TheTaskComponent from '@/views/components/task/TheTaskComponent.vue'
 </script>
 
 <template>
-  <TheTaskComponent />
+  <div class="max-h-screen overflow-auto">
+    <TheTaskComponent />
+  </div>
 </template>

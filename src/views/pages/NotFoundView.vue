@@ -3,5 +3,7 @@ import NotFoundComponent from '../components/not-found/NotFoundComponent.vue'
 </script>
 
 <template>
-  <NotFoundComponent />
+  <div class="max-h-screen overflow-auto">
+    <NotFoundComponent />
+  </div>
 </template>

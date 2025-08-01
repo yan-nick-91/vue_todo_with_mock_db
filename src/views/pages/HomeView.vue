@@ -3,5 +3,7 @@ import TheToDoComponent from '../components/home/TheToDoComponent.vue'
 </script>
 
 <template>
-  <TheToDoComponent />
+  <div class="max-h-screen overflow-auto">
+    <TheToDoComponent />
+  </div>
 </template>
