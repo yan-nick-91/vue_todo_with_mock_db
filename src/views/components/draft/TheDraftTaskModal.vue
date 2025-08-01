@@ -21,13 +21,13 @@ const emit = defineEmits(['open:draft', 'close:draft'])
     class="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
     @click="emit('close:draft')"
   >
-    <div @click.stop>
+    <div @click.stop class="w-[80%] max-h-[100vh] overflow-y-auto bg-white shadow-md">
       <TaskForm
         :mode="'draft'"
         :modal-is-open="modalIsOpen"
         :drafted-task="draftedTask"
         @close="emit('close:draft')"
-        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-xl"
+        class="w-full"
       />
     </div>
   </div>
