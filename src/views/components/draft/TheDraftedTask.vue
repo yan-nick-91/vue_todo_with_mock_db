@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import { ChevronRightIcon } from '@heroicons/vue/16/solid'
 

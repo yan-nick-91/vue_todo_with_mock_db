@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import { DANGER, DEFAULT, SUCCESS, PRIORITIES } from '@/const/base-types'
 import { LIST_OF_COMPLETED_TASKS_IS_EMPTY } from '@/const/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
@@ -67,7 +67,7 @@ onMounted(() => {
   <BaseContainer class="mx-auto my-5 p-4 mt-15" is-bordered>
     <h1>Completed tasks</h1>
     <hr />
-        <p v-if="store.filterApplied" class="mt-2">
+    <p v-if="store.filterApplied" class="mt-2">
       <strong>Showing by priority:</strong> {{ store.selectedPriority }}
     </p>
     <FilterComponent class="mx-auto">
@@ -77,7 +77,10 @@ onMounted(() => {
         <BaseSelection :items="PRIORITIES" class="border" v-model="store.selectedPriority" />
       </section>
       <section class="flex gap-2 mt-2">
-        <BaseButton :btn-type="SUCCESS" class="p-1 rounded cursor-pointer" @click="store.filterByPriority(FilterTaskMode.COMPLETED)"
+        <BaseButton
+          :btn-type="SUCCESS"
+          class="p-1 rounded cursor-pointer"
+          @click="store.filterByPriority(FilterTaskMode.COMPLETED)"
           >Filter</BaseButton
         >
         <BaseButton

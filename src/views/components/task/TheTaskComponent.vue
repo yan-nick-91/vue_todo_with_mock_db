@@ -3,7 +3,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { taskStore } from '@/stores/taskStore'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import { BULLET_ITEM_LIST_IN_TASK_IS_EMPTY } from '@/const/task'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
@@ -103,7 +103,8 @@ const setTaskAsFinished = async (allDone: boolean) => {
       errorMessage.value = 'Failed to finish task.'
     }
   } else {
-    errorMessage.value = 'Please complete all tasks before finishing.'
+    errorMessage.value =
+      'Please complete all the subtasks (by clicking the done button), or remove the ones in the task form manager (by clicking the update button) before finishing.'
   }
 }
 
@@ -191,6 +192,8 @@ const onTaskUpdated = (updatedTask: Task) => {
 
     <!-- Bullet List -->
     <div class="mb-2">
+      <h3>Subtasks</h3>
+      <hr />
       <ul
         role="list"
         v-if="task.bullet_list!.length > BULLET_ITEM_LIST_IN_TASK_IS_EMPTY"
@@ -213,7 +216,16 @@ const onTaskUpdated = (updatedTask: Task) => {
           </div>
         </li>
       </ul>
-      <BaseMessageDisplay v-else :message="'No details available'" />
+
+      <BaseMessageDisplay
+        class="mt-2"
+        v-else
+        :message="
+          task.is_finished
+            ? 'No subtasks found.'
+            : 'No subtasks found. Add one via the task form manager using the Update button.'
+        "
+      />
     </div>
 
     <hr />

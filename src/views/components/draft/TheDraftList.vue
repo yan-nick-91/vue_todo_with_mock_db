@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type PropType, computed } from 'vue'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import { LIST_OF_DRAFTED_TASKS_IS_EMPTY } from '@/const/task'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import TheTaskRow from '../task/TheTaskRow.vue'

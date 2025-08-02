@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { taskStore } from '@/stores/taskStore'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import { AMOUNT_OF_SELECTED_TASK_IS_ZERO } from '@/const/task'
 import { DANGER, SUCCESS, DEFAULT, PRIORITIES } from '@/const/base-types'
 import { deleteTask, getTasks } from '@/controller/task-controller'
@@ -41,7 +41,7 @@ const closeCreateTaskModal = () => {
 }
 
 const onTaskCreated = (newTask: never) => {
-  tasks.value.push(newTask)
+  store.filteredTasks.push(newTask)
 }
 
 const taskItemSelected = (task: Task) => {
@@ -59,10 +59,11 @@ const removeSelectedTasks = () => {
 
 const confirmRemoval = async () => {
   try {
-    selectedTaskItem.value.map(async (task) => await deleteTask(task.id))
+    await Promise.all(selectedTaskItem.value.map(async (task) => await deleteTask(task.id)))
 
     const selectedIds = new Set(selectedTaskItem.value.map((task) => task.id))
-    tasks.value = tasks.value.filter((task) => !selectedIds.has(task.id))
+    store.filteredTasks = store.filteredTasks.filter((task) => !selectedIds.has(task.id))
+
     selectedTaskItem.value = []
     showConfirmDialog.value = false
     store.refreshTasks() // Refresh the task list in the store
@@ -102,7 +103,10 @@ onBeforeUnmount(() => {
         <BaseSelection :items="PRIORITIES" class="border" v-model="store.selectedPriority" />
       </section>
       <section class="flex gap-2 mt-2">
-        <BaseButton :btn-type="SUCCESS" class="p-1 rounded cursor-pointer" @click="store.filterByPriority(FilterTaskMode.HOME)"
+        <BaseButton
+          :btn-type="SUCCESS"
+          class="p-1 rounded cursor-pointer"
+          @click="store.filterByPriority(FilterTaskMode.HOME)"
           >Filter</BaseButton
         >
         <BaseButton

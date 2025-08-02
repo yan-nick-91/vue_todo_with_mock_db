@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { taskStore } from '@/stores/taskStore'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import { DANGER } from '@/const/base-types'
 import { LIST_OF_DRAFTED_TASKS_IS_EMPTY } from '@/const/task'
 import { deleteTask } from '@/controller/task-controller'

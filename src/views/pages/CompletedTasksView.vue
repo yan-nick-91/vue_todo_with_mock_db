@@ -3,5 +3,7 @@ import TheCompletedTaskComponent from '../components/completion/TheCompletedTask
 </script>
 
 <template>
-  <TheCompletedTaskComponent />
+  <div class="max-h-screen overflow-auto">
+    <TheCompletedTaskComponent />
+  </div>
 </template>

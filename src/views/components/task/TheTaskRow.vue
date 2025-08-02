@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type PropType } from 'vue'
 import { RouterLink } from 'vue-router'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import { ChevronRightIcon } from '@heroicons/vue/16/solid'
 import TheDraftedTask from '../draft/TheDraftedTask.vue'
 

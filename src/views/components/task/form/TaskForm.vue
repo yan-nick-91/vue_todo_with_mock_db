@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { computed, ref, watch, type PropType } from 'vue'
 import { taskStore } from '@/stores/taskStore'
-import type { Task } from '@/interface/Task'
+import type { Task } from '@/interface/TaskItem'
 import type { BulletItem } from '@/interface/BulletItem'
 import { PRIORITIES } from '@/const/base-types'
 import BaseContainer from '@/views/UI/BaseContainer.vue'
@@ -255,7 +255,7 @@ const removeBulletItem = (id: string) => {
         />
       </BaseContainer>
 
-      <h3 class="text-[1rem]">SubTasks</h3>
+      <h3 class="text-[1rem]">Subtasks</h3>
       <hr />
 
       <BulletListManager
