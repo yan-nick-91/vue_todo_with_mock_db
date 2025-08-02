@@ -93,35 +93,26 @@ const isDateValid = (validateStart: boolean, validateEnd: boolean): boolean => {
   endDateInputError.value = ''
 
   let hasNoError = true
-  const start = new Date(startDateInput.value)
-  const end = new Date(endDateInput.value)
-
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+
+  const start = new Date(startDateInput.value)
+  const end = new Date(endDateInput.value)
   start.setHours(0, 0, 0, 0)
   end.setHours(0, 0, 0, 0)
 
-  if (validateStart) {
-    const start = new Date(startDateInput.value)
-    start.setHours(0, 0, 0, 0)
-    if (!startDateInput.value || isNaN(start.getTime()) || start < today) {
-      startDateInputError.value =
-        'Start date cannot be in the past or empty before adding a new task. Either save it as draft or complete this field.'
-      hasNoError = false
-    }
+  if (validateStart && (!startDateInput.value || isNaN(start.getTime()) || start < today)) {
+    startDateInputError.value =
+      'Start date cannot be in the past or empty before adding a new task. Either save it as draft or complete this field.'
+    hasNoError = false
   }
 
-  if (validateEnd) {
-    const end = new Date(endDateInput.value)
-    const start = new Date(startDateInput.value)
-    end.setHours(0, 0, 0, 0)
-    start.setHours(0, 0, 0, 0)
-    if (!endDateInput.value || end.getTime() < start.getTime()) {
-      endDateInputError.value =
-        'End date must be after start date and not empty. Either save as draft or complete this field.'
-      hasNoError = false
-    }
+  if (validateEnd && (!endDateInput.value || isNaN(end.getTime()) ||  end.getTime() < start.getTime())) {
+    endDateInputError.value =
+      'End date must be after start date and not empty. Either save as draft or complete this field.'
+    hasNoError = false
   }
+
   return hasNoError
 }
 
@@ -151,31 +142,22 @@ const generatePayload = () => {
 const submitHandler = async () => {
   clearErrors()
 
-  let hasError = false
-
   if (!taskInput.value.trim()) {
     taskInputError.value = invalidInput('Input field for task should not be empty.').message
-    hasError = true
+    return
   }
 
-  const isStartDateChanged =
-    props.mode === 'edit' && startDateInput.value !== props.taskToEdit?.start_date
-  const isEndDateChanged =
-    props.mode === 'edit' && endDateInput.value !== props.taskToEdit?.end_date
+  const shouldValidateStartDate =
+    props.mode !== 'edit' || startDateInput.value !== props.taskToEdit?.start_date
+  const shouldValidateEndDate =
+    props.mode !== 'edit' || endDateInput.value !== props.taskToEdit?.end_date
 
-  const shouldValidateStartDate = props.mode !== 'edit' || isStartDateChanged
-  const shouldValidateEndDate = props.mode !== 'edit' || isEndDateChanged
-
-  if (!shouldSaveAsDraft.value && !isDateValid(shouldValidateStartDate, shouldValidateEndDate))
-    hasError = true
-
-  if (hasError) {
+  if (!shouldSaveAsDraft.value && !isDateValid(shouldValidateStartDate, shouldValidateEndDate)) {
     shouldSaveAsDraft.value = false
     return
   }
 
   const payload = generatePayload()
-
   await addOrUpdateTaskFetchHandler(payload.id, payload)
 }
 
