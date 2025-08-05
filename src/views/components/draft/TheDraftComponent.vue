@@ -12,7 +12,7 @@ import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TheTaskRow from '../task/TheTaskRow.vue'
 import TheDraftTaskModal from './TheDraftTaskModal.vue'
-import { TaskItemMode } from '@/const/enums/ModeStates'
+import { FontWeightMode, TaskItemMode } from '@/const/enums/ModeStates'
 
 const store = taskStore()
 
@@ -104,6 +104,7 @@ onBeforeUnmount(() => {
     <BaseButton
       v-show="selectedDraftTask.length > LIST_OF_DRAFTED_TASKS_IS_EMPTY"
       :btn-type="DANGER"
+      :font-weight="FontWeightMode.NONE"
       class="cursor-pointer p-2 rounded transform active:scale-95"
       @click="removeSelectedCompletion"
     >

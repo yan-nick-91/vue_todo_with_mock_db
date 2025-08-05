@@ -3,6 +3,7 @@ import type { PropType } from 'vue'
 import type { Task } from '@/interface/TaskItem'
 import BaseButton from '@/views/UI/BaseButton.vue'
 import { ChevronRightIcon } from '@heroicons/vue/16/solid'
+import { FontWeightMode } from '@/const/enums/ModeStates'
 
 const props = defineProps({
   task: {
@@ -34,6 +35,7 @@ const onClick = () => emit('click')
       class="flex flex-col md:flex-row justify-between w-full p-2 border transform cursor-pointer active:scale-99"
       :btn-type="'transparent'"
       @click="onClick"
+      :font-weight="FontWeightMode.NONE"
     >
       <div class="flex items-center gap-2 md:mb-0 mb-2">
         <ChevronRightIcon class="h-6 w-6 text-gray-800" />

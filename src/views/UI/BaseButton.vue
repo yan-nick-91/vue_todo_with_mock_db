@@ -1,5 +1,6 @@
 <script lang="ts">
 import { SUCCESS, INFO, DANGER, TRANSPARENT, DEFAULT, type buttonType } from '@/const/base-types'
+import { FontWeightMode } from '@/const/enums/ModeStates'
 import type { PropType } from 'vue'
 
 const buttonTypesMap: Record<string, string> = {
@@ -26,6 +27,15 @@ defineProps({
     type: String,
     required: false,
   },
+  fontWeight: {
+    type: String as PropType<FontWeightMode>,
+    required: false,
+    default: FontWeightMode.SEMI_BOLD,
+  },
+  fontSize: {
+    type: Number,
+    required: false,
+  },
 })
 
 defineEmits(['click'])
@@ -34,7 +44,8 @@ defineEmits(['click'])
 <template>
   <button
     :type="nativeType"
-    :class="buttonTypesMap[btnType]"
+    :class="[buttonTypesMap[btnType], fontWeight !== FontWeightMode.NONE ? fontWeight : '']"
+    :style="{ fontSize: `${fontSize}rem` }"
     :aria-label="ariaLabel"
     @click="$emit('click', $event)"
   >
