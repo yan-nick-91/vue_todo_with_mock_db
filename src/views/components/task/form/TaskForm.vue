@@ -76,8 +76,8 @@ const fetchingBulletsForTask = async (task: Task) => {
 watch(
   [() => props.taskToEdit, () => props.draftedTask],
   ([newTask, newDraftedTask]) => {
-    if (props.mode === 'edit') prefillForm(newTask)
-    else if (props.mode === 'draft') prefillForm(newDraftedTask)
+    if (props.mode === FormMode.EDIT) prefillForm(newTask)
+    else if (props.mode === FormMode.DRAFT) prefillForm(newDraftedTask)
   },
   { immediate: true },
 )
@@ -120,7 +120,7 @@ const isDateValid = (validateStart: boolean, validateEnd: boolean): boolean => {
 }
 
 const modeStatus = computed<FormMode>(() => {
-  if (props.mode === 'edit') return FormMode.EDIT
+  if (props.mode === FormMode.EDIT) return FormMode.EDIT
   if (shouldSaveAsDraft.value) return FormMode.DRAFT
   return FormMode.CREATE
 })
@@ -132,7 +132,7 @@ const generatePayload = () => {
     id,
     task: taskInput.value.trim(),
     created_at: props.taskToEdit?.created_at ?? generateCurrentDate(),
-    updated_at: props.mode === 'edit' ? generateCurrentDate() : undefined,
+    updated_at: props.mode === FormMode.EDIT ? generateCurrentDate() : undefined,
     priority: selectedPriority.value,
     start_date: startDateInput.value,
     end_date: endDateInput.value,
@@ -151,9 +151,9 @@ const submitHandler = async () => {
   }
 
   const shouldValidateStartDate =
-    props.mode !== 'edit' || startDateInput.value !== props.taskToEdit?.start_date
+    props.mode !== FormMode.EDIT || startDateInput.value !== props.taskToEdit?.start_date
   const shouldValidateEndDate =
-    props.mode !== 'edit' || endDateInput.value !== props.taskToEdit?.end_date
+    props.mode !== FormMode.EDIT || endDateInput.value !== props.taskToEdit?.end_date
 
   if (!shouldSaveAsDraft.value && !isDateValid(shouldValidateStartDate, shouldValidateEndDate)) {
     shouldSaveAsDraft.value = false
@@ -219,13 +219,13 @@ const removeBulletItem = (id: string) => {
 <template>
   <section
     v-if="modalIsOpen"
-    :data-id="props.mode === 'create' ? 'createFormModal' : 'editFormModal'"
+    :data-id="props.mode === FormMode.CREATE ? 'createFormModal' : 'editFormModal'"
     class="border w-[80%] mx-auto p-4"
   >
     <h2 class="text-[1.5rem]">
-      <span v-if="props.mode === 'create'">Task Form</span>
-      <span v-if="props.mode === 'edit'">Update Task</span>
-      <span v-if="props.mode === 'draft'">Task Form <strong>(Drafted)</strong></span>
+      <span v-if="props.mode === FormMode.CREATE">Task Form</span>
+      <span v-if="props.mode === FormMode.EDIT">Update Task</span>
+      <span v-if="props.mode === FormMode.DRAFT">Task Form <strong>(Drafted)</strong></span>
     </h2>
     <hr />
     <form @submit.prevent="submitHandler" class="mt-5">
