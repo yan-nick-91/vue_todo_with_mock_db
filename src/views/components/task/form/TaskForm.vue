@@ -27,7 +27,7 @@ const props = defineProps({
     default: false,
   },
   mode: {
-    type: String as PropType<'create' | 'draft' | 'edit'>,
+    type: String as PropType<FormMode>,
     required: true,
   },
   taskToEdit: {
@@ -107,7 +107,10 @@ const isDateValid = (validateStart: boolean, validateEnd: boolean): boolean => {
     hasNoError = false
   }
 
-  if (validateEnd && (!endDateInput.value || isNaN(end.getTime()) ||  end.getTime() < start.getTime())) {
+  if (
+    validateEnd &&
+    (!endDateInput.value || isNaN(end.getTime()) || end.getTime() < start.getTime())
+  ) {
     endDateInputError.value =
       'End date must be after start date and not empty. Either save as draft or complete this field.'
     hasNoError = false

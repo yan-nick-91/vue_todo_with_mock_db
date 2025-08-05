@@ -13,7 +13,7 @@ import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import FilterComponent from '../misc/FilterComponent.vue'
 import TheToDoList from '../home/TheToDoList.vue'
 import TaskForm from '../task/form/TaskForm.vue'
-import { FilterTaskMode } from '@/const/enums/ModeStates'
+import { FilterTaskMode, FormMode } from '@/const/enums/ModeStates'
 
 const store = taskStore()
 
@@ -150,7 +150,7 @@ onBeforeUnmount(() => {
   >
     <div @click.stop class="w-[80%] max-h-[100vh] overflow-y-auto bg-white shadow-md">
       <TaskForm
-        :mode="'create'"
+        :mode="FormMode.CREATE"
         :modal-is-open="createTaskModalIsOpen"
         @close="closeCreateTaskModal"
         @handle-submit="onTaskCreated"

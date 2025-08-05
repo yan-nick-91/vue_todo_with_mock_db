@@ -12,6 +12,7 @@ import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import ConfirmDeletionDialog from '../misc/ConfirmDeletionDialog.vue'
 import TheTaskRow from '../task/TheTaskRow.vue'
 import TheDraftTaskModal from './TheDraftTaskModal.vue'
+import { TaskItemMode } from '@/const/enums/ModeStates'
 
 const store = taskStore()
 
@@ -90,7 +91,7 @@ onBeforeUnmount(() => {
           v-for="task in store.draftedTasks"
           :key="task.id"
           :task="task"
-          :mode="'draft'"
+          :mode="TaskItemMode.DRAFT"
           @selected="draftedTaskSelected"
           @click="openModal(task)"
         />

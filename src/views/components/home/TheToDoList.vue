@@ -4,6 +4,7 @@ import type { Task } from '@/interface/TaskItem'
 import TheTaskRow from '../task/TheTaskRow.vue'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import { LIST_OF_NON_COMPLETED_TASKS_IS_EMPTY } from '@/const/task'
+import { TaskItemMode } from '@/const/enums/ModeStates'
 
 const props = defineProps({
   tasks: {
@@ -28,7 +29,7 @@ const visibleTasks = computed(() => {
           :key="task.id"
           :task="task"
           @selected="emit('selected', $event)"
-          :mode="'task'"
+          :mode="TaskItemMode.DEFAULT"
           :task-mode="'main'"
         />
       </ul>

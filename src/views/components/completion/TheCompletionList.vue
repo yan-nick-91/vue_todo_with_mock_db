@@ -4,6 +4,7 @@ import { type Task } from '@/interface/TaskItem'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import TheTaskRow from '../task/TheTaskRow.vue'
 import { LIST_OF_COMPLETED_TASKS_IS_EMPTY } from '@/const/task'
+import { TaskItemMode } from '@/const/enums/ModeStates'
 
 defineProps({
   finishedTasks: {
@@ -20,7 +21,7 @@ defineProps({
         v-for="task in finishedTasks"
         :key="task.id"
         :task="task"
-        :mode="'task'"
+        :mode="TaskItemMode.DEFAULT"
         :task-mode="'complete'"
         @selected="$emit('selected', $event)"
       />

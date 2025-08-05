@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router'
 import type { Task } from '@/interface/TaskItem'
 import { ChevronRightIcon } from '@heroicons/vue/16/solid'
 import TheDraftedTask from '../draft/TheDraftedTask.vue'
+import { TaskItemMode } from '@/const/enums/ModeStates'
 
 const props = defineProps({
   task: {
@@ -16,7 +17,7 @@ const props = defineProps({
     default: false,
   },
   mode: {
-    type: String as PropType<'draft' | 'task'>,
+    type: String as PropType<TaskItemMode>,
   },
   taskMode: {
     type: String as PropType<'main' | 'complete'>,
@@ -27,7 +28,7 @@ const emit = defineEmits(['selected', 'click'])
 </script>
 
 <template>
-  <li v-if="props.mode === 'task'">
+  <li v-if="props.mode === TaskItemMode.DEFAULT">
     <div v-if="props.taskMode === 'main' || props.taskMode === 'complete'">
       <article class="flex gap-2 mb-2" :aria-labelledby="`task-${task.id}-label`">
         <input
@@ -66,7 +67,7 @@ const emit = defineEmits(['selected', 'click'])
       </article>
     </div>
   </li>
-  <li v-if="props.mode === 'draft'">
+  <li v-if="props.mode === TaskItemMode.DRAFT">
     <TheDraftedTask
       :task="task"
       :is-selected="isSelected"

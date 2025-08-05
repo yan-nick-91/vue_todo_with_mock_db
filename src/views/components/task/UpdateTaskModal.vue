@@ -3,6 +3,7 @@ import { onBeforeUnmount, onMounted, type PropType } from 'vue'
 import type { Task } from '@/interface/TaskItem'
 import { setupEscapeListener } from '@/util/key-values'
 import TaskForm from './form/TaskForm.vue'
+import { FormMode } from '@/const/enums/ModeStates'
 
 const props = defineProps({
   modalIsOpen: {
@@ -53,7 +54,7 @@ onBeforeUnmount(() => {
   >
     <div @click.stop class="w-[80%] max-h-[100vh] overflow-y-auto bg-white shadow-md">
       <TaskForm
-        :mode="'edit'"
+        :mode="FormMode.EDIT"
         :modal-is-open="modalIsOpen"
         :task-to-edit="taskToEdit"
         @handle-submit="handleUpdate"

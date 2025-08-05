@@ -4,6 +4,7 @@ import type { Task } from '@/interface/TaskItem'
 import { LIST_OF_DRAFTED_TASKS_IS_EMPTY } from '@/const/task'
 import BaseMessageDisplay from '@/views/UI/BaseMessageDisplay.vue'
 import TheTaskRow from '../task/TheTaskRow.vue'
+import { TaskItemMode } from '@/const/enums/ModeStates'
 
 const props = defineProps({
   draftedTasks: {
@@ -24,7 +25,7 @@ const visibleDraftTasks = computed(() => {
         v-for="task in draftedTasks"
         :key="task.id"
         :task="task"
-        :mode="'draft'"
+        :mode="TaskItemMode.DRAFT"
         @selected="$emit('selected', $event)"
       />
     </ul>
