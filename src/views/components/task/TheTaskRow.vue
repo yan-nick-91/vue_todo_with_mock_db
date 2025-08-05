@@ -42,7 +42,7 @@ const emit = defineEmits(['selected', 'click'])
         />
         <RouterLink
           :to="{ name: 'task', params: { id: props.task.id } }"
-          class="flex flex-col md:flex-row justify-between w-full p-2 border transform active:scale-99"
+          class="flex flex-col md:flex-row justify-between w-full p-2 border transform active:scale-99 hover:border-emerald-600 hover:border-2 hover:bg-emerald-50"
           :aria-labelledby="`task-${task.id}-label`"
           role="link"
         >

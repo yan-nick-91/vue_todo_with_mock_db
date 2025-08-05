@@ -130,6 +130,7 @@ onBeforeUnmount(() => {
         class="cursor-pointer p-2 rounded transform active:scale-95"
         @click="openCreateTaskModal"
         aria-label="Create new task"
+        aria-haspopup="dialog"
       >
         Create task
       </BaseButton>
@@ -139,6 +140,7 @@ onBeforeUnmount(() => {
         class="cursor-pointer p-2 rounded transform active:scale-95"
         @click="removeSelectedTasks"
         aria-label="Remove selected tasks"
+        aria-haspopup="dialog"
         >Remove selected items</BaseButton
       >
     </section>

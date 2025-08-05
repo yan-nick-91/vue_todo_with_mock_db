@@ -97,6 +97,9 @@ onUnmounted(() => {
           :btn-type="TRANSPARENT"
           class="flex p-2 text-white cursor-pointer"
           @click.stop="toggleDropdown"
+          :aria-label="dropdownIsOpen ? 'Close dropdown' : 'Open dropdown'"
+          :aria-expanded="dropdownIsOpen.toString()"
+          aria-haspopup="menu"
         >
           <Bars3Icon v-if="!dropdownIsOpen" class="h-6 w-6" aria-hidden="true" />
           <XMarkIcon v-else class="h-6 w-6" aria-hidden="true" />
